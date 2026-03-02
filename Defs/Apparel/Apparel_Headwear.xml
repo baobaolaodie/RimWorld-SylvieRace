@@ -3,10 +3,10 @@
   <ThingDef ParentName="HatBase">
     <defName>SpringFestivalHeadwear</defName>
     <label>新春头饰</label>
-    <description>新春头饰。</description>
+    <description>新春头饰�?/description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
-    <tradeability>Sellable</tradeability>
+    <tradeability>All</tradeability>
     <thingCategories Inherit="False">
       <li>SylvieApparel</li>
     </thingCategories>

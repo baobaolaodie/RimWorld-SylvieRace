@@ -148,7 +148,7 @@ SylvieRace/
   <description>紫色连衣裙。</description>
   <recipeMaker Inherit="False" IsNull="True" />
   <techLevel>Medieval</techLevel>
-  <tradeability>Sellable</tradeability>
+  <tradeability>All</tradeability>
   <thingCategories>
     <li>SylvieApparel</li>
   </thingCategories>
@@ -174,7 +174,7 @@ SylvieRace/
 |------|------|
 | `thingCategories` | 储存区识别必需（SylvieApparel - 希尔薇衣服） |
 | `techLevel` | 科技等级 |
-| `tradeability` | 交易性控制（Sellable = 仅可出售） |
+| `tradeability` | 交易性控制（All = 可买可卖） |
 | `defaultOutfitTags` | 默认装备方案标签 |
 | `countsAsClothingForNudity` | 是否算作服装（影响裸体判定） |
 | `developmentalStageFilter` | 年龄阶段过滤 |

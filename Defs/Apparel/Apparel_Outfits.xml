@@ -2,11 +2,11 @@
 <Defs>
   <ThingDef ParentName="ApparelBase">
     <defName>Finally</defName>
-    <label>终末地服装</label>
-    <description>终末地服装。</description>
+    <label>终末地服�?/label>
+    <description>终末地服装�?/description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
-    <tradeability>Sellable</tradeability>
+    <tradeability>All</tradeability>
     <thingCategories>
       <li>SylvieApparel</li>
     </thingCategories>
@@ -59,10 +59,10 @@
   <ThingDef ParentName="ApparelBase">
     <defName>Fineclothing</defName>
     <label>华丽服装</label>
-    <description>华丽服装。</description>
+    <description>华丽服装�?/description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
-    <tradeability>Sellable</tradeability>
+    <tradeability>All</tradeability>
     <thingCategories>
       <li>SylvieApparel</li>
     </thingCategories>
@@ -115,10 +115,10 @@
   <ThingDef ParentName="ApparelBase">
     <defName>Kimono</defName>
     <label>和服</label>
-    <description>和服。</description>
+    <description>和服�?/description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
-    <tradeability>Sellable</tradeability>
+    <tradeability>All</tradeability>
     <thingCategories>
       <li>SylvieApparel</li>
     </thingCategories>
@@ -170,11 +170,11 @@
 
   <ThingDef ParentName="ApparelBase">
     <defName>maidoutfit</defName>
-    <label>女仆装</label>
-    <description>女仆装。</description>
+    <label>女仆�?/label>
+    <description>女仆装�?/description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
-    <tradeability>Sellable</tradeability>
+    <tradeability>All</tradeability>
     <thingCategories>
       <li>SylvieApparel</li>
     </thingCategories>
@@ -227,10 +227,10 @@
   <ThingDef ParentName="ApparelBase">
     <defName>Elegantclothing</defName>
     <label>典雅服装</label>
-    <description>典雅服装。</description>
+    <description>典雅服装�?/description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
-    <tradeability>Sellable</tradeability>
+    <tradeability>All</tradeability>
     <thingCategories>
       <li>SylvieApparel</li>
     </thingCategories>
@@ -282,10 +282,10 @@
   <ThingDef ParentName="ApparelBase">
     <defName>Replacedmaid</defName>
     <label>重装女仆</label>
-    <description>重装女仆。</description>
+    <description>重装女仆�?/description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
-    <tradeability>Sellable</tradeability>
+    <tradeability>All</tradeability>
     <thingCategories>
       <li>SylvieApparel</li>
     </thingCategories>
@@ -337,11 +337,11 @@
 
   <ThingDef ParentName="ApparelBase">
     <defName>Studentuniform</defName>
-    <label>学生服</label>
-    <description>学生服。</description>
+    <label>学生�?/label>
+    <description>学生服�?/description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
-    <tradeability>Sellable</tradeability>
+    <tradeability>All</tradeability>
     <thingCategories>
       <li>SylvieApparel</li>
     </thingCategories>
@@ -394,10 +394,10 @@
   <ThingDef ParentName="ApparelBase">
     <defName>Suits</defName>
     <label>西装</label>
-    <description>西装。</description>
+    <description>西装�?/description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
-    <tradeability>Sellable</tradeability>
+    <tradeability>All</tradeability>
     <thingCategories>
       <li>SylvieApparel</li>
     </thingCategories>
@@ -450,10 +450,10 @@
   <ThingDef ParentName="ApparelBase">
     <defName>cheongsam</defName>
     <label>旗袍</label>
-    <description>旗袍。</description>
+    <description>旗袍�?/description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
-    <tradeability>Sellable</tradeability>
+    <tradeability>All</tradeability>
     <thingCategories>
       <li>SylvieApparel</li>
     </thingCategories>
@@ -506,10 +506,10 @@
   <ThingDef ParentName="ApparelBase">
     <defName>SprinFestivalWedding</defName>
     <label>新春花嫁</label>
-    <description>新春花嫁。</description>
+    <description>新春花嫁�?/description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
-    <tradeability>Sellable</tradeability>
+    <tradeability>All</tradeability>
     <thingCategories>
       <li>SylvieApparel</li>
     </thingCategories>

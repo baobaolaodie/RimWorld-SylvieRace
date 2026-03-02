@@ -69,6 +69,7 @@
 ## 更新日志
 
 ### v0.0.2-pre (2026-03-03)
+- 尝试修复贸易商不出售服装的问题（tradeability 从 Sellable 改为 All）
 - 尝试修复 SpringFestivalHeadwear 重复 thingCategories 错误
 - 尝试添加自定义服装类别"希尔薇衣服"（储存区筛选）
 - 尝试禁用服装制作配方，服装只能通过贸易商获得
