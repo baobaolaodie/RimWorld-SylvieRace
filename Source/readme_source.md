@@ -11,9 +11,26 @@ SylvieRace/
 ├── Assemblies/
 │   └── SylvieRace.dll         # 编译输出
 ├── Defs/
-│   ├── defs.xml               # 种族定义、事件定义
-│   ├── clothes.xml            # 服装定义（19种）
-│   ├── ClothingTrader.xml     # 贸易商定义
+│   ├── Races/
+│   │   └── Sylvie_Race.xml        # 种族定义
+│   ├── PawnKinds/
+│   │   └── Sylvie_PawnKind.xml    # PawnKind 定义
+│   ├── Apparel/
+│   │   ├── Apparel_Dresses.xml    # 连衣裙类 (3件)
+│   │   ├── Apparel_Outfits.xml    # 套装类 (10件)
+│   │   ├── Apparel_Pants.xml      # 下装类 (2件)
+│   │   ├── Apparel_Special.xml    # 特殊服装 (3件)
+│   │   └── Apparel_Headwear.xml   # 头饰 (1件)
+│   ├── Hair/
+│   │   └── Sylvie_Hair.xml        # 发型定义
+│   ├── Incidents/
+│   │   └── Sylvie_Incident.xml    # 事件定义
+│   ├── Letters/
+│   │   └── Sylvie_Letter.xml      # 信件定义
+│   ├── Backstories/
+│   │   └── Sylvie_Backstory.xml   # 背景故事
+│   ├── Traders/
+│   │   └── ClothingTrader.xml     # 贸易商定义
 │   └── FacialAnimation/       # 动态表情定义
 │       ├── EyeType.xml         # 眼睛类型
 │       ├── MouthType.xml       # 嘴巴类型
@@ -53,32 +70,35 @@ SylvieRace/
 
 ## 核心组件
 
-### 1. 种族定义 (defs.xml)
+### 1. 种族定义 (Races/Sylvie_Race.xml)
 
-**文件位置**: `Defs/defs.xml`
+**文件位置**: `Defs/Races/Sylvie_Race.xml`
 
 **主要内容**:
 - `AlienRace.ThingDef_AlienRace` - 希尔薇种族定义
-- `PawnKindDef` - 希尔薇 PawnKind 定义
-- `IncidentDef` - 奴隶商人事件定义
-- `HairDef` - 专属发型定义
-- `LetterDef` - 选择信件定义
-- `BackstoryDef` - 背景故事定义
 
 **种族特性配置**:
 ```xml
 <alienRace>
   <generalSettings>
     <maleGenderProbability>0.0000000000001</maleGenderProbability>
-    <disallowedTraits>
-      <li><defName>Abrasive</defName></li>
-      <li><defName>Greedy</defName></li>
-    </disallowedTraits>
   </generalSettings>
 </alienRace>
 ```
 
-### 2. 事件系统
+**注意**: 特性配置已移至 C# 代码中处理，生成时强制清空所有特性并赋予善良特性。
+
+### 2. PawnKind 定义 (PawnKinds/Sylvie_PawnKind.xml)
+
+**文件位置**: `Defs/PawnKinds/Sylvie_PawnKind.xml`
+
+**主要内容**:
+- `PawnKindDef` - 希尔薇 PawnKind 定义
+- `apparelTags` - 服装标签匹配
+
+### 3. 事件系统 (Incidents/Sylvie_Incident.xml)
+
+**文件位置**: `Defs/Incidents/Sylvie_Incident.xml`
 
 **触发机制**: `SylvieGameComponent.GameComponentTick()`
 - 每 2500 ticks 检查一次
@@ -100,28 +120,63 @@ SylvieRace/
 - `TraderKindDef` - 贸易商类型
 - `StockGenerator_Tag` - 使用 `SylvieClothesTag` 筛选商品
 
-### 4. 服装系统
+### 4. 服装系统 (Apparel/)
 
-**服装定义**: `Defs/clothes.xml`
+**文件位置**: `Defs/Apparel/`
+
+**文件分类**:
+- `Apparel_Dresses.xml` - 连衣裙类 (Purpledress, Bluedress, floraldress)
+- `Apparel_Outfits.xml` - 套装类 (Finally, Fineclothing, Kimono, maidoutfit, Replacedmaid, Studentuniform, Suits, Elegantclothing, cheongsam, SprinFestivalWedding)
+- `Apparel_Pants.xml` - 下装类 (ElegantclothingPant, StudentuniformPant)
+- `Apparel_Special.xml` - 特殊服装 (Bandaid, Swimsuit, Shawl)
+- `Apparel_Headwear.xml` - 头饰 (SpringFestivalHeadwear)
+
+**服装定义特点**:
 - 19 种专属服装
 - 使用 `apparel.tags` 限制为希尔薇种族
 - 使用 `tradeTags` 允许贸易商出售
+- 使用 `thingCategories` 允许储存区识别
+- **禁用制作配方**：服装无法在缝纫台制作
 
-**种族限制机制**:
+**完整服装定义示例**:
 ```xml
-<apparel>
-  <tags>
-    <li>SylvieApparel</li>
-  </tags>
-</apparel>
+<ThingDef ParentName="ApparelBase">
+  <defName>Purpledress</defName>
+  <label>紫色连衣裙</label>
+  <description>紫色连衣裙。</description>
+  <recipeMaker Inherit="False" IsNull="True" />
+  <techLevel>Medieval</techLevel>
+  <tradeability>Sellable</tradeability>
+  <thingCategories>
+    <li>ApparelMisc</li>
+  </thingCategories>
+  <apparel>
+    <tags>
+      <li>SylvieApparel</li>
+    </tags>
+    <defaultOutfitTags>
+      <li>Worker</li>
+    </defaultOutfitTags>
+    <countsAsClothingForNudity>true</countsAsClothingForNudity>
+    <developmentalStageFilter>Child, Adult</developmentalStageFilter>
+    <canBeDesiredForIdeo>false</canBeDesiredForIdeo>
+  </apparel>
+  <tradeTags>
+    <li>SylvieClothesTag</li>
+  </tradeTags>
+</ThingDef>
 ```
 
-对应的 PawnKindDef:
-```xml
-<apparelTags>
-  <li>SylvieApparel</li>
-</apparelTags>
-```
+**关键字段说明**:
+| 字段 | 说明 |
+|------|------|
+| `thingCategories` | 储存区识别必需（ApparelMisc/Headgear） |
+| `techLevel` | 科技等级 |
+| `tradeability` | 交易性控制（Sellable = 仅可出售） |
+| `defaultOutfitTags` | 默认装备方案标签 |
+| `countsAsClothingForNudity` | 是否算作服装（影响裸体判定） |
+| `developmentalStageFilter` | 年龄阶段过滤 |
+| `canBeDesiredForIdeo` | 是否可被文化需求 |
 
 ### 5. 动态表情系统
 
@@ -199,6 +254,9 @@ public static class HarmonyInit
 ## 注意事项
 
 1. **服装种族限制**：使用 `apparel.tags` + `PawnKindDef.apparelTags` 机制
-2. **GameComponent 自动注册**：无需手动注册，RimWorld 会自动实例化
-3. **动态表情目录结构**：Defs 和 Patches 必须在 mod 根目录下，不能放在子目录
-4. **动态表情依赖**：需要 Facial Animation WIP 模组作为前置
+2. **服装不可制作**：使用 `ApparelBase` + `recipeMaker IsNull="True"` 禁用缝纫台配方
+3. **服装储存区识别**：必须添加 `thingCategories`（ApparelMisc 或 Headgear）
+4. **特性配置**：C# 代码中强制设置特性，XML 中的 `disallowedTraits` 已移除
+5. **GameComponent 自动注册**：无需手动注册，RimWorld 会自动实例化
+6. **动态表情目录结构**：Defs 和 Patches 必须在 mod 根目录下，不能放在子目录
+7. **动态表情依赖**：需要 Facial Animation WIP 模组作为前置

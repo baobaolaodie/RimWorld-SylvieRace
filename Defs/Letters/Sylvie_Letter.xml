@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <LetterDef>
+    <defName>SylvieOfferLetter</defName>
+    <color>(163, 106, 201)</color>
+    <label>交易提议</label>
+    <description>交易提议</description>
+    <flashInterval>20</flashInterval>
+  </LetterDef>
+</Defs>

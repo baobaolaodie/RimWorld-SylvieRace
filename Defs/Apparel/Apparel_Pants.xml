@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <ThingDef ParentName="ApparelBase">
+    <defName>ElegantclothingPant</defName>
+    <label>典雅服装下装</label>
+    <description>典雅服装下装。</description>
+    <recipeMaker Inherit="False" IsNull="True" />
+    <techLevel>Medieval</techLevel>
+    <tradeability>Sellable</tradeability>
+    <thingCategories>
+      <li>ApparelMisc</li>
+    </thingCategories>
+    <graphicData>
+      <texPath>Things/Clothes/ElegantclothingPant_Female_south</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <statBases>
+      <MaxHitPoints>100</MaxHitPoints>
+      <Mass>0.5</Mass>
+      <EquipDelay>1.5</EquipDelay>
+      <StuffEffectMultiplierArmor>0.2</StuffEffectMultiplierArmor>
+      <StuffEffectMultiplierInsulation_Cold>0.20</StuffEffectMultiplierInsulation_Cold>
+      <StuffEffectMultiplierInsulation_Heat>0.20</StuffEffectMultiplierInsulation_Heat>
+    </statBases>
+    <costStuffCount>40</costStuffCount>
+    <stuffCategories>
+      <li>Fabric</li>
+    </stuffCategories>
+    <apparel>
+      <wornGraphicPath>Things/Clothes/ElegantclothingPant</wornGraphicPath>
+      <bodyPartGroups>
+        <li>Legs</li>
+      </bodyPartGroups>
+      <layers>
+        <li>OnSkin</li>
+      </layers>
+      <tags>
+        <li>SylvieApparel</li>
+      </tags>
+      <defaultOutfitTags>
+        <li>Worker</li>
+      </defaultOutfitTags>
+      <countsAsClothingForNudity>true</countsAsClothingForNudity>
+      <developmentalStageFilter>Child, Adult</developmentalStageFilter>
+      <canBeDesiredForIdeo>false</canBeDesiredForIdeo>
+    </apparel>
+    <tradeTags>
+      <li>SylvieClothesTag</li>
+    </tradeTags>
+  </ThingDef>
+
+  <ThingDef ParentName="ApparelBase">
+    <defName>StudentuniformPant</defName>
+    <label>学生服下装</label>
+    <description>学生服下装。</description>
+    <recipeMaker Inherit="False" IsNull="True" />
+    <techLevel>Medieval</techLevel>
+    <tradeability>Sellable</tradeability>
+    <thingCategories>
+      <li>ApparelMisc</li>
+    </thingCategories>
+    <graphicData>
+      <texPath>Things/Clothes/StudentuniformPant_Female_south</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <statBases>
+      <MaxHitPoints>100</MaxHitPoints>
+      <Mass>0.5</Mass>
+      <EquipDelay>1.5</EquipDelay>
+      <StuffEffectMultiplierArmor>0.2</StuffEffectMultiplierArmor>
+      <StuffEffectMultiplierInsulation_Cold>0.20</StuffEffectMultiplierInsulation_Cold>
+      <StuffEffectMultiplierInsulation_Heat>0.20</StuffEffectMultiplierInsulation_Heat>
+    </statBases>
+    <costStuffCount>40</costStuffCount>
+    <stuffCategories>
+      <li>Fabric</li>
+    </stuffCategories>
+    <apparel>
+      <wornGraphicPath>Things/Clothes/StudentuniformPant</wornGraphicPath>
+      <bodyPartGroups>
+        <li>Legs</li>
+      </bodyPartGroups>
+      <layers>
+        <li>OnSkin</li>
+      </layers>
+      <tags>
+        <li>SylvieApparel</li>
+      </tags>
+      <defaultOutfitTags>
+        <li>Worker</li>
+      </defaultOutfitTags>
+      <countsAsClothingForNudity>true</countsAsClothingForNudity>
+      <developmentalStageFilter>Child, Adult</developmentalStageFilter>
+      <canBeDesiredForIdeo>false</canBeDesiredForIdeo>
+    </apparel>
+    <tradeTags>
+      <li>SylvieClothesTag</li>
+    </tradeTags>
+  </ThingDef>
+</Defs>

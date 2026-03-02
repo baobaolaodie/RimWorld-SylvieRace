@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <ThingDef ParentName="HatBase">
+    <defName>SpringFestivalHeadwear</defName>
+    <label>新春头饰</label>
+    <description>新春头饰。</description>
+    <recipeMaker Inherit="False" IsNull="True" />
+    <techLevel>Medieval</techLevel>
+    <tradeability>Sellable</tradeability>
+    <thingCategories>
+      <li>Headgear</li>
+    </thingCategories>
+    <graphicData>
+      <texPath>Things/Clothes/SpringFestivalHeadwear_south</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <statBases>
+      <MaxHitPoints>80</MaxHitPoints>
+      <Mass>0.1</Mass>
+      <EquipDelay>0.5</EquipDelay>
+      <StuffEffectMultiplierArmor>0.1</StuffEffectMultiplierArmor>
+      <ArmorRating_Sharp>0</ArmorRating_Sharp>
+    </statBases>
+    <costStuffCount>20</costStuffCount>
+    <stuffCategories>
+      <li>Fabric</li>
+    </stuffCategories>
+    <apparel>
+      <wornGraphicPath>Things/Clothes/SpringFestivalHeadwear</wornGraphicPath>
+      <bodyPartGroups>
+        <li>UpperHead</li>
+      </bodyPartGroups>
+      <layers>
+        <li>Overhead</li>
+      </layers>
+      <tags>
+        <li>SylvieApparel</li>
+      </tags>
+      <defaultOutfitTags>
+        <li>Worker</li>
+      </defaultOutfitTags>
+      <countsAsClothingForNudity>false</countsAsClothingForNudity>
+      <developmentalStageFilter>Child, Adult</developmentalStageFilter>
+      <canBeDesiredForIdeo>false</canBeDesiredForIdeo>
+    </apparel>
+    <tradeTags>
+      <li>SylvieClothesTag</li>
+    </tradeTags>
+  </ThingDef>
+</Defs>

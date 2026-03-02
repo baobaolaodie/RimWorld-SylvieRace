@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <IncidentDef>
+    <defName>Sylvie_ArrivalEvent</defName>
+    <label>奴隶商人抵达</label>
+    <category>Misc</category>
+    <targetTags>
+      <li>Map_PlayerHome</li>
+    </targetTags>
+    <workerClass>SylvieMod.IncidentWorker_SylvieTrader</workerClass>
+    <baseChance>0</baseChance>
+    <minRefireDays>99999</minRefireDays>
+  </IncidentDef>
+</Defs>

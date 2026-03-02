@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <HairDef Abstract="True" Name="BaseSylvieHair">
+    <styleTags>
+      <li>Sylvie_Hair</li>
+    </styleTags>
+    <styleGender>Female</styleGender>
+  </HairDef>
+
+  <HairDef ParentName="BaseSylvieHair">
+    <defName>Sylvie_Hair_Standard</defName>
+    <label>凌乱短发</label>
+    <texPath>Things/Pawn/Humanlike/Sylvie/Hair/Hair</texPath>
+    <hairGender>Female</hairGender>
+  </HairDef>
+</Defs>

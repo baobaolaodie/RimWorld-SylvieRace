@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <PawnKindDef>
+    <defName>Sylvie_PawnKind</defName>
+    <label>伤痕累累的少女</label>
+    <race>Sylvie_Race</race>
+    <combatPower>15</combatPower>
+    <fixedGender>Female</fixedGender>
+    <xenotypeSet MayRequire="Ludeon.RimWorld.Biotech">
+      <xenotypeChances>
+        <Baseliner>1</Baseliner>
+      </xenotypeChances>
+    </xenotypeSet>
+    <apparelIgnoreSeasons>true</apparelIgnoreSeasons>
+    <apparelAllowHeadgearChance>0</apparelAllowHeadgearChance>
+    <apparelTags>
+      <li>SylvieApparel</li>
+    </apparelTags>
+    <apparelMoney>0~100</apparelMoney>
+    <apparelColor>(160, 150, 140)</apparelColor>
+    <weaponMoney>0~0</weaponMoney>
+    <initialWillRange>1~5</initialWillRange>
+    <initialResistanceRange>1~5</initialResistanceRange>
+    <itemQuality>Poor</itemQuality>
+    <inventoryOptions>
+      <skipChance>1</skipChance>
+    </inventoryOptions>
+    <backstoryFiltersOverride>
+      <li>
+        <categories>
+          <li>Sylvie_Backstory</li>
+        </categories>
+      </li>
+    </backstoryFiltersOverride>
+  </PawnKindDef>
+</Defs>
