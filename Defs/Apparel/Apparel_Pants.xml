@@ -8,7 +8,7 @@
     <techLevel>Medieval</techLevel>
     <tradeability>Sellable</tradeability>
     <thingCategories>
-      <li>ApparelMisc</li>
+      <li>SylvieApparel</li>
     </thingCategories>
     <graphicData>
       <texPath>Things/Clothes/ElegantclothingPant_Female_south</texPath>
@@ -57,7 +57,7 @@
     <techLevel>Medieval</techLevel>
     <tradeability>Sellable</tradeability>
     <thingCategories>
-      <li>ApparelMisc</li>
+      <li>SylvieApparel</li>
     </thingCategories>
     <graphicData>
       <texPath>Things/Clothes/StudentuniformPant_Female_south</texPath>

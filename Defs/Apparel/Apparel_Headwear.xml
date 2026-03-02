@@ -7,8 +7,8 @@
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
     <tradeability>Sellable</tradeability>
-    <thingCategories>
-      <li>Headgear</li>
+    <thingCategories Inherit="False">
+      <li>SylvieApparel</li>
     </thingCategories>
     <graphicData>
       <texPath>Things/Clothes/SpringFestivalHeadwear_south</texPath>

@@ -8,7 +8,7 @@
     <techLevel>Medieval</techLevel>
     <tradeability>Sellable</tradeability>
     <thingCategories>
-      <li>ApparelMisc</li>
+      <li>SylvieApparel</li>
     </thingCategories>
     <graphicData>
       <texPath>Things/Clothes/Bandaid_Female_south</texPath>
@@ -60,7 +60,7 @@
     <techLevel>Medieval</techLevel>
     <tradeability>Sellable</tradeability>
     <thingCategories>
-      <li>ApparelMisc</li>
+      <li>SylvieApparel</li>
     </thingCategories>
     <graphicData>
       <texPath>Things/Clothes/Swimsuit_Female_south</texPath>
@@ -112,7 +112,7 @@
     <techLevel>Medieval</techLevel>
     <tradeability>Sellable</tradeability>
     <thingCategories>
-      <li>ApparelMisc</li>
+      <li>SylvieApparel</li>
     </thingCategories>
     <graphicData>
       <texPath>Things/Clothes/Shawl_Female_south</texPath>

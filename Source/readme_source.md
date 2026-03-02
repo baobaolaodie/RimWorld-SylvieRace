@@ -15,6 +15,8 @@ SylvieRace/
 │   │   └── Sylvie_Race.xml        # 种族定义
 │   ├── PawnKinds/
 │   │   └── Sylvie_PawnKind.xml    # PawnKind 定义
+│   ├── ThingCategories/
+│   │   └── Sylvie_ThingCategories.xml  # 物品类别定义
 │   ├── Apparel/
 │   │   ├── Apparel_Dresses.xml    # 连衣裙类 (3件)
 │   │   ├── Apparel_Outfits.xml    # 套装类 (10件)
@@ -148,7 +150,7 @@ SylvieRace/
   <techLevel>Medieval</techLevel>
   <tradeability>Sellable</tradeability>
   <thingCategories>
-    <li>ApparelMisc</li>
+    <li>SylvieApparel</li>
   </thingCategories>
   <apparel>
     <tags>
@@ -170,13 +172,35 @@ SylvieRace/
 **关键字段说明**:
 | 字段 | 说明 |
 |------|------|
-| `thingCategories` | 储存区识别必需（ApparelMisc/Headgear） |
+| `thingCategories` | 储存区识别必需（SylvieApparel - 希尔薇衣服） |
 | `techLevel` | 科技等级 |
 | `tradeability` | 交易性控制（Sellable = 仅可出售） |
 | `defaultOutfitTags` | 默认装备方案标签 |
 | `countsAsClothingForNudity` | 是否算作服装（影响裸体判定） |
 | `developmentalStageFilter` | 年龄阶段过滤 |
 | `canBeDesiredForIdeo` | 是否可被文化需求 |
+
+### 6. 物品类别系统 (ThingCategories/)
+
+**文件位置**: `Defs/ThingCategories/Sylvie_ThingCategories.xml`
+
+**类别定义**:
+```xml
+<ThingCategoryDef>
+  <defName>SylvieApparel</defName>
+  <label>希尔薇衣服</label>
+  <parent>Apparel</parent>
+</ThingCategoryDef>
+```
+
+**类别层级**:
+```
+Apparel
+└── 希尔薇衣服 (SylvieApparel)
+    └── 所有 SylvieRace 服装
+```
+
+**用途**: 在储存区筛选时，可以快速选择"希尔薇衣服"类别来筛选所有 SylvieRace 专属服装。
 
 ### 5. 动态表情系统
 
@@ -255,8 +279,9 @@ public static class HarmonyInit
 
 1. **服装种族限制**：使用 `apparel.tags` + `PawnKindDef.apparelTags` 机制
 2. **服装不可制作**：使用 `ApparelBase` + `recipeMaker IsNull="True"` 禁用缝纫台配方
-3. **服装储存区识别**：必须添加 `thingCategories`（ApparelMisc 或 Headgear）
-4. **特性配置**：C# 代码中强制设置特性，XML 中的 `disallowedTraits` 已移除
-5. **GameComponent 自动注册**：无需手动注册，RimWorld 会自动实例化
-6. **动态表情目录结构**：Defs 和 Patches 必须在 mod 根目录下，不能放在子目录
-7. **动态表情依赖**：需要 Facial Animation WIP 模组作为前置
+3. **服装储存区识别**：使用自定义 `thingCategories: SylvieApparel`（希尔薇衣服）
+4. **头饰类别继承**：`HatBase` 已包含 `Headgear`，子类需使用 `Inherit="False"` 覆盖
+5. **特性配置**：C# 代码中强制设置特性，XML 中的 `disallowedTraits` 已移除
+6. **GameComponent 自动注册**：无需手动注册，RimWorld 会自动实例化
+7. **动态表情目录结构**：Defs 和 Patches 必须在 mod 根目录下，不能放在子目录
+8. **动态表情依赖**：需要 Facial Animation WIP 模组作为前置

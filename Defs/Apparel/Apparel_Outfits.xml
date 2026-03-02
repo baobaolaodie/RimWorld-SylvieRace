@@ -8,7 +8,7 @@
     <techLevel>Medieval</techLevel>
     <tradeability>Sellable</tradeability>
     <thingCategories>
-      <li>ApparelMisc</li>
+      <li>SylvieApparel</li>
     </thingCategories>
     <graphicData>
       <texPath>Things/Clothes/Finally_Female_south</texPath>
@@ -64,7 +64,7 @@
     <techLevel>Medieval</techLevel>
     <tradeability>Sellable</tradeability>
     <thingCategories>
-      <li>ApparelMisc</li>
+      <li>SylvieApparel</li>
     </thingCategories>
     <graphicData>
       <texPath>Things/Clothes/Fineclothing_Female_south</texPath>
@@ -120,7 +120,7 @@
     <techLevel>Medieval</techLevel>
     <tradeability>Sellable</tradeability>
     <thingCategories>
-      <li>ApparelMisc</li>
+      <li>SylvieApparel</li>
     </thingCategories>
     <graphicData>
       <texPath>Things/Clothes/Kimono_Female_south</texPath>
@@ -176,7 +176,7 @@
     <techLevel>Medieval</techLevel>
     <tradeability>Sellable</tradeability>
     <thingCategories>
-      <li>ApparelMisc</li>
+      <li>SylvieApparel</li>
     </thingCategories>
     <graphicData>
       <texPath>Things/Clothes/maidoutfit_Female_south</texPath>
@@ -232,7 +232,7 @@
     <techLevel>Medieval</techLevel>
     <tradeability>Sellable</tradeability>
     <thingCategories>
-      <li>ApparelMisc</li>
+      <li>SylvieApparel</li>
     </thingCategories>
     <graphicData>
       <texPath>Things/Clothes/Elegantclothing_Female_south</texPath>
@@ -287,7 +287,7 @@
     <techLevel>Medieval</techLevel>
     <tradeability>Sellable</tradeability>
     <thingCategories>
-      <li>ApparelMisc</li>
+      <li>SylvieApparel</li>
     </thingCategories>
     <graphicData>
       <texPath>Things/Clothes/Replacedmaid_Female_south</texPath>
@@ -343,7 +343,7 @@
     <techLevel>Medieval</techLevel>
     <tradeability>Sellable</tradeability>
     <thingCategories>
-      <li>ApparelMisc</li>
+      <li>SylvieApparel</li>
     </thingCategories>
     <graphicData>
       <texPath>Things/Clothes/Studentuniform_Female_south</texPath>
@@ -399,7 +399,7 @@
     <techLevel>Medieval</techLevel>
     <tradeability>Sellable</tradeability>
     <thingCategories>
-      <li>ApparelMisc</li>
+      <li>SylvieApparel</li>
     </thingCategories>
     <graphicData>
       <texPath>Things/Clothes/Suits_Female_south</texPath>
@@ -455,7 +455,7 @@
     <techLevel>Medieval</techLevel>
     <tradeability>Sellable</tradeability>
     <thingCategories>
-      <li>ApparelMisc</li>
+      <li>SylvieApparel</li>
     </thingCategories>
     <graphicData>
       <texPath>Things/Clothes/cheongsam_Female_south</texPath>
@@ -511,7 +511,7 @@
     <techLevel>Medieval</techLevel>
     <tradeability>Sellable</tradeability>
     <thingCategories>
-      <li>ApparelMisc</li>
+      <li>SylvieApparel</li>
     </thingCategories>
     <graphicData>
       <texPath>Things/Clothes/SprinFestivalWedding_Female_south</texPath>
