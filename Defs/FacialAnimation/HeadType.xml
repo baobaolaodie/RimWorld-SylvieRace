@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Defs>
+  <FacialAnimation.HeadTypeDef>
+	  <defName>Sylvie_Head</defName>
+	  <texPath>Things/Pawn/Sylvie/Heads_Blank/SylvieHead</texPath>
+	  <raceName>Sylvie_Race</raceName>
+	  <shader>Map/CutoutSkin</shader>
+	  <shaderColorOverride>Map/CutoutSkinOverride</shaderColorOverride>
+	  <enableUnisexTexPath>True</enableUnisexTexPath>
+  </FacialAnimation.HeadTypeDef>
+</Defs>

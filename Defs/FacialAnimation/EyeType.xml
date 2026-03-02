@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Defs>
+  <FacialAnimation.EyeballTypeDef>
+	<defName>Sylvie_EyeNormal</defName>
+	<altMaskPath>Things/Pawn/Sylvie/Eyes/Common</altMaskPath>
+	<texPath>Things/Pawn/Sylvie/Eyes/Normal</texPath>
+    <raceName>Sylvie_Race</raceName>
+	<shader>Map/CutoutSkinOverlay</shader>	
+    <minColor>RGB(205,205,205)</minColor>
+    <maxColor>RGB(255,255,255)</maxColor>
+	<enableUnisexTexPath>True</enableUnisexTexPath>
+  </FacialAnimation.EyeballTypeDef>
+
+
+</Defs>

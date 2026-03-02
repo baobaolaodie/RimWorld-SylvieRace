@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Defs>
+  <FacialAnimation.MouthTypeDef>
+	  <defName>Sylvie_MouthNormal</defName>
+	  <texPath>Things/Pawn/Sylvie/Mouth/Normal</texPath>
+	  <raceName>Sylvie_Race</raceName>
+	  <shader>Map/Transparent</shader>
+	  <enableUnisexTexPath>True</enableUnisexTexPath>
+  </FacialAnimation.MouthTypeDef>
+</Defs>

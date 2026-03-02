@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <TraderKindDef>
+    <defName>Sylvie_ClothingTrader</defName>
+    <label>希尔薇服装供应商</label>
+    <orbital>true</orbital>
+      
+<stockGenerators>
+    <li Class="StockGenerator_Tag">
+        <tradeTag>SylvieClothesTag</tradeTag>
+        <thingDefCountRange>20~25</thingDefCountRange>
+        <countRange>1</countRange>
+    </li>
+      
+
+      <li Class="StockGenerator_SingleDef">
+        <thingDef>Silver</thingDef>
+        <countRange>3000~5000</countRange>
+      </li>
+      
+    </stockGenerators>
+  </TraderKindDef>
+</Defs>

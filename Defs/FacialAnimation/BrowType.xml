@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Defs>
+  <FacialAnimation.BrowTypeDef>
+	  <defName>Sylvie_BrowNormal</defName>
+	  <texPath>Things/Pawn/Sylvie/Brows/Normal</texPath>
+	  <raceName>Sylvie_Race</raceName>
+	  <shader>Map/CutoutComplex</shader>
+      <minColor>RGB(255,255,255)</minColor>
+      <maxColor>RGB(255,255,255)</maxColor>
+      <enableUnisexTexPath>True</enableUnisexTexPath>
+  </FacialAnimation.BrowTypeDef>
+
+</Defs>

@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <AlienRace.ThingDef_AlienRace Name="Sylvie_Race" ParentName="BasePawn">
+    <defName>Sylvie_Race</defName>
+    <label>希尔薇</label>
+    <description>一名满身伤痕的少女。</description>
+
+    <alienRace>
+      <generalSettings>
+        <maleGenderProbability>0.0000000000001</maleGenderProbability>
+        <immuneToAge>false</immuneToAge>
+        <canLayDown>true</canLayDown>
+        
+        <disallowedTraits>
+           <li><defName>Abrasive</defName></li> 
+           <li><defName>Greedy</defName></li>
+        </disallowedTraits>
+
+        <alienPartGenerator>
+          
+          <headTypes Inherit="False">
+            <li>Female_AverageNormal</li>
+          </headTypes>
+          <bodyTypes Inherit="False">
+            <li>Female</li>
+            <li MayRequire="Ludeon.RimWorld.Biotech">Child</li>
+          </bodyTypes>
+        </alienPartGenerator>
+      </generalSettings>
+
+      <graphicPaths>
+        <head>
+          <path>Things/Pawn/Humanlike/Sylvie/Head/Female_AverageNorma</path> 
+          <extendedGraphics>
+            <Gender For="Male"><path>Things/Pawn/Humanlike/Sylvie/Head/Female_AverageNormal</path></Gender>
+          </extendedGraphics>
+        </head>
+        <body>
+          <path>Things/Pawn/Humanlike/Sylvie/Body/Naked_Female</path>
+        </body>
+        <skull>Things/Pawn/Humanlike/Heads/None_Average_Skull</skull>
+        <skeleton>Things/Pawn/Humanlike/HumanoidDessicated</skeleton>
+      </graphicPaths>
+
+      <styleSettings>
+        <li>
+          <key>HairDef</key>
+          <value>
+            <hasStyle>true</hasStyle>
+            <styleTags>
+              <li>Sylvie_Hair</li>
+            </styleTags>
+          </value>
+        </li>
+        <li>
+          <key>BeardDef</key>
+          <value>
+            <hasStyle>false</hasStyle>
+          </value>
+        </li>
+        <li>
+          <key>TattooDef</key>
+          <value>
+            <hasStyle>false</hasStyle>
+          </value>
+        </li>
+      </styleSettings>
+    </alienRace>
+
+    <statBases>
+      <MarketValue>100</MarketValue>
+      <MoveSpeed>4.6</MoveSpeed>
+      <ComfyTemperatureMax>26</ComfyTemperatureMax>
+      <ComfyTemperatureMin>-20</ComfyTemperatureMin>
+      <ImmunityGainSpeed>0.9</ImmunityGainSpeed>
+      <Mass>50</Mass>
+    </statBases>
+
+    <tools>
+      <li>
+        <label>左拳</label>
+        <capacities><li>Blunt</li></capacities>
+        <power>6</power>
+        <cooldownTime>2.0</cooldownTime>
+        <linkedBodyPartsGroup>LeftHand</linkedBodyPartsGroup>
+      </li>
+      <li>
+        <label>右拳</label>
+        <capacities><li>Blunt</li></capacities>
+        <power>6</power>
+        <cooldownTime>2.0</cooldownTime>
+        <linkedBodyPartsGroup>RightHand</linkedBodyPartsGroup>
+      </li>
+    </tools>
+
+    <race>
+      <hediffGiverSets>
+        <li>OrganicStandard</li>
+        <li>Human</li>
+      </hediffGiverSets>
+      <bloodDef>Filth_Blood</bloodDef>
+      <bloodSmearDef>Filth_BloodSmear</bloodSmearDef>
+      <thinkTreeMain>Humanlike</thinkTreeMain>
+      <thinkTreeConstant>HumanlikeConstant</thinkTreeConstant>
+      <intelligence>Humanlike</intelligence>
+      <makesFootprints>true</makesFootprints>
+      <lifeExpectancy>80</lifeExpectancy>
+      <nameCategory>HumanStandard</nameCategory>
+      <body>Human</body>
+      <renderTree>Humanlike</renderTree> 
+      <baseBodySize>1.0</baseBodySize>
+      <baseHealthScale>1.0</baseHealthScale> 
+      <foodType>OmnivoreHuman</foodType>
+      <lifeStageAges>
+        <li><def>HumanlikeBaby</def><minAge>0</minAge></li>
+        <li><def>HumanlikeChild</def><minAge>3</minAge></li>
+        <li MayRequire="Ludeon.RimWorld.Biotech"><def>HumanlikePreTeenager</def><minAge>9</minAge></li>
+        <li><def>HumanlikeTeenager</def><minAge>13</minAge></li>
+        <li><def>HumanlikeAdult</def><minAge>18</minAge></li>
+      </lifeStageAges>
+    </race>
+  </AlienRace.ThingDef_AlienRace>
+
+
+<PawnKindDef>
+<defName>Sylvie_PawnKind</defName>
+<label>伤痕累累的少女</label>
+<race>Sylvie_Race</race>
+<combatPower>15</combatPower>
+<fixedGender>Female</fixedGender>
+<xenotypeSet MayRequire="Ludeon.RimWorld.Biotech">
+<xenotypeChances>
+<Baseliner>1</Baseliner>
+</xenotypeChances>
+</xenotypeSet>
+<apparelIgnoreSeasons>true</apparelIgnoreSeasons>
+<apparelAllowHeadgearChance>0</apparelAllowHeadgearChance>
+<apparelTags>
+<li>SylvieApparel</li>
+</apparelTags>
+<apparelMoney>0~100</apparelMoney>
+<apparelColor>(160, 150, 140)</apparelColor>
+<weaponMoney>0~0</weaponMoney>
+<initialWillRange>1~5</initialWillRange>
+<initialResistanceRange>1~5</initialResistanceRange>
+<itemQuality>Poor</itemQuality>
+<inventoryOptions>
+<skipChance>1</skipChance>
+</inventoryOptions>
+<backstoryFiltersOverride>
+      <li>
+        <categories>
+          <li>Sylvie_Backstory</li>
+        </categories>
+      </li>
+</backstoryFiltersOverride>
+</PawnKindDef>
+
+
+  <IncidentDef>
+  <defName>Sylvie_ArrivalEvent</defName>
+  <label>奴隶商人抵达</label>
+  <category>Misc</category>
+  <targetTags>
+    <li>Map_PlayerHome</li>
+  </targetTags>
+  <workerClass>SylvieMod.IncidentWorker_SylvieTrader</workerClass> 
+
+  <baseChance>0</baseChance> 
+  <minRefireDays>99999</minRefireDays>
+</IncidentDef>
+
+
+  <HairDef Abstract="True" Name="BaseSylvieHair">
+    <styleTags>
+      <li>Sylvie_Hair</li> 
+    </styleTags>
+    <styleGender>Female</styleGender>
+  </HairDef>
+
+  <HairDef ParentName="BaseSylvieHair">
+    <defName>Sylvie_Hair_Standard</defName> 
+    <label>凌乱短发</label> 
+    
+    <texPath>Things/Pawn/Humanlike/Sylvie/Hair/Hair</texPath>
+    
+    <hairGender>Female</hairGender>
+  </HairDef>
+
+<LetterDef>
+    <defName>SylvieOfferLetter</defName>
+    <color>(163, 106, 201)</color>
+    <label>交易提议</label>
+    <description>交易提议</description>
+    <!-- <letterClass>SylvieMod.ChoiceLetter_SylvieOffer</letterClass>-->
+    <flashInterval>20</flashInterval>
+  </LetterDef>
+
+
+  <BackstoryDef>
+    <defName>S_Sylvie_Backstory</defName>
+    <title>奴隶少女</title>
+    <titleShort>奴隶少女</titleShort>
+    <description>在出生没多久，她所在的城镇便被帝国攻陷，本人也成了一名孤儿，并被帝国带走收养在奴隶孤儿院中，在学会写字说话之后便被发配给帝国贵族当奴隶，在众多奴隶中，她只是最低下的被施暴虐待而使用的奴隶，在被前主人虐待多年后随着前主人的死被商人带走，来到了你的身边，你和她的故事就要开始了。</description>
+    <slot>Childhood</slot>
+    <spawnCategories>
+      <li>Sylvie_Backstory</li>
+    </spawnCategories>
+</BackstoryDef>
+
+</Defs>

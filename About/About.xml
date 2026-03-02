@@ -1,0 +1,39 @@
+<ModMetaData>
+  <name>Sylvie Race</name>
+  <author>123456</author>
+  <packageId>123567.SylvieRace</packageId>
+  <supportedVersions>
+    <li>1.6</li>
+  </supportedVersions>
+  <description>添加希尔薇种族 - 一名满身伤痕的少女，你和她的故事即将开始。基于 Humanoid Alien Races 框架，支持动态表情。</description>
+
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>erdelf.HumanoidAlienRaces</packageId>
+      <displayName>Humanoid Alien Races</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/839005762</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Nals.FacialAnimation</packageId>
+      <displayName>[NL] Facial Animation - WIP</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/1635901197</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>Ludeon.RimWorld</li>
+    <li>Ludeon.RimWorld.Royalty</li>
+    <li>Ludeon.RimWorld.Ideology</li>
+    <li>Ludeon.RimWorld.Biotech</li>
+    <li>Ludeon.RimWorld.Anomaly</li>
+    <li>erdelf.HumanoidAlienRaces</li>
+    <li>Nals.FacialAnimation</li>
+    <li>Nals.FacialAnimationExperimentals</li>
+  </loadAfter>
+</ModMetaData>

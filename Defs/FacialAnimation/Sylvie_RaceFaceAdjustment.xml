@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Defs>
+  <FacialAnimation.FaceAdjustmentDef>
+    <defName>Sylvie_Race_FaceSizeAndPositionDef</defName>
+    <RaceName>Sylvie_Race</RaceName>
+	<Size>(1.5,1.5)</Size>
+    <RightEyeLabel>right eye</RightEyeLabel>
+    <LeftEyeLabel>left eye</LeftEyeLabel>
+  </FacialAnimation.FaceAdjustmentDef>
+  
+  
+</Defs>
