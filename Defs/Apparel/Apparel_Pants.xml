@@ -3,7 +3,7 @@
   <ThingDef ParentName="ApparelBase">
     <defName>ElegantclothingPant</defName>
     <label>典雅服装下装</label>
-    <description>典雅服装下装�?/description>
+    <description>典雅服装下装。</description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
     <tradeability>All</tradeability>
@@ -51,8 +51,8 @@
 
   <ThingDef ParentName="ApparelBase">
     <defName>StudentuniformPant</defName>
-    <label>学生服下�?/label>
-    <description>学生服下装�?/description>
+    <label>学生服下装</label>
+    <description>学生服下装。</description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
     <tradeability>All</tradeability>

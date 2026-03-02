@@ -2,8 +2,8 @@
 <Defs>
   <ThingDef ParentName="ApparelBase">
     <defName>Bandaid</defName>
-    <label>创口�?/label>
-    <description>创口贴�?/description>
+    <label>创口贴</label>
+    <description>创口贴。</description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
     <tradeability>All</tradeability>
@@ -55,7 +55,7 @@
   <ThingDef ParentName="ApparelBase">
     <defName>Swimsuit</defName>
     <label>泳装</label>
-    <description>泳装�?/description>
+    <description>泳装。</description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
     <tradeability>All</tradeability>
@@ -107,7 +107,7 @@
   <ThingDef ParentName="ApparelBase">
     <defName>Shawl</defName>
     <label>披肩</label>
-    <description>披肩�?/description>
+    <description>披肩。</description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
     <tradeability>All</tradeability>

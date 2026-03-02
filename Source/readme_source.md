@@ -180,6 +180,11 @@ SylvieRace/
 | `developmentalStageFilter` | 年龄阶段过滤 |
 | `canBeDesiredForIdeo` | 是否可被文化需求 |
 
+**编码注意事项**:
+- XML 文件必须使用 UTF-8 编码
+- 避免使用 PowerShell `Set-Content` 命令修改 XML 文件（会导致编码损坏）
+- 推荐使用 Write 工具或支持 UTF-8 的编辑器修改文件
+
 ### 6. 物品类别系统 (ThingCategories/)
 
 **文件位置**: `Defs/ThingCategories/Sylvie_ThingCategories.xml`
@@ -284,4 +289,4 @@ public static class HarmonyInit
 5. **特性配置**：C# 代码中强制设置特性，XML 中的 `disallowedTraits` 已移除
 6. **GameComponent 自动注册**：无需手动注册，RimWorld 会自动实例化
 7. **动态表情目录结构**：Defs 和 Patches 必须在 mod 根目录下，不能放在子目录
-8. **动态表情依赖**：需要 Facial Animation WIP 模组作为前置
+8. **动态表情依赖**：需要 Facial Animation WIP 和 Facial Animation Experimentals 模组作为前置

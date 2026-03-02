@@ -23,6 +23,11 @@
       <displayName>[NL] Facial Animation - WIP</displayName>
       <steamWorkshopUrl>steam://url/CommunityFilePage/1635901197</steamWorkshopUrl>
     </li>
+    <li>
+      <packageId>Nals.FacialAnimationExperimentals</packageId>
+      <displayName>[NL] Facial Animation - Experimentals</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2952879982</steamWorkshopUrl>
+    </li>
   </modDependencies>
 
   <loadAfter>

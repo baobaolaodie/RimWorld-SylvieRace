@@ -31,6 +31,7 @@
 | Harmony | [链接](https://steamcommunity.com/sharedfiles/filedetails/?id=2009463077) |
 | Humanoid Alien Races | [链接](https://steamcommunity.com/sharedfiles/filedetails/?id=839005762) |
 | [NL] Facial Animation - WIP | [链接](https://steamcommunity.com/sharedfiles/filedetails/?id=1635901197) |
+| [NL] Facial Animation - Experimentals | [链接](https://steamcommunity.com/sharedfiles/filedetails/?id=2952879982) |
 
 **注意**：必须按正确顺序加载模组，本模组应加载在所有前置依赖之后。
 
@@ -69,6 +70,8 @@
 ## 更新日志
 
 ### v0.0.2-pre (2026-03-03)
+- 添加前置依赖 [NL] Facial Animation - Experimentals
+- 尝试修复 XML 编码损坏问题（PowerShell Set-Content 导致 UTF-8 编码错误）
 - 尝试修复贸易商不出售服装的问题（tradeability 从 Sellable 改为 All）
 - 尝试修复 SpringFestivalHeadwear 重复 thingCategories 错误
 - 尝试添加自定义服装类别"希尔薇衣服"（储存区筛选）
