@@ -16,7 +16,7 @@
     </graphicData>
     <statBases>
       <MaxHitPoints>120</MaxHitPoints>
-      <Mass>2.0</Mass>
+      <Mass>1.0</Mass>
       <StuffEffectMultiplierArmor>0.2</StuffEffectMultiplierArmor>
       <StuffEffectMultiplierInsulation_Cold>0.2</StuffEffectMultiplierInsulation_Cold>
       <StuffEffectMultiplierInsulation_Heat>0.2</StuffEffectMultiplierInsulation_Heat>
@@ -72,7 +72,7 @@
     </graphicData>
     <statBases>
       <MaxHitPoints>120</MaxHitPoints>
-      <Mass>2.0</Mass>
+      <Mass>1.0</Mass>
       <StuffEffectMultiplierArmor>0.2</StuffEffectMultiplierArmor>
       <StuffEffectMultiplierInsulation_Cold>0.2</StuffEffectMultiplierInsulation_Cold>
       <StuffEffectMultiplierInsulation_Heat>0.2</StuffEffectMultiplierInsulation_Heat>
@@ -128,7 +128,7 @@
     </graphicData>
     <statBases>
       <MaxHitPoints>120</MaxHitPoints>
-      <Mass>2.0</Mass>
+      <Mass>1.0</Mass>
       <StuffEffectMultiplierArmor>0.2</StuffEffectMultiplierArmor>
       <StuffEffectMultiplierInsulation_Cold>0.2</StuffEffectMultiplierInsulation_Cold>
       <StuffEffectMultiplierInsulation_Heat>0.2</StuffEffectMultiplierInsulation_Heat>
