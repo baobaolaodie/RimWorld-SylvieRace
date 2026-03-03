@@ -19,7 +19,7 @@ public static class Patch_CommsConsole
       yield return opt;
         yield return new FloatMenuOption(
             "CallSpecialApparelTrader".Translate(),
-            (Action)(() => Patch_CommsConsole.SpawnSpecialTrader(__instance.Map))
+            (Action)(() => Patch_CommsConsole.SpawnSpecialTrader(__instance.Map)));
   }
 
     private static void SpawnSpecialTrader(Map map)
@@ -52,5 +52,4 @@ public static class Patch_CommsConsole
             }
         }
     }
-}
 }
