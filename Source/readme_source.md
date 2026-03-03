@@ -54,6 +54,7 @@ SylvieRace/
 │   ├── SylvieGameComponent.cs # 游戏组件（事件触发）
 │   ├── IncidentWorker_SylvieTrader.cs  # 事件处理器
 │   ├── Patch_CommsConsole.cs  # 通讯台补丁
+│   ├── Patch_SylvieName.cs    # 名字生成补丁
 │   └── AssemblyInfo.cs        # 程序集信息
 ├── Textures/
 │   └── Things/
@@ -264,7 +265,8 @@ Languages/
 │   │   └── SylvieRace.xml        # 通用翻译键
 │   └── DefInjected/              # Def 注入翻译
 │       ├── ThingDef/
-│       │   └── Apparel.xml       # 服装翻译
+│       │   ├── Apparel.xml       # 服装翻译
+│       │   └── Race.xml          # 种族翻译
 │       ├── HairDef/
 │       │   └── Hair.xml          # 发型翻译
 │       ├── BackstoryDef/
@@ -362,6 +364,22 @@ public static class HarmonyInit
 - Harmony Postfix 补丁
 - 目标方法：`Building_CommsConsole.GetFloatMenuOptions`
 - 添加呼叫服装贸易商选项
+
+### Patch_SylvieName.cs
+- Harmony Postfix 补丁
+- 目标方法：`PawnBioAndNameGenerator.GiveAppropriateBioAndNameTo`
+- 功能：在Pawn生成后修改名字
+- 逻辑：
+  ```csharp
+  if (pawn.def.defName == "Sylvie_Race" && pawn.Name is NameTriple nameTriple)
+  {
+      string firstName = "SylvieRace_FirstName".Translate();
+      pawn.Name = new NameTriple(firstName, nameTriple.Nick, nameTriple.Last);
+  }
+  ```
+- 翻译键：`SylvieRace_FirstName`
+  - 英文：Sylvie
+  - 中文：希尔薇
 
 ## 编译配置
 

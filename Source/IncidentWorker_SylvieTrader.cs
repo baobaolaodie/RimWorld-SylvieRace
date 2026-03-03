@@ -57,7 +57,6 @@ public class IncidentWorker_SylvieTrader : IncidentWorker_TraderCaravanArrival
     FloatRange? excludeBiologicalAgeRange = new FloatRange?();
     FloatRange? biologicalAgeRange = new FloatRange?();
     Pawn pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(kind, faction, tile: tile, forceGenerateNewPawn: true, minChanceToRedressWorldPawn: minChanceToRedressWorldPawn, fixedBiologicalAge: fixedBiologicalAge, fixedChronologicalAge: fixedChronologicalAge, fixedGender: fixedGender, forcedXenotype: forcedXenotype, excludeBiologicalAgeRange: excludeBiologicalAgeRange, biologicalAgeRange: biologicalAgeRange));
-    pawn.Name = (Name) new NameTriple("Sylvie", "Sylvie", "Feel");
     if (pawn.genes != null)
     {
       GeneDef named2 = DefDatabase<GeneDef>.GetNamed("Skin_SheerWhite", false);
