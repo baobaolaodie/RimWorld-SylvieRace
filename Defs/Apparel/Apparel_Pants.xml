@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
   <ThingDef ParentName="ApparelBase">
-    <defName>ElegantclothingPant</defName>
-    <label>典雅服装下装</label>
-    <description>典雅服装下装。</description>
+    <defName>SylvieRace_ElegantClothingPants</defName>
+    <label>Elegant Clothing Pants</label>
+    <description>Elegant clothing pants.</description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
     <tradeability>All</tradeability>
     <thingCategories>
-      <li>SylvieApparel</li>
+      <li>SylvieRace_Apparel</li>
     </thingCategories>
     <graphicData>
       <texPath>Things/Clothes/ElegantclothingPant_Female_south</texPath>
@@ -35,7 +35,7 @@
         <li>OnSkin</li>
       </layers>
       <tags>
-        <li>SylvieApparel</li>
+        <li>SylvieRace_Apparel</li>
       </tags>
       <defaultOutfitTags>
         <li>Worker</li>
@@ -50,14 +50,14 @@
   </ThingDef>
 
   <ThingDef ParentName="ApparelBase">
-    <defName>StudentuniformPant</defName>
-    <label>学生服下装</label>
-    <description>学生服下装。</description>
+    <defName>SylvieRace_StudentUniformPants</defName>
+    <label>Student Uniform Pants</label>
+    <description>Student uniform pants.</description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
     <tradeability>All</tradeability>
     <thingCategories>
-      <li>SylvieApparel</li>
+      <li>SylvieRace_Apparel</li>
     </thingCategories>
     <graphicData>
       <texPath>Things/Clothes/StudentuniformPant_Female_south</texPath>
@@ -84,7 +84,7 @@
         <li>OnSkin</li>
       </layers>
       <tags>
-        <li>SylvieApparel</li>
+        <li>SylvieRace_Apparel</li>
       </tags>
       <defaultOutfitTags>
         <li>Worker</li>

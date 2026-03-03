@@ -2,7 +2,7 @@
 <Defs>
   <TraderKindDef>
     <defName>Sylvie_ClothingTrader</defName>
-    <label>希尔薇服装供应商</label>
+    <label>Sylvie Clothing Supplier</label>
     <orbital>true</orbital>
       
 <stockGenerators>

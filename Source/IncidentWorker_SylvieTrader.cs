@@ -93,11 +93,20 @@ public class IncidentWorker_SylvieTrader : IncidentWorker_TraderCaravanArrival
     pawn.RaceProps.body.AllParts.FirstOrDefault<BodyPartRecord>((Predicate<BodyPartRecord>) (x => x.def == BodyPartDefOf.Head));
     pawn.story.traits.allTraits.Clear();
     pawn.story.traits.GainTrait(new Trait(TraitDefOf.Kind));
+    if (pawn.style != null)
+    {
+      TattooDef faceTattoo = DefDatabase<TattooDef>.GetNamed("SylvieRace_ScarHead", false);
+      TattooDef bodyTattoo = DefDatabase<TattooDef>.GetNamed("SylvieRace_ScarBody", false);
+      if (faceTattoo != null)
+        pawn.style.FaceTattoo = faceTattoo;
+      if (bodyTattoo != null)
+        pawn.style.BodyTattoo = bodyTattoo;
+    }
     GenSpawn.Spawn((Thing) pawn, traderLeader.Position, map);
     pawn.guest.SetGuestStatus(traderLeader.Faction, GuestStatus.Prisoner);
     traderLeader.GetLord()?.AddPawn(pawn);
     Current.Game.GetComponent<SylvieGameComponent>().hasSylvieSpawned = true;
-    LetterDef named4 = DefDatabase<LetterDef>.GetNamed("SylvieOfferLetter", false);
+    LetterDef named4 = DefDatabase<LetterDef>.GetNamed("Sylvie_OfferLetter", false);
     if (named4 == null)
     {
       Log.Error("又tm出bug啦");

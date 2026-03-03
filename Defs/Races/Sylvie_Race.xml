@@ -2,8 +2,8 @@
 <Defs>
   <AlienRace.ThingDef_AlienRace Name="Sylvie_Race" ParentName="BasePawn">
     <defName>Sylvie_Race</defName>
-    <label>希尔薇</label>
-    <description>一名满身伤痕的少女。</description>
+    <label>Sylvie</label>
+    <description>A girl covered with scars.</description>
 
     <alienRace>
       <generalSettings>
@@ -55,7 +55,7 @@
         <li>
           <key>TattooDef</key>
           <value>
-            <hasStyle>false</hasStyle>
+            <hasStyle>true</hasStyle>
           </value>
         </li>
       </styleSettings>
@@ -72,14 +72,14 @@
 
     <tools>
       <li>
-        <label>左拳</label>
+        <label>left fist</label>
         <capacities><li>Blunt</li></capacities>
         <power>6</power>
         <cooldownTime>2.0</cooldownTime>
         <linkedBodyPartsGroup>LeftHand</linkedBodyPartsGroup>
       </li>
       <li>
-        <label>右拳</label>
+        <label>right fist</label>
         <capacities><li>Blunt</li></capacities>
         <power>6</power>
         <cooldownTime>2.0</cooldownTime>

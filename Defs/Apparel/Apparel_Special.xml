@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
   <ThingDef ParentName="ApparelBase">
-    <defName>Bandaid</defName>
-    <label>创口贴</label>
-    <description>创口贴。</description>
+    <defName>SylvieRace_Bandaid</defName>
+    <label>Bandaid</label>
+    <description>A bandaid.</description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
     <tradeability>All</tradeability>
     <thingCategories>
-      <li>SylvieApparel</li>
+      <li>SylvieRace_Apparel</li>
     </thingCategories>
     <graphicData>
       <texPath>Things/Clothes/Bandaid_Female_south</texPath>
@@ -38,7 +38,7 @@
         <li>OnSkin</li>
       </layers>
       <tags>
-        <li>SylvieApparel</li>
+        <li>SylvieRace_Apparel</li>
       </tags>
       <defaultOutfitTags>
         <li>Worker</li>
@@ -53,14 +53,14 @@
   </ThingDef>
 
   <ThingDef ParentName="ApparelBase">
-    <defName>Swimsuit</defName>
-    <label>泳装</label>
-    <description>泳装。</description>
+    <defName>SylvieRace_Swimsuit</defName>
+    <label>Swimsuit</label>
+    <description>A swimsuit.</description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
     <tradeability>All</tradeability>
     <thingCategories>
-      <li>SylvieApparel</li>
+      <li>SylvieRace_Apparel</li>
     </thingCategories>
     <graphicData>
       <texPath>Things/Clothes/Swimsuit_Female_south</texPath>
@@ -90,7 +90,7 @@
         <li>OnSkin</li>
       </layers>
       <tags>
-        <li>SylvieApparel</li>
+        <li>SylvieRace_Apparel</li>
       </tags>
       <defaultOutfitTags>
         <li>Worker</li>
@@ -105,14 +105,14 @@
   </ThingDef>
 
   <ThingDef ParentName="ApparelBase">
-    <defName>Shawl</defName>
-    <label>披肩</label>
-    <description>披肩。</description>
+    <defName>SylvieRace_Shawl</defName>
+    <label>Shawl</label>
+    <description>A shawl.</description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
     <tradeability>All</tradeability>
     <thingCategories>
-      <li>SylvieApparel</li>
+      <li>SylvieRace_Apparel</li>
     </thingCategories>
     <graphicData>
       <texPath>Things/Clothes/Shawl_Female_south</texPath>
@@ -143,7 +143,7 @@
         <li>Shell</li>
       </layers>
       <tags>
-        <li>SylvieApparel</li>
+        <li>SylvieRace_Apparel</li>
       </tags>
       <defaultOutfitTags>
         <li>Worker</li>

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
   <ThingDef ParentName="HatBase">
-    <defName>SpringFestivalHeadwear</defName>
-    <label>新春头饰</label>
-    <description>新春头饰。</description>
+    <defName>SylvieRace_SpringFestivalHeadwear</defName>
+    <label>Spring Festival Headwear</label>
+    <description>A spring festival headwear.</description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
     <tradeability>All</tradeability>
     <thingCategories Inherit="False">
-      <li>SylvieApparel</li>
+      <li>SylvieRace_Apparel</li>
     </thingCategories>
     <graphicData>
       <texPath>Things/Clothes/SpringFestivalHeadwear_south</texPath>
@@ -34,7 +34,7 @@
         <li>Overhead</li>
       </layers>
       <tags>
-        <li>SylvieApparel</li>
+        <li>SylvieRace_Apparel</li>
       </tags>
       <defaultOutfitTags>
         <li>Worker</li>

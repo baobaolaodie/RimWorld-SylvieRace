@@ -33,6 +33,8 @@ SylvieRace/
 │   │   └── Sylvie_Backstory.xml   # 背景故事
 │   ├── Traders/
 │   │   └── ClothingTrader.xml     # 贸易商定义
+│   ├── Tattoos/
+│   │   └── Sylvie_Tattoos.xml     # 纹身定义
 │   └── FacialAnimation/       # 动态表情定义
 │       ├── EyeType.xml         # 眼睛类型
 │       ├── MouthType.xml       # 嘴巴类型
@@ -56,6 +58,9 @@ SylvieRace/
 ├── Textures/
 │   └── Things/
 │       ├── Clothes/           # 服装贴图
+│       ├── Tattoos/           # 纹身贴图
+│       │   ├── Head/          # 面部纹身
+│       │   └── Body/          # 身体纹身
 │       └── Pawn/
 │           ├── Humanlike/Sylvie/  # 种族贴图
 │           └── Sylvie/          # 动态表情贴图
@@ -67,6 +72,15 @@ SylvieRace/
 │               ├── Emotions/
 │               ├── Heads_Blank/
 │               └── Skins/
+├── Languages/
+│   ├── English/
+│   │   ├── Keyed/
+│   │   │   └── SylvieRace.xml    # 英文翻译键
+│   │   └── DefInjected/          # 英文 DefInjected 翻译
+│   └── SimplifiedChinese/
+│       ├── Keyed/
+│       │   └── SylvieRace.xml    # 中文翻译键
+│       └── DefInjected/          # 中文 DefInjected 翻译
 └── README.md                  # 用户文档
 ```
 
@@ -127,11 +141,11 @@ SylvieRace/
 **文件位置**: `Defs/Apparel/`
 
 **文件分类**:
-- `Apparel_Dresses.xml` - 连衣裙类 (Purpledress, Bluedress, floraldress)
-- `Apparel_Outfits.xml` - 套装类 (Finally, Fineclothing, Kimono, maidoutfit, Replacedmaid, Studentuniform, Suits, Elegantclothing, cheongsam, SprinFestivalWedding)
-- `Apparel_Pants.xml` - 下装类 (ElegantclothingPant, StudentuniformPant)
-- `Apparel_Special.xml` - 特殊服装 (Bandaid, Swimsuit, Shawl)
-- `Apparel_Headwear.xml` - 头饰 (SpringFestivalHeadwear)
+- `Apparel_Dresses.xml` - 连衣裙类 (SylvieRace_PurpleDress, SylvieRace_BlueDress, SylvieRace_FloralDress)
+- `Apparel_Outfits.xml` - 套装类 (SylvieRace_Finally, SylvieRace_FineClothing, SylvieRace_Kimono, SylvieRace_MaidOutfit, SylvieRace_HeavyMaid, SylvieRace_StudentUniform, SylvieRace_Suits, SylvieRace_ElegantClothing, SylvieRace_Cheongsam, SylvieRace_SpringFestivalWedding)
+- `Apparel_Pants.xml` - 下装类 (SylvieRace_ElegantClothingPants, SylvieRace_StudentUniformPants)
+- `Apparel_Special.xml` - 特殊服装 (SylvieRace_Bandaid, SylvieRace_Swimsuit, SylvieRace_Shawl)
+- `Apparel_Headwear.xml` - 头饰 (SylvieRace_SpringFestivalHeadwear)
 
 **服装定义特点**:
 - 19 种专属服装
@@ -143,18 +157,18 @@ SylvieRace/
 **完整服装定义示例**:
 ```xml
 <ThingDef ParentName="ApparelBase">
-  <defName>Purpledress</defName>
-  <label>紫色连衣裙</label>
-  <description>紫色连衣裙。</description>
+  <defName>SylvieRace_PurpleDress</defName>
+  <label>Purple Dress</label>
+  <description>A purple dress.</description>
   <recipeMaker Inherit="False" IsNull="True" />
   <techLevel>Medieval</techLevel>
   <tradeability>All</tradeability>
   <thingCategories>
-    <li>SylvieApparel</li>
+    <li>SylvieRace_Apparel</li>
   </thingCategories>
   <apparel>
     <tags>
-      <li>SylvieApparel</li>
+      <li>SylvieRace_Apparel</li>
     </tags>
     <defaultOutfitTags>
       <li>Worker</li>
@@ -172,7 +186,7 @@ SylvieRace/
 **关键字段说明**:
 | 字段 | 说明 |
 |------|------|
-| `thingCategories` | 储存区识别必需（SylvieApparel - 希尔薇衣服） |
+| `thingCategories` | 储存区识别必需（SylvieRace_Apparel - 希尔薇衣服） |
 | `techLevel` | 科技等级 |
 | `tradeability` | 交易性控制（All = 可买可卖） |
 | `defaultOutfitTags` | 默认装备方案标签 |
@@ -192,8 +206,8 @@ SylvieRace/
 **类别定义**:
 ```xml
 <ThingCategoryDef>
-  <defName>SylvieApparel</defName>
-  <label>希尔薇衣服</label>
+  <defName>SylvieRace_Apparel</defName>
+  <label>Sylvie Apparel</label>
   <parent>Apparel</parent>
 </ThingCategoryDef>
 ```
@@ -201,13 +215,82 @@ SylvieRace/
 **类别层级**:
 ```
 Apparel
-└── 希尔薇衣服 (SylvieApparel)
+└── Sylvie Apparel (SylvieRace_Apparel)
     └── 所有 SylvieRace 服装
 ```
 
-**用途**: 在储存区筛选时，可以快速选择"希尔薇衣服"类别来筛选所有 SylvieRace 专属服装。
+**用途**: 在储存区筛选时，可以快速选择"Sylvie Apparel"类别来筛选所有 SylvieRace 专属服装。
 
-### 5. 动态表情系统
+### 7. 纹身系统 (Tattoos/)
+
+**文件位置**: `Defs/Tattoos/Sylvie_Tattoos.xml`
+
+**纹身定义**:
+```xml
+<TattooDef>
+  <defName>SylvieRace_ScarHead</defName>
+  <label>Sylvie Scar</label>
+  <description>Scars left on the face from past experiences.</description>
+  <texPath>Things/Tattoos/Head/scarHead01</texPath>
+  <tattooType>Face</tattooType>
+</TattooDef>
+
+<TattooDef>
+  <defName>SylvieRace_ScarBody</defName>
+  <label>Sylvie Body Scar</label>
+  <description>Scars covering the body, telling stories of the past.</description>
+  <texPath>Things/Tattoos/Body/scarBody01</texPath>
+  <tattooType>Body</tattooType>
+</TattooDef>
+```
+
+**纹身类型**:
+- `Face` - 面部纹身
+- `Body` - 身体纹身
+
+**默认附着**: 希尔薇生成时自动获得两个纹身（在 `IncidentWorker_SylvieTrader.cs` 中设置）
+
+**贴图路径**:
+- 面部纹身: `Textures/Things/Tattoos/Head/scarHead01.png`
+- 身体纹身: `Textures/Things/Tattoos/Body/scarBody01.png`
+
+### 8. 翻译系统 (Languages/)
+
+**目录结构**:
+```
+Languages/
+├── English/
+│   ├── Keyed/
+│   │   └── SylvieRace.xml        # 通用翻译键
+│   └── DefInjected/              # Def 注入翻译
+│       ├── ThingDef/
+│       │   └── Apparel.xml       # 服装翻译
+│       ├── HairDef/
+│       │   └── Hair.xml          # 发型翻译
+│       ├── BackstoryDef/
+│       │   └── Backstory.xml     # 背景故事翻译
+│       ├── PawnKindDef/
+│       │   └── PawnKind.xml      # PawnKind 翻译
+│       ├── IncidentDef/
+│       │   └── Incident.xml      # 事件翻译
+│       ├── LetterDef/
+│       │   └── Letter.xml        # 信件翻译
+│       ├── TraderKindDef/
+│       │   └── Trader.xml        # 贸易商翻译
+│       ├── ThingCategoryDef/
+│       │   └── ThingCategory.xml # 物品类别翻译
+│       └── TattooDef/
+│           └── Tattoo.xml        # 纹身翻译
+└── SimplifiedChinese/
+    └── (同 English 结构)
+```
+
+**翻译规范**:
+- Defs 中的 `label`/`description` 使用英文
+- 中文翻译通过 `DefInjected` 注入
+- 翻译键格式：`<DefName>.label` / `<DefName>.description`
+
+### 9. 动态表情系统
 
 **文件位置**: `Defs/FacialAnimation/`
 
@@ -262,6 +345,18 @@ public static class HarmonyInit
 - 继承自 `IncidentWorker`
 - 处理奴隶商人事件的生成逻辑
 - 创建商队和希尔薇
+- **纹身设置**: 生成希尔薇时自动设置面部和身体纹身
+  ```csharp
+  if (pawn.style != null)
+  {
+    TattooDef faceTattoo = DefDatabase<TattooDef>.GetNamed("SylvieRace_ScarHead", false);
+    TattooDef bodyTattoo = DefDatabase<TattooDef>.GetNamed("SylvieRace_ScarBody", false);
+    if (faceTattoo != null)
+      pawn.style.FaceTattoo = faceTattoo;
+    if (bodyTattoo != null)
+      pawn.style.BodyTattoo = bodyTattoo;
+  }
+  ```
 
 ### Patch_CommsConsole.cs
 - Harmony Postfix 补丁
@@ -284,9 +379,12 @@ public static class HarmonyInit
 
 1. **服装种族限制**：使用 `apparel.tags` + `PawnKindDef.apparelTags` 机制
 2. **服装不可制作**：使用 `ApparelBase` + `recipeMaker IsNull="True"` 禁用缝纫台配方
-3. **服装储存区识别**：使用自定义 `thingCategories: SylvieApparel`（希尔薇衣服）
+3. **服装储存区识别**：使用自定义 `thingCategories: SylvieRace_Apparel`
 4. **头饰类别继承**：`HatBase` 已包含 `Headgear`，子类需使用 `Inherit="False"` 覆盖
 5. **特性配置**：C# 代码中强制设置特性，XML 中的 `disallowedTraits` 已移除
 6. **GameComponent 自动注册**：无需手动注册，RimWorld 会自动实例化
 7. **动态表情目录结构**：Defs 和 Patches 必须在 mod 根目录下，不能放在子目录
 8. **动态表情依赖**：需要 Facial Animation WIP 和 Facial Animation Experimentals 模组作为前置
+9. **defName 命名规范**：所有 defName 使用 `SylvieRace_` 或 `Sylvie_` 前缀避免冲突
+10. **翻译系统**：Defs 中使用英文，中文翻译通过 Languages 目录注入
+11. **希尔薇唯一生成**：只能通过 `Sylvie_ArrivalEvent` 事件生成，不会随机出现

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
   <BackstoryDef>
-    <defName>S_Sylvie_Backstory</defName>
-    <title>奴隶少女</title>
-    <titleShort>奴隶少女</titleShort>
-    <description>在出生没多久，她所在的城镇便被帝国攻陷，本人也成了一名孤儿，并被帝国带走收养在奴隶孤儿院中，在学会写字说话之后便被发配给帝国贵族当奴隶，在众多奴隶中，她只是最低下的被施暴虐待而使用的奴隶，在被前主人虐待多年后随着前主人的死被商人带走，来到了你的身边，你和她的故事就要开始了。</description>
+    <defName>Sylvie_ChildhoodBackstory</defName>
+    <title>Slave Girl</title>
+    <titleShort>Slave</titleShort>
+    <description>Not long after her birth, the town where she lived was conquered by the Empire. She became an orphan and was taken away by the Empire to be raised in a slave orphanage. After learning to read and speak, she was sent to serve an Imperial noble as a slave. Among many slaves, she was the lowest, used only for abuse and mistreatment. After years of abuse by her former master, following his death, she was taken away by a merchant and brought to you. Your story with her is about to begin.</description>
     <slot>Childhood</slot>
     <spawnCategories>
       <li>Sylvie_Backstory</li>

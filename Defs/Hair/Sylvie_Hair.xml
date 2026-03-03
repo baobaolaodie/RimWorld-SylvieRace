@@ -9,7 +9,7 @@
 
   <HairDef ParentName="BaseSylvieHair">
     <defName>Sylvie_Hair_Standard</defName>
-    <label>凌乱短发</label>
+    <label>Messy Short Hair</label>
     <texPath>Things/Pawn/Humanlike/Sylvie/Hair/Hair</texPath>
     <hairGender>Female</hairGender>
   </HairDef>

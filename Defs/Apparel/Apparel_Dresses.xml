@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
   <ThingDef ParentName="ApparelBase">
-    <defName>Purpledress</defName>
-    <label>紫色连衣裙</label>
-    <description>紫色连衣裙。</description>
+    <defName>SylvieRace_PurpleDress</defName>
+    <label>Purple Dress</label>
+    <description>A purple dress.</description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
     <tradeability>All</tradeability>
     <thingCategories>
-      <li>SylvieApparel</li>
+      <li>SylvieRace_Apparel</li>
     </thingCategories>
     <graphicData>
       <texPath>Things/Clothes/Purpledress_Female_south</texPath>
@@ -42,7 +42,7 @@
         <li>Middle</li>
       </layers>
       <tags>
-        <li>SylvieApparel</li>
+        <li>SylvieRace_Apparel</li>
       </tags>
       <defaultOutfitTags>
         <li>Worker</li>
@@ -57,14 +57,14 @@
   </ThingDef>
 
   <ThingDef ParentName="ApparelBase">
-    <defName>Bluedress</defName>
-    <label>蓝色连衣裙</label>
-    <description>蓝色连衣裙。</description>
+    <defName>SylvieRace_BlueDress</defName>
+    <label>Blue Dress</label>
+    <description>A blue dress.</description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
     <tradeability>All</tradeability>
     <thingCategories>
-      <li>SylvieApparel</li>
+      <li>SylvieRace_Apparel</li>
     </thingCategories>
     <graphicData>
       <texPath>Things/Clothes/Bluedress_Female_south</texPath>
@@ -98,7 +98,7 @@
         <li>Middle</li>
       </layers>
       <tags>
-        <li>SylvieApparel</li>
+        <li>SylvieRace_Apparel</li>
       </tags>
       <defaultOutfitTags>
         <li>Worker</li>
@@ -113,14 +113,14 @@
   </ThingDef>
 
   <ThingDef ParentName="ApparelBase">
-    <defName>floraldress</defName>
-    <label>连衣花裙</label>
-    <description>连衣花裙。</description>
+    <defName>SylvieRace_FloralDress</defName>
+    <label>Floral Dress</label>
+    <description>A floral dress.</description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
     <tradeability>All</tradeability>
     <thingCategories>
-      <li>SylvieApparel</li>
+      <li>SylvieRace_Apparel</li>
     </thingCategories>
     <graphicData>
       <texPath>Things/Clothes/floraldress_Female_south</texPath>
@@ -154,7 +154,7 @@
         <li>Middle</li>
       </layers>
       <tags>
-        <li>SylvieApparel</li>
+        <li>SylvieRace_Apparel</li>
       </tags>
       <defaultOutfitTags>
         <li>Worker</li>

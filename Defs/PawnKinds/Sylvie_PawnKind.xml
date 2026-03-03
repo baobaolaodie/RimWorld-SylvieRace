@@ -2,7 +2,7 @@
 <Defs>
   <PawnKindDef>
     <defName>Sylvie_PawnKind</defName>
-    <label>伤痕累累的少女</label>
+    <label>Scarred Girl</label>
     <race>Sylvie_Race</race>
     <combatPower>15</combatPower>
     <fixedGender>Female</fixedGender>
@@ -14,7 +14,7 @@
     <apparelIgnoreSeasons>true</apparelIgnoreSeasons>
     <apparelAllowHeadgearChance>0</apparelAllowHeadgearChance>
     <apparelTags>
-      <li>SylvieApparel</li>
+      <li>SylvieRace_Apparel</li>
     </apparelTags>
     <apparelMoney>0~100</apparelMoney>
     <apparelColor>(160, 150, 140)</apparelColor>

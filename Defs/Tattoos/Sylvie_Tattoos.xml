@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <TattooDef>
+    <defName>SylvieRace_ScarHead</defName>
+    <label>Sylvie Scar</label>
+    <description>Scars left on the face from past experiences.</description>
+    <texPath>Things/Tattoos/Head/scarHead01</texPath>
+    <tattooType>Face</tattooType>
+  </TattooDef>
+
+  <TattooDef>
+    <defName>SylvieRace_ScarBody</defName>
+    <label>Sylvie Body Scar</label>
+    <description>Scars covering the body, telling stories of the past.</description>
+    <texPath>Things/Tattoos/Body/scarBody01</texPath>
+    <tattooType>Body</tattooType>
+  </TattooDef>
+</Defs>

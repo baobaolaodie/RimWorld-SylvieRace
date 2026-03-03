@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
   <ThingCategoryDef>
-    <defName>SylvieApparel</defName>
-    <label>希尔薇衣服</label>
+    <defName>SylvieRace_Apparel</defName>
+    <label>Sylvie Apparel</label>
     <parent>Apparel</parent>
   </ThingCategoryDef>
 </Defs>

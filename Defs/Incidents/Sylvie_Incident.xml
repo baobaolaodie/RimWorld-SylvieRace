@@ -2,7 +2,7 @@
 <Defs>
   <IncidentDef>
     <defName>Sylvie_ArrivalEvent</defName>
-    <label>奴隶商人抵达</label>
+    <label>Slave Trader Arrival</label>
     <category>Misc</category>
     <targetTags>
       <li>Map_PlayerHome</li>
