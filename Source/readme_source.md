@@ -52,9 +52,8 @@ SylvieRace/
 │   ├── SylvieRace.sln         # 解决方案
 │   ├── HarmonyInit.cs         # Harmony 初始化
 │   ├── SylvieGameComponent.cs # 游戏组件（事件触发）
-│   ├── IncidentWorker_SylvieTrader.cs  # 事件处理器
+│   ├── IncidentWorker_SylvieTrader.cs  # 事件处理器（包含名字设置）
 │   ├── Patch_CommsConsole.cs  # 通讯台补丁
-│   ├── Patch_SylvieName.cs    # 名字生成补丁
 │   └── AssemblyInfo.cs        # 程序集信息
 ├── Textures/
 │   └── Things/
@@ -264,9 +263,11 @@ Languages/
 │   ├── Keyed/
 │   │   └── SylvieRace.xml        # 通用翻译键
 │   └── DefInjected/              # Def 注入翻译
+│       ├── AlienRace.ThingDef_AlienRace/
+│       │   └── Race.xml          # 种族翻译（AlienRace框架）
 │       ├── ThingDef/
 │       │   ├── Apparel.xml       # 服装翻译
-│       │   └── Race.xml          # 种族翻译
+│       │   └── Race.xml          # 种族翻译（备用）
 │       ├── HairDef/
 │       │   └── Hair.xml          # 发型翻译
 │       ├── BackstoryDef/
@@ -283,7 +284,7 @@ Languages/
 │       │   └── ThingCategory.xml # 物品类别翻译
 │       └── TattooDef/
 │           └── Tattoo.xml        # 纹身翻译
-└── SimplifiedChinese/
+└── ChineseSimplified/            # 注意：使用 ChineseSimplified 而非 SimplifiedChinese
     └── (同 English 结构)
 ```
 
@@ -365,21 +366,25 @@ public static class HarmonyInit
 - 目标方法：`Building_CommsConsole.GetFloatMenuOptions`
 - 添加呼叫服装贸易商选项
 
-### Patch_SylvieName.cs
-- Harmony Postfix 补丁
-- 目标方法：`PawnBioAndNameGenerator.GiveAppropriateBioAndNameTo`
-- 功能：在Pawn生成后修改名字
+### Patch_SylvieName.cs（已移除）
+- ~~Harmony Postfix 补丁~~
+- ~~目标方法：`PawnBioAndNameGenerator.GiveAppropriateBioAndNameTo`~~
+- **注意**：此补丁已被移除，改为在 `IncidentWorker_SylvieTrader.cs` 中直接设置名字
+
+### 名字设置实现 (IncidentWorker_SylvieTrader.cs)
+- 在希尔薇生成后直接设置名字
 - 逻辑：
   ```csharp
-  if (pawn.def.defName == "Sylvie_Race" && pawn.Name is NameTriple nameTriple)
+  if (pawn.Name is NameTriple nameTriple)
   {
       string firstName = "SylvieRace_FirstName".Translate();
-      pawn.Name = new NameTriple(firstName, nameTriple.Nick, nameTriple.Last);
+      pawn.Name = new NameTriple(firstName, firstName, nameTriple.Last);
   }
   ```
 - 翻译键：`SylvieRace_FirstName`
   - 英文：Sylvie
   - 中文：希尔薇
+- **特点**：FirstName 和 Nick 都设置为翻译后的名字
 
 ## 编译配置
 

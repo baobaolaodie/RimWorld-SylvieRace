@@ -75,6 +75,9 @@
 ## 更新日志
 
 ### v0.0.3-pre (2026-03-03)
+- 修复翻译系统，将语言目录从 SimplifiedChinese 重命名为 ChineseSimplified
+- 修复名字翻译，FirstName 和 Nick 都正确显示为"Sylvie"/"希尔薇"
+- 添加 AlienRace.ThingDef_AlienRace 翻译目录，修复种族名称显示
 - 添加希尔薇种族专属名字系统
 - 所有希尔薇角色名字统一为"Sylvie"/"希尔薇" + 随机姓氏
 - 支持中英文翻译
