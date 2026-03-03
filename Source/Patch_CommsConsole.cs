@@ -17,30 +17,40 @@ public static class Patch_CommsConsole
   {
     foreach (FloatMenuOption opt in __result)
       yield return opt;
-    yield return new FloatMenuOption("呼叫专用服装贸易商 (免费)", (Action) (() => Patch_CommsConsole.SpawnSpecialTrader(__instance.Map)));
+        yield return new FloatMenuOption(
+            "CallSpecialApparelTrader".Translate(),
+            (Action)(() => Patch_CommsConsole.SpawnSpecialTrader(__instance.Map))
   }
 
-  private static void SpawnSpecialTrader(Map map)
-  {
-    if (map.passingShipManager.passingShips.Any<PassingShip>((Predicate<PassingShip>) (s => s.name.Contains("服装供应船"))))
+    private static void SpawnSpecialTrader(Map map)
     {
-      Messages.Message("贸易商已经在附近轨道上了。", MessageTypeDefOf.RejectInput);
+        string shipName = "Sylvie_ClothingSupplyShipName".Translate();
+
+        if (map.passingShipManager.passingShips.Any<PassingShip>(
+            (Predicate<PassingShip>)(s => s.name.Contains(shipName))))
+        {
+            Messages.Message(
+                "Sylvie_TraderAlreadyInOrbit".Translate(),
+                MessageTypeDefOf.RejectInput);
+        }
+        else
+        {
+            TraderKindDef named = DefDatabase<TraderKindDef>.GetNamed("Sylvie_ClothingTrader");
+            if (named == null)
+            {
+                Log.Error("XML的bug。"); ;
+            }
+            else
+            {
+                TradeShip vis = new TradeShip(named);
+                vis.name = shipName;
+                map.passingShipManager.AddShip((PassingShip)vis);
+                vis.GenerateThings();
+                Messages.Message(
+                    "Sylvie_TraderArrived".Translate(),
+                    MessageTypeDefOf.PositiveEvent);
+            }
+        }
     }
-    else
-    {
-      TraderKindDef named = DefDatabase<TraderKindDef>.GetNamed("Sylvie_ClothingTrader");
-      if (named == null)
-      {
-        Log.Error("找不到 TraderKindDef: Sylvie_ClothingTrader，请检查 XML。");
-      }
-      else
-      {
-        TradeShip vis = new TradeShip(named);
-        vis.name = "服装供应船";
-        map.passingShipManager.AddShip((PassingShip) vis);
-        vis.GenerateThings();
-        Messages.Message("一艘服装贸易船已进入通讯范围。", MessageTypeDefOf.PositiveEvent);
-      }
-    }
-  }
+}
 }
