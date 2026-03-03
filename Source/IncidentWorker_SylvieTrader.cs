@@ -119,89 +119,97 @@ public class IncidentWorker_SylvieTrader : IncidentWorker_TraderCaravanArrival
     }
   }
 
-  public class ChoiceLetter_SylvieOffer : ChoiceLetter
-  {
-    public Pawn sylvie;
-    public Map map;
-    public int price = 100;
-
-    public void Configure(Pawn trader, Pawn targetPawn, Map targetMap)
+    public class ChoiceLetter_SylvieOffer : ChoiceLetter
     {
-      this.sylvie = targetPawn;
-      this.map = targetMap;
-      this.relatedFaction = trader.Faction;
-      this.lookTargets = new LookTargets((Thing) targetPawn);
-      this.Label = (TaggedString) "特殊的交易提议";
-      this.Text = (TaggedString) (trader.Name.ToStringShort + " 所在的商队里有一名遍体鳞伤的奴隶少女。\n\n商队领队偷偷把你拉到一边，表示愿意以 100 白银的低价把她处理给你。");
-    }
+        public Pawn sylvie;
+        public Map map;
+        public int price = 100;
 
-    public override void ExposeData()
-    {
-      base.ExposeData();
-      Scribe_References.Look<Pawn>(ref this.sylvie, "sylvie");
-      Scribe_References.Look<Map>(ref this.map, "map");
-      Scribe_Values.Look<int>(ref this.price, "price", 100);
-    }
-
-    public override IEnumerable<DiaOption> Choices
-    {
-      get
-      {
-        DiaOption buyOption = new DiaOption($"支付 {this.price} 银并收留她");
-        int currentSilver = 0;
-        List<Thing> silverList = (List<Thing>) null;
-        if (this.map != null)
+        public void Configure(Pawn trader, Pawn targetPawn, Map targetMap)
         {
-          silverList = this.map.listerThings.ThingsOfDef(ThingDefOf.Silver);
-          foreach (Thing t in silverList)
-          {
-            if (!t.IsForbidden(Faction.OfPlayer))
-              currentSilver += t.stackCount;
-          }
+            this.sylvie = targetPawn;
+            this.map = targetMap;
+            this.relatedFaction = trader.Faction;
+            this.lookTargets = new LookTargets((Thing)targetPawn);
+            this.Label = (TaggedString)"Sylvie_OfferLabel".Translate();
+            this.Text = (TaggedString)"Sylvie_OfferText".Translate(trader.Name.ToStringShort);
         }
-        if (currentSilver >= this.price)
+
+        public override void ExposeData()
         {
-          buyOption.action = (Action) (() =>
-          {
-            int price = this.price;
-            if (silverList != null)
+            base.ExposeData();
+            Scribe_References.Look<Pawn>(ref this.sylvie, "sylvie");
+            Scribe_References.Look<Map>(ref this.map, "map");
+            Scribe_Values.Look<int>(ref this.price, "price", 100);
+        }
+
+        public override IEnumerable<DiaOption> Choices
+        {
+            get
             {
-              foreach (Thing t in silverList.ToList<Thing>())
-              {
-                if (price > 0)
+                DiaOption buyOption = new DiaOption(
+                    "Sylvie_PayAndTakeHer".Translate(this.price.ToString()));
+                int currentSilver = 0;
+                List<Thing> silverList = (List<Thing>) null;
+                if (this.map != null)
                 {
-                  if (!t.IsForbidden(Faction.OfPlayer))
-                  {
-                    int count = Mathf.Min(t.stackCount, price);
-                    t.SplitOff(count).Destroy();
-                    price -= count;
-                  }
+                    silverList = this.map.listerThings.ThingsOfDef(ThingDefOf.Silver);
+                    foreach (Thing t in silverList)
+                    {
+                        if (!t.IsForbidden(Faction.OfPlayer))
+                            currentSilver += t.stackCount;
+                    }
+                }
+                if (currentSilver >= this.price)
+                {
+                    buyOption.action = (Action) (() =>
+                    {
+                        int price = this.price;
+                        if (silverList != null)
+                        {
+                            foreach (Thing t in silverList.ToList<Thing>())
+                            {
+                                if (price > 0)
+                                {
+                                    if (!t.IsForbidden(Faction.OfPlayer))
+                                    {
+                                        int count = Mathf.Min(t.stackCount, price);
+                                        t.SplitOff(count).Destroy();
+                                        price -= count;
+                                    }
+                                }
+                                else
+                                    break;
+                            }
+                        }
+                        if (this.sylvie != null && !this.sylvie.Dead)
+                        {
+                            if (!this.sylvie.Spawned)
+                                GenSpawn.Spawn((Thing)this.sylvie, this.map.Center, this.map);
+                            this.sylvie.guest.SetGuestStatus((Faction)null);
+                            this.sylvie.SetFaction(Faction.OfPlayer, (Pawn)null);
+                            Messages.Message(
+                                "Sylvie_TradeSuccess".Translate(),
+                                (LookTargets)(Thing)this.sylvie,
+                                MessageTypeDefOf.PositiveEvent);
+                        }
+                        Find.LetterStack.RemoveLetter((Letter) this);
+                    });
+                    buyOption.resolveTree = true;
                 }
                 else
-                  break;
-              }
+                {
+                    buyOption.Disable(
+                        "Sylvie_NotEnoughSilver".Translate(currentSilver.ToString()));
+                }
+
+                yield return buyOption;
+                yield return new DiaOption("Sylvie_Refuse".Translate())
+                {
+                    action = (Action) (() => Find.LetterStack.RemoveLetter((Letter) this)),
+                    resolveTree = true
+                };
             }
-            if (this.sylvie != null && !this.sylvie.Dead)
-            {
-              if (!this.sylvie.Spawned)
-                GenSpawn.Spawn((Thing) this.sylvie, this.map.Center, this.map);
-              this.sylvie.guest.SetGuestStatus((Faction) null);
-              this.sylvie.SetFaction(Faction.OfPlayer, (Pawn) null);
-              Messages.Message("交易成功，希尔薇加入了殖民地。", (LookTargets) (Thing) this.sylvie, MessageTypeDefOf.PositiveEvent);
-            }
-            Find.LetterStack.RemoveLetter((Letter) this);
-          });
-          buyOption.resolveTree = true;
         }
-        else
-          buyOption.Disable($"白银不足 (当前: {currentSilver})");
-        yield return buyOption;
-        yield return new DiaOption("拒绝")
-        {
-          action = (Action) (() => Find.LetterStack.RemoveLetter((Letter) this)),
-          resolveTree = true
-        };
-      }
     }
-  }
 }

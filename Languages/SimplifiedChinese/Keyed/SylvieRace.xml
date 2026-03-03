@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SylvieRace_FirstName>希尔薇</SylvieRace_FirstName>
+  <CallSpecialApparelTrader>呼叫专用服装贸易商 (免费)</CallSpecialApparelTrader>
+  <Sylvie_ClothingSupplyShipName>服装供应船</Sylvie_ClothingSupplyShipName>
+  <Sylvie_TraderAlreadyInOrbit>贸易商已经在附近轨道上了。</Sylvie_TraderAlreadyInOrbit>
+  <Sylvie_TraderDefNotFound>找不到 TraderKindDef: Sylvie_ClothingTrader，请检查 XML。</Sylvie_TraderDefNotFound>
+  <Sylvie_TraderArrived>一艘服装贸易船已进入通讯范围。</Sylvie_TraderArrived>
+  <Sylvie_OfferLabel>特殊的交易提议</Sylvie_OfferLabel>
+  <Sylvie_OfferText>一位商人把你拉到一边。\n\n商人：客人，之前有个贵族破产了，我因此也受到了点好处，但与之相对的，他们也给我一些我并不喜欢的东西，比如这位奴隶。\n\n他指着一个身上布满伤痕的女性奴隶，看上去年龄很小，紧紧蜷缩在角落里。\n\n商人：如果您不介意的话，我可以把这个奴隶用相当便宜的价格卖给您，她四肢健全可以干很多事，并且，咱周边的都知道您一直是孤身一人给我们治病，这也算报答我的救命之恩。\n\n是否应该收留这位少女呢？</Sylvie_OfferText>
+  <Sylvie_PayAndTakeHer>支付 {0} 银并收留她</Sylvie_PayAndTakeHer>
+  <Sylvie_TradeSuccess>交易成功，希尔薇加入了殖民地。</Sylvie_TradeSuccess>
+  <Sylvie_NotEnoughSilver>白银不足 (当前: {0})</Sylvie_NotEnoughSilver>
+  <Sylvie_Refuse>拒绝</Sylvie_Refuse>
 </LanguageData>

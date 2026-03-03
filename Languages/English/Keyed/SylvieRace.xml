@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SylvieRace_FirstName>Sylvie</SylvieRace_FirstName>
+  <CallSpecialApparelTrader>Call special apparel trader (free)</CallSpecialApparelTrader>
+  <Sylvie_ClothingSupplyShipName>Clothing Supply Ship</Sylvie_ClothingSupplyShipName>
+  <Sylvie_TraderAlreadyInOrbit>The trader is already in nearby orbit.</Sylvie_TraderAlreadyInOrbit>
+  <Sylvie_TraderArrived>A clothing trade ship has entered comm range.</Sylvie_TraderArrived>
+  <Sylvie_OfferLabel>A Special Trade Offer</Sylvie_OfferLabel>
+  <Sylvie_OfferText>A merchant pulls you aside.\n\nMerchant: "Dear customer, a nobleman went bankrupt recently, and I benefited somewhat from that. But along with it, they also left me some things I don't particularly care for — like this slave."\n\nHe points to a female slave covered in scars. She looks very young, curled up tightly in a corner.\n\nMerchant: "If you don't mind, I could sell this slave to you at quite a low price. She has all her limbs intact and can do plenty of work. Besides, everyone around here knows you've been tending to our wounds all by yourself — consider this repayment for saving my life."\n\nShould you take this girl in?</Sylvie_OfferText>
+  <Sylvie_PayAndTakeHer>Pay {0} silver and take her in</Sylvie_PayAndTakeHer>
+  <Sylvie_TradeSuccess>Trade successful. Sylvie has joined the colony.</Sylvie_TradeSuccess>
+  <Sylvie_NotEnoughSilver>Not enough silver (current: {0})</Sylvie_NotEnoughSilver>
+  <Sylvie_Refuse>Refuse</Sylvie_Refuse>
 </LanguageData>
