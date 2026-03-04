@@ -2,7 +2,7 @@
 
 一名满身伤痕的少女，你和她的故事即将开始。
 
-**版本**: v0.0.3-pre  
+**版本**: v0.0.3 
 **游戏版本**: RimWorld 1.6  
 
 ---
@@ -127,7 +127,7 @@ SylvieRace/
 
 ## 更新日志
 
-### v0.0.3-pre (2026-03-03)
+### v0.0.3 (2026-03-03)
 - 修复翻译系统，将语言目录从 SimplifiedChinese 重命名为 ChineseSimplified
 - 修复名字翻译，FirstName 和 Nick 都正确显示为"Sylvie"/"希尔薇"
 - 添加 AlienRace.ThingDef_AlienRace 翻译目录，修复种族名称显示
@@ -166,9 +166,10 @@ SylvieRace/
 
 ---
 
-## 开发者信息
+## 开发信息
 
-技术实现细节参见 [Source/README.md](Source/README.md)
+- [开发者文档](Source/README.md)
+- [更新计划](Source/ROADMAP.md)
 
 ---
 
