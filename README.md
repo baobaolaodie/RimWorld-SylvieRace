@@ -2,50 +2,71 @@
 
 一名满身伤痕的少女，你和她的故事即将开始。
 
-## 功能介绍
+**版本**: v1.0.0-pre  
+**游戏版本**: RimWorld 1.6  
+
+---
+
+## 功能概览
 
 ### 种族特性
-- **希尔薇种族**：基于 Humanoid Alien Races 框架的独特种族
-- **专属名字**：所有希尔薇种族角色名字统一为"Sylvie"/"希尔薇" + 随机姓氏
-- **专属发型**：凌乱短发
-- **动态表情**：支持 Facial Animation 动态表情系统
-- **独特背景**：专属背景故事
+- **希尔薇种族**: 基于 Humanoid Alien Races 框架的独特种族
+- **专属名字**: 所有希尔薇角色名字统一为"Sylvie"/"希尔薇" + 随机姓氏
+- **专属发型**: 凌乱短发，种族独有
+- **动态表情**: 完整支持 Facial Animation 动态表情系统
+- **独特背景**: 专属背景故事与纹身系统
 
 ### 事件系统
-- 游戏开始后约 1.4 游戏小时（5000 ticks），将自动触发奴隶商人事件
-- 商人将带来希尔薇，你可以选择支付 100 白银收留她
+游戏开始后约 1.4 游戏小时（5000 ticks），自动触发奴隶商人事件：
+- 商人带来希尔薇（作为囚犯）
+- 支付 100 白银即可收留她
+- 事件仅触发一次，确保希尔薇的独特性
 
 ### 服装系统
-- **19 种专属服装**：包括旗袍、和服、女仆装、学生制服、婚纱等
-- **轨道贸易商**：通过通讯台呼叫专用服装贸易商购买服装
-- **种族限制**：服装仅限希尔薇种族穿着
+**19 种专属服装**，只能通过轨道贸易商购买：
 
-### 动态表情
-- 支持眼睛、眉毛、嘴巴等多种表情变化
-- 根据心情、健康状况自动切换表情
+| 类别 | 服装 |
+|------|------|
+| 连衣裙 | 紫色连衣裙、蓝色连衣裙、碎花连衣裙 |
+| 套装 | 和服、旗袍、女仆装、重装女仆、学生制服、西装、优雅套装、春节婚纱 |
+| 下装 | 优雅裤装、学生裤装 |
+| 特殊 | 创可贴、泳装、披肩 |
+| 头饰 | 春节头饰 |
+
+**种族限制**: 所有服装仅限希尔薇种族穿着
+
+### 动态表情系统
+- 眼睛、眉毛、嘴巴等多种表情变化
+- 根据心情、健康状况自动切换
 - 支持眨眼、流泪等细节动画
+- 需要 Facial Animation WIP + Experimentals 前置
 
 ### 纹身系统
-- **专属纹身**：面部伤痕和身体伤痕两种纹身
-- **角色定制**：可在角色编辑界面选择纹身样式
+- **面部伤痕**: 过去经历留下的面部疤痕
+- **身体伤痕**: 覆盖身体的伤痕，诉说着过往
+- 希尔薇生成时自动获得专属纹身
+
+---
 
 ## 前置依赖
 
-| 模组 | Steam Workshop |
-|------|----------------|
-| Harmony | [链接](https://steamcommunity.com/sharedfiles/filedetails/?id=2009463077) |
-| Humanoid Alien Races | [链接](https://steamcommunity.com/sharedfiles/filedetails/?id=839005762) |
-| [NL] Facial Animation - WIP | [链接](https://steamcommunity.com/sharedfiles/filedetails/?id=1635901197) |
-| [NL] Facial Animation - Experimentals | [链接](https://steamcommunity.com/sharedfiles/filedetails/?id=2952879982) |
+| 模组 | 用途 | Steam 链接 |
+|------|------|------------|
+| Harmony | 必需 | [2009463077](https://steamcommunity.com/sharedfiles/filedetails/?id=2009463077) |
+| Humanoid Alien Races | 种族框架 | [839005762](https://steamcommunity.com/sharedfiles/filedetails/?id=839005762) |
+| [NL] Facial Animation - WIP | 动态表情基础 | [1635901197](https://steamcommunity.com/sharedfiles/filedetails/?id=1635901197) |
+| [NL] Facial Animation - Experimentals | 动态表情扩展 | [2952879982](https://steamcommunity.com/sharedfiles/filedetails/?id=2952879982) |
 
-**注意**：必须按正确顺序加载模组，本模组应加载在所有前置依赖之后。
+**加载顺序**: Harmony → HAR → Facial Animation → SylvieRace
+
+---
 
 ## 使用指南
 
 ### 如何获得希尔薇
 1. 开始新游戏或加载存档
-2. 等待约 1.4 游戏小时（游戏内时间）
-3. 奴隶商人事件将自动触发
+2. 等待约 1.4 游戏小时
+3. 奴隶商人事件自动触发
 4. 选择支付 100 白银收留希尔薇
 
 ### 如何购买服装
@@ -54,23 +75,55 @@
 3. 选择"呼叫专用服装贸易商（免费）"
 4. 与贸易商交易购买服装
 
+### 角色定制
+在角色编辑界面可为希尔薇：
+- 更换发型（仅限希尔薇专属发型）
+- 选择纹身样式（面部/身体伤痕）
+- 查看动态表情效果
+
+---
+
 ## 兼容性
 
-- **游戏版本**：RimWorld 1.6
-- **DLC 兼容**：
-  - ✅ Core
-  - ✅ Royalty
-  - ✅ Ideology
-  - ✅ Biotech（支持儿童体型）
-  - ✅ Anomaly
+### DLC 支持
+- ✅ Core
+- ✅ Royalty
+- ✅ Ideology
+- ✅ Biotech（支持儿童体型）
+- ✅ Anomaly
 
-- **已知兼容**：
-  - Humanoid Alien Races
-  - Facial Animation 系列
+### 已知兼容
+- Humanoid Alien Races
+- Facial Animation 系列
+- 大多数种族模组（无服装冲突时）
 
-- **可能不兼容**：
-  - 其他修改同类型服装的模组
-  - 其他种族模组（可能有服装冲突）
+### 可能冲突
+- 修改同类型服装的模组
+- 强制修改所有种族服装穿着规则的模组
+
+---
+
+## 技术信息
+
+### 命名规范
+- 所有 Def 名使用 `SylvieRace_` 前缀
+- XML 中使用英文，翻译通过 Languages 注入
+- 服装标签: `SylvieRace_Apparel`
+
+### 文件结构
+```
+SylvieRace/
+├── Defs/
+│   ├── Races/           # 种族定义
+│   ├── Apparel/         # 服装定义
+│   ├── FacialAnimation/ # 动态表情
+│   └── ...
+├── Source/              # C# 源码
+├── Textures/            # 贴图资源
+└── Languages/           # 翻译文件
+```
+
+---
 
 ## 更新日志
 
@@ -110,3 +163,13 @@
 - 添加动态表情支持
 - 修复动态表情无法加载的问题（目录结构重组）
 - 修复服装生成到其他种族的问题（添加 apparel.tags 限制）
+
+---
+
+## 开发者信息
+
+技术实现细节参见 [Source/README.md](Source/README.md)
+
+---
+
+*"Every scar tells a story."*
