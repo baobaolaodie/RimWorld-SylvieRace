@@ -35,6 +35,8 @@ SylvieRace/
 │   │   └── ClothingTrader.xml     # 贸易商定义
 │   ├── Tattoos/
 │   │   └── Sylvie_Tattoos.xml     # 纹身定义
+│   ├── Hediffs/
+│   │   └── Sylvie_Hediffs.xml     # 健康状态定义
 │   └── FacialAnimation/       # 动态表情定义
 │       ├── EyeType.xml         # 眼睛类型
 │       ├── MouthType.xml       # 嘴巴类型
@@ -326,6 +328,45 @@ Languages/
 - 动态表情 Defs 和 Patches 必须放在 mod 根目录的 `Defs/` 和 `Patches/` 文件夹下
 - RimWorld 只会扫描根目录下的这些文件夹，子目录不会被加载
 
+### 10. 初始健康状态系统 (Hediffs/)
+
+**文件位置**: `Defs/Hediffs/Sylvie_Hediffs.xml`
+
+**Hediff 定义**:
+```xml
+<HediffDef>
+  <defName>SylvieRace_InitialTrauma</defName>
+  <label>Initial Trauma</label>
+  <description>A deep psychological and physical trauma from past experiences.</description>
+  <tendable>true</tendable>
+  <isBad>true</isBad>
+  <makesSickThought>true</makesSickThought>
+  <initialSeverity>1.0</initialSeverity>
+  <comps>
+    <li Class="HediffCompProperties_TendDuration">
+      <baseTendDurationHours>12</baseTendDurationHours>
+      <severityPerDayTended>-0.2</severityPerDayTended>
+    </li>
+  </comps>
+</HediffDef>
+```
+
+**触发机制**:
+- 希尔薇加入殖民地后 5 个游戏日（300000 ticks）自动触发
+- 触发时显示信件通知
+- 通过 `SylvieGameComponent` 管理触发逻辑
+
+**治疗机制**:
+- 使用 `HediffCompProperties_TendDuration` 组件
+- 每次治疗持续 12 小时
+- 治疗质量 100% 时，每日降低 20% 严重性
+- 完全治愈需要约 5 次高质量治疗
+
+**存档兼容性**:
+- 使用 `Scribe_References.Look<Pawn>` 保存希尔薇引用
+- 使用 `Scribe_Values.Look<int>` 保存触发时间
+- 使用 `Scribe_Values.Look<bool>` 保存触发状态
+
 ## 代码文件说明
 
 ### HarmonyInit.cs
@@ -343,6 +384,12 @@ public static class HarmonyInit
 - 继承自 `GameComponent`
 - 自动注册机制：RimWorld 的 `Game.FillComponents()` 会自动实例化所有 `GameComponent` 子类
 - 负责事件触发逻辑
+- **Hediff 触发管理**：
+  - `sylviePawn` - 引用希尔薇 Pawn
+  - `hediffTriggerTick` - Hediff 触发时间
+  - `hediffTriggered` - Hediff 是否已触发
+  - `SetSylviePawn(Pawn)` - 设置希尔薇引用并计算触发时间
+  - `TriggerHediff()` - 触发 Hediff 并发送信件通知
 
 ### IncidentWorker_SylvieTrader.cs
 - 继承自 `IncidentWorker`

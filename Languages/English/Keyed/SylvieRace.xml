@@ -11,4 +11,6 @@
   <Sylvie_TradeSuccess>Trade successful. Sylvie has joined the colony.</Sylvie_TradeSuccess>
   <Sylvie_NotEnoughSilver>Not enough silver (current: {0})</Sylvie_NotEnoughSilver>
   <Sylvie_Refuse>Refuse</Sylvie_Refuse>
+  <SylvieRace_HediffLetterLabel>Sylvie's Health Issue</SylvieRace_HediffLetterLabel>
+  <SylvieRace_HediffLetterText>{0} seems to be showing signs of trauma from past experiences. She may need medical attention and care.</SylvieRace_HediffLetterText>
 </LanguageData>

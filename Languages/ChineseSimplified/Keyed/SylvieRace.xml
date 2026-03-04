@@ -12,4 +12,6 @@
   <Sylvie_TradeSuccess>交易成功，希尔薇加入了殖民地。</Sylvie_TradeSuccess>
   <Sylvie_NotEnoughSilver>白银不足 (当前: {0})</Sylvie_NotEnoughSilver>
   <Sylvie_Refuse>拒绝</Sylvie_Refuse>
+  <SylvieRace_HediffLetterLabel>希尔薇的健康问题</SylvieRace_HediffLetterLabel>
+  <SylvieRace_HediffLetterText>{0} 似乎表现出了过去经历带来的创伤症状。她可能需要医疗照顾和关怀。</SylvieRace_HediffLetterText>
 </LanguageData>

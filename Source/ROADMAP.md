@@ -36,13 +36,15 @@
 **Hediff 设计** (待定):
 
 **具体改动**:
-- 创建 `HediffDef` XML 定义
-- 修改 `IncidentWorker_SylvieTrader.cs`
-- 在生成希尔薇时自动添加 Hediff
-- 添加 Hediff 描述和翻译
+- 在生成希尔薇(触发 `Sylvie_ArrivalEvent` )后指定一段时间(暂定游戏内5天)后触发希尔薇得到这个hediff的事件
+- hediff设定：
+    - 需要提供一定时间的药物后才能治愈(即消除该hediff)
+    - hediff持续参数依赖时间而非治疗质量叠加总和
+    - hediff的效果( `statOffsets` )待定
+- 添加 Hediff 描述和翻译，目前暂未确切文本，对这些文本采用 "SylvieRace_" + "`defName`_" + 对应组件的组合，比如 "SylvieRace_dress_description" 表示dress这个`defName`的description组件的文本描述
 
 **技术要点**:
-- 符合希尔薇的背景设定
+- 对于未知的文本描述均采用上面的方式进行命名，以临时填充
 
 ---
 

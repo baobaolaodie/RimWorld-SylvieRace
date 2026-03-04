@@ -110,6 +110,7 @@ public class IncidentWorker_SylvieTrader : IncidentWorker_TraderCaravanArrival
     pawn.guest.SetGuestStatus(traderLeader.Faction, GuestStatus.Prisoner);
     traderLeader.GetLord()?.AddPawn(pawn);
     Current.Game.GetComponent<SylvieGameComponent>().hasSylvieSpawned = true;
+    Current.Game.GetComponent<SylvieGameComponent>().SetSylviePawn(pawn);
     LetterDef named4 = DefDatabase<LetterDef>.GetNamed("Sylvie_OfferLetter", false);
     if (named4 == null)
     {

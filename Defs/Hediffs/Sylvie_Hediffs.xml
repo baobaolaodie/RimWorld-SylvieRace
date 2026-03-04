@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <HediffDef>
+    <defName>SylvieRace_InitialTrauma</defName>
+    <label>SylvieRace_InitialTrauma_label</label>
+    <description>SylvieRace_InitialTrauma_description</description>
+    <hediffClass>HediffWithComps</hediffClass>
+    <tendable>true</tendable>
+    <isBad>true</isBad>
+    <makesSickThought>true</makesSickThought>
+    <initialSeverity>1.0</initialSeverity>
+    <minSeverity>0.0</minSeverity>
+    <maxSeverity>1.0</maxSeverity>
+    <comps>
+      <li Class="HediffCompProperties_TendDuration">
+        <baseTendDurationHours>12</baseTendDurationHours>
+        <severityPerDayTended>-0.2</severityPerDayTended>
+      </li>
+    </comps>
+  </HediffDef>
+</Defs>
