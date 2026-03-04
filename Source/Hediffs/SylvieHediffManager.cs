@@ -54,3 +54,67 @@ public static class SylvieHediffManager
         Find.LetterStack.ReceiveLetter(label, text, LetterDefOf.NegativeEvent, new LookTargets(pawn));
     }
 }
+
+
+    public class SylvieRace_CompProperties_AutoHeal : CompProperties
+    {
+        public int healIntervalTicks = 120000;
+        public HediffDef paralysisHediff;
+
+        public SylvieRace_CompProperties_AutoHeal()
+        {
+            this.compClass = typeof(SylvieRace_CompAutoHeal);
+        }
+    }
+    public class SylvieRace_CompAutoHeal : ThingComp
+    {
+        private int tickCounter = 0;
+
+        public SylvieRace_CompProperties_AutoHeal Props
+            => (SylvieRace_CompProperties_AutoHeal)props;
+
+        public override void CompTickRare()
+        {
+            base.CompTickRare();
+            if (parent is Apparel apparel && apparel.Wearer != null)
+            {
+                tickCounter += 250; 
+
+                if (tickCounter >= Props.healIntervalTicks)
+                {
+                    tickCounter = 0;
+                    DoAutoHeal(apparel.Wearer);
+                }
+            }
+            else
+            {
+                tickCounter = 0;
+            }
+        }
+
+        private void DoAutoHeal(Pawn wearer)
+        {
+            bool hasWounds = false;
+            foreach (Hediff hediff in wearer.health.hediffSet.hediffs)
+            {
+                if (hediff is Hediff_Injury injury && !injury.IsTended())
+                {
+                    injury.Tended(1.0f, 1.0f, 0);
+                    hasWounds = true;
+                }
+            }
+
+            if (hasWounds)
+            {
+                Hediff paralysis = HediffMaker.MakeHediff(
+                    Props.paralysisHediff, wearer);
+                wearer.health.AddHediff(paralysis);
+            }
+        }
+
+        public override void PostExposeData()
+        {
+            base.PostExposeData();
+            Scribe_Values.Look(ref tickCounter, "SylvieRace_tickCounter", 0);
+        }
+    }
