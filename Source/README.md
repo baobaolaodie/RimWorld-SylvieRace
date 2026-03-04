@@ -6,10 +6,11 @@
 
 ```
 SylvieRace/
+├── 1.6/
+│   └── Assemblies/
+│       └── SylvieRace.dll     # 编译输出
 ├── About/
 │   └── About.xml              # 模组元数据
-├── Assemblies/
-│   └── SylvieRace.dll         # 编译输出
 ├── Defs/
 │   ├── Races/
 │   │   └── Sylvie_Race.xml        # 种族定义
@@ -276,7 +277,7 @@ public static class SylvieDefNames
 
 **项目文件**: `Source/SylvieRace.csproj`
 - 目标框架：.NET Framework 4.8
-- 输出路径：`..\Assemblies\`
+- 输出路径：`..\1.6\Assemblies\`
 - 输出文件：`SylvieRace.dll`
 
 **编译命令**:
