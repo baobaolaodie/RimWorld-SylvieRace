@@ -37,6 +37,8 @@ SylvieRace/
 │   │   └── Sylvie_Tattoos.xml     # 纹身定义
 │   ├── Hediffs/
 │   │   └── Sylvie_Hediffs.xml     # 健康状态定义
+│   ├── Thoughts/
+│   │   └── Sylvie_Thoughts.xml    # 心情效果定义
 │   └── FacialAnimation/       # 动态表情定义
 │       ├── EyeType.xml         # 眼睛类型
 │       ├── MouthType.xml       # 嘴巴类型
@@ -50,12 +52,23 @@ SylvieRace/
 ├── Patches/
 │   └── Sylvie_Race_FacialAnimation_Patches.xml  # 动态表情补丁
 ├── Source/
+│   ├── Core/
+│   │   ├── HarmonyInit.cs           # Harmony 初始化
+│   │   └── SylvieDefNames.cs        # Def 名称常量
+│   ├── Components/
+│   │   └── SylvieGameComponent.cs   # 游戏组件（状态管理）
+│   ├── Incidents/
+│   │   └── IncidentWorker_SylvieTrader.cs  # 事件处理器
+│   ├── Pawns/
+│   │   └── SylviePawnGenerator.cs   # 希尔薇生成逻辑
+│   ├── Letters/
+│   │   └── ChoiceLetter_SylvieOffer.cs  # 信件类
+│   ├── Hediffs/
+│   │   └── SylvieHediffManager.cs   # Hediff 管理逻辑
+│   ├── Patches/
+│   │   └── Patch_CommsConsole.cs    # 通讯台补丁
 │   ├── SylvieRace.csproj      # 项目文件
 │   ├── SylvieRace.sln         # 解决方案
-│   ├── HarmonyInit.cs         # Harmony 初始化
-│   ├── SylvieGameComponent.cs # 游戏组件（事件触发）
-│   ├── IncidentWorker_SylvieTrader.cs  # 事件处理器（包含名字设置）
-│   ├── Patch_CommsConsole.cs  # 通讯台补丁
 │   └── AssemblyInfo.cs        # 程序集信息
 ├── Textures/
 │   └── Things/
@@ -79,7 +92,7 @@ SylvieRace/
 │   │   ├── Keyed/
 │   │   │   └── SylvieRace.xml    # 英文翻译键
 │   │   └── DefInjected/          # 英文 DefInjected 翻译
-│   └── SimplifiedChinese/
+│   └── ChineseSimplified/
 │       ├── Keyed/
 │       │   └── SylvieRace.xml    # 中文翻译键
 │       └── DefInjected/          # 中文 DefInjected 翻译
@@ -88,245 +101,77 @@ SylvieRace/
 
 ## 核心组件
 
-### 1. 种族定义 (Races/Sylvie_Race.xml)
+### 1. SylvieDefNames（常量类）
 
-**文件位置**: `Defs/Races/Sylvie_Race.xml`
+**文件位置**: `Source/Core/SylvieDefNames.cs`
 
-**主要内容**:
-- `AlienRace.ThingDef_AlienRace` - 希尔薇种族定义
+集中管理所有 Def 名称，便于维护和避免拼写错误：
 
-**种族特性配置**:
-```xml
-<alienRace>
-  <generalSettings>
-    <maleGenderProbability>0.0000000000001</maleGenderProbability>
-  </generalSettings>
-</alienRace>
+```csharp
+public static class SylvieDefNames
+{
+    public const string Incident_ArrivalEvent = "Sylvie_ArrivalEvent";
+    public const string PawnKind_Sylvie = "Sylvie_PawnKind";
+    public const string Hediff_InitialTrauma = "SylvieRace_InitialTrauma";
+    // ... 更多常量
+    
+    // 便捷属性
+    public static HediffDef? Hediff_InitialTraumaDef => HediffDef.Named(Hediff_InitialTrauma);
+}
 ```
 
-**注意**: 特性配置已移至 C# 代码中处理，生成时强制清空所有特性并赋予善良特性。
+### 2. SylviePawnGenerator（Pawn 生成器）
 
-### 2. PawnKind 定义 (PawnKinds/Sylvie_PawnKind.xml)
+**文件位置**: `Source/Pawns/SylviePawnGenerator.cs`
 
-**文件位置**: `Defs/PawnKinds/Sylvie_PawnKind.xml`
+封装希尔薇 Pawn 生成逻辑：
+- `GenerateSylvie(Faction)` - 生成希尔薇 Pawn
+- `ConfigureName(Pawn)` - 设置名字
+- `ConfigureGenes(Pawn)` - 设置基因（皮肤、发色）
+- `ConfigureTraits(Pawn)` - 设置特性
+- `ConfigureTattoos(Pawn)` - 设置纹身
 
-**主要内容**:
-- `PawnKindDef` - 希尔薇 PawnKind 定义
-- `apparelTags` - 服装标签匹配
+### 3. SylvieHediffManager（Hediff 管理器）
 
-### 3. 事件系统 (Incidents/Sylvie_Incident.xml)
+**文件位置**: `Source/Hediffs/SylvieHediffManager.cs`
 
-**文件位置**: `Defs/Incidents/Sylvie_Incident.xml`
+封装 Hediff 相关逻辑：
+- `CalculateTriggerTick()` - 计算触发时间
+- `TryTriggerHediff(Pawn)` - 触发 Hediff
+- `SendHediffLetter(Pawn)` - 发送信件通知
 
-**触发机制**: `SylvieGameComponent.GameComponentTick()`
-- 每 2500 ticks 检查一次
-- 游戏时间 >= 5000 ticks 时触发
-- 需要有玩家殖民地和自由殖民者
+### 4. SylvieGameComponent（游戏组件）
 
-**事件处理器**: `IncidentWorker_SylvieTrader`
-- 生成奴隶商队
-- 商队携带希尔薇（作为囚犯）
-- 显示选择信件，支付 100 白银收留
+**文件位置**: `Source/Components/SylvieGameComponent.cs`
 
-### 3. 贸易商系统
+负责状态管理和事件触发：
+- `hasSylvieSpawned` - 希尔薇是否已生成
+- `RegisterSylviePawn(Pawn)` - 注册希尔薇并安排 Hediff 触发
+- `GameComponentTick()` - 定期检查事件触发
 
-**通讯台补丁**: `Patch_CommsConsole`
-- 添加"呼叫专用服装贸易商"选项
-- 调用费用：免费
+### 5. IncidentWorker_SylvieTrader（事件处理器）
 
-**贸易商定义**: `ClothingTrader.xml`
-- `TraderKindDef` - 贸易商类型
-- `StockGenerator_Tag` - 使用 `SylvieClothesTag` 筛选商品
+**文件位置**: `Source/Incidents/IncidentWorker_SylvieTrader.cs`
 
-### 4. 服装系统 (Apparel/)
+处理奴隶商人事件：
+- 生成商队
+- 使用 `SylviePawnGenerator` 生成希尔薇
+- 发送选择信件
 
-**文件位置**: `Defs/Apparel/`
+### 6. ChoiceLetter_SylvieOffer（信件类）
 
-**文件分类**:
-- `Apparel_Dresses.xml` - 连衣裙类 (SylvieRace_PurpleDress, SylvieRace_BlueDress, SylvieRace_FloralDress)
-- `Apparel_Outfits.xml` - 套装类 (SylvieRace_Finally, SylvieRace_FineClothing, SylvieRace_Kimono, SylvieRace_MaidOutfit, SylvieRace_HeavyMaid, SylvieRace_StudentUniform, SylvieRace_Suits, SylvieRace_ElegantClothing, SylvieRace_Cheongsam, SylvieRace_SpringFestivalWedding)
-- `Apparel_Pants.xml` - 下装类 (SylvieRace_ElegantClothingPants, SylvieRace_StudentUniformPants)
-- `Apparel_Special.xml` - 特殊服装 (SylvieRace_Bandaid, SylvieRace_Swimsuit, SylvieRace_Shawl)
-- `Apparel_Headwear.xml` - 头饰 (SylvieRace_SpringFestivalHeadwear)
+**文件位置**: `Source/Letters/ChoiceLetter_SylvieOffer.cs`
 
-**服装定义特点**:
-- 19 种专属服装
-- 使用 `apparel.tags` 限制为希尔薇种族
-- 使用 `tradeTags` 允许贸易商出售
-- 使用 `thingCategories` 允许储存区识别
-- **禁用制作配方**：服装无法在缝纫台制作
+自定义选择信件：
+- 显示购买选项（100 白银）
+- 处理购买和拒绝逻辑
+- 转移希尔薇到玩家派系
 
-**完整服装定义示例**:
-```xml
-<ThingDef ParentName="ApparelBase">
-  <defName>SylvieRace_PurpleDress</defName>
-  <label>Purple Dress</label>
-  <description>A purple dress.</description>
-  <recipeMaker Inherit="False" IsNull="True" />
-  <techLevel>Medieval</techLevel>
-  <tradeability>All</tradeability>
-  <thingCategories>
-    <li>SylvieRace_Apparel</li>
-  </thingCategories>
-  <apparel>
-    <tags>
-      <li>SylvieRace_Apparel</li>
-    </tags>
-    <defaultOutfitTags>
-      <li>Worker</li>
-    </defaultOutfitTags>
-    <countsAsClothingForNudity>true</countsAsClothingForNudity>
-    <developmentalStageFilter>Child, Adult</developmentalStageFilter>
-    <canBeDesiredForIdeo>false</canBeDesiredForIdeo>
-  </apparel>
-  <tradeTags>
-    <li>SylvieClothesTag</li>
-  </tradeTags>
-</ThingDef>
-```
+### 7. Patch_CommsConsole（通讯台补丁）
 
-**关键字段说明**:
-| 字段 | 说明 |
-|------|------|
-| `thingCategories` | 储存区识别必需（SylvieRace_Apparel - 希尔薇衣服） |
-| `techLevel` | 科技等级 |
-| `tradeability` | 交易性控制（All = 可买可卖） |
-| `defaultOutfitTags` | 默认装备方案标签 |
-| `countsAsClothingForNudity` | 是否算作服装（影响裸体判定） |
-| `developmentalStageFilter` | 年龄阶段过滤 |
-| `canBeDesiredForIdeo` | 是否可被文化需求 |
+**文件位置**: `Source/Patches/Patch_CommsConsole.cs`
 
-**编码注意事项**:
-- XML 文件必须使用 UTF-8 编码
-- 避免使用 PowerShell `Set-Content` 命令修改 XML 文件（会导致编码损坏）
-- 推荐使用 Write 工具或支持 UTF-8 的编辑器修改文件
-
-### 6. 物品类别系统 (ThingCategories/)
-
-**文件位置**: `Defs/ThingCategories/Sylvie_ThingCategories.xml`
-
-**类别定义**:
-```xml
-<ThingCategoryDef>
-  <defName>SylvieRace_Apparel</defName>
-  <label>Sylvie Apparel</label>
-  <parent>Apparel</parent>
-</ThingCategoryDef>
-```
-
-**类别层级**:
-```
-Apparel
-└── Sylvie Apparel (SylvieRace_Apparel)
-    └── 所有 SylvieRace 服装
-```
-
-**用途**: 在储存区筛选时，可以快速选择"Sylvie Apparel"类别来筛选所有 SylvieRace 专属服装。
-
-### 7. 纹身系统 (Tattoos/)
-
-**文件位置**: `Defs/Tattoos/Sylvie_Tattoos.xml`
-
-**纹身定义**:
-```xml
-<TattooDef>
-  <defName>SylvieRace_ScarHead</defName>
-  <label>Sylvie Scar</label>
-  <description>Scars left on the face from past experiences.</description>
-  <texPath>Things/Tattoos/Head/scarHead01</texPath>
-  <tattooType>Face</tattooType>
-</TattooDef>
-
-<TattooDef>
-  <defName>SylvieRace_ScarBody</defName>
-  <label>Sylvie Body Scar</label>
-  <description>Scars covering the body, telling stories of the past.</description>
-  <texPath>Things/Tattoos/Body/scarBody01</texPath>
-  <tattooType>Body</tattooType>
-</TattooDef>
-```
-
-**纹身类型**:
-- `Face` - 面部纹身
-- `Body` - 身体纹身
-
-**默认附着**: 希尔薇生成时自动获得两个纹身（在 `IncidentWorker_SylvieTrader.cs` 中设置）
-
-**贴图路径**:
-- 面部纹身: `Textures/Things/Tattoos/Head/scarHead01.png`
-- 身体纹身: `Textures/Things/Tattoos/Body/scarBody01.png`
-
-### 8. 翻译系统 (Languages/)
-
-**目录结构**:
-```
-Languages/
-├── English/
-│   ├── Keyed/
-│   │   └── SylvieRace.xml        # 通用翻译键
-│   └── DefInjected/              # Def 注入翻译
-│       ├── AlienRace.ThingDef_AlienRace/
-│       │   └── Race.xml          # 种族翻译（AlienRace框架）
-│       ├── ThingDef/
-│       │   ├── Apparel.xml       # 服装翻译
-│       │   └── Race.xml          # 种族翻译（备用）
-│       ├── HairDef/
-│       │   └── Hair.xml          # 发型翻译
-│       ├── BackstoryDef/
-│       │   └── Backstory.xml     # 背景故事翻译
-│       ├── PawnKindDef/
-│       │   └── PawnKind.xml      # PawnKind 翻译
-│       ├── IncidentDef/
-│       │   └── Incident.xml      # 事件翻译
-│       ├── LetterDef/
-│       │   └── Letter.xml        # 信件翻译
-│       ├── TraderKindDef/
-│       │   └── Trader.xml        # 贸易商翻译
-│       ├── ThingCategoryDef/
-│       │   └── ThingCategory.xml # 物品类别翻译
-│       └── TattooDef/
-│           └── Tattoo.xml        # 纹身翻译
-└── ChineseSimplified/            # 注意：使用 ChineseSimplified 而非 SimplifiedChinese
-    └── (同 English 结构)
-```
-
-**翻译规范**:
-- Defs 中的 `label`/`description` 使用英文
-- 中文翻译通过 `DefInjected` 注入
-- 翻译键格式：`<DefName>.label` / `<DefName>.description`
-
-### 9. 动态表情系统
-
-**文件位置**: `Defs/FacialAnimation/`
-
-**表情定义类型**:
-- `EyeType.xml` - 眼睛类型（EyeballTypeDef）
-- `MouthType.xml` - 嘴巴类型（MouthTypeDef）
-- `BrowType.xml` - 眉毛类型（BrowTypeDef）
-- `LidType.xml` - 眼睑类型（LidTypeDef）
-- `LidOptionType.xml` - 眼睑选项（LidOptionTypeDef）
-- `EmotionType.xml` - 情绪类型（EmotionTypeDef）
-- `HeadType.xml` - 头部类型（HeadTypeDef）
-- `SkinType.xml` - 皮肤类型（SkinTypeDef）
-- `Sylvie_RaceFaceAdjustment.xml` - 面部调整（FaceAdjustmentDef）
-
-**种族补丁**: `Patches/Sylvie_Race_FacialAnimation_Patches.xml`
-- 为 `Sylvie_Race` 添加动态表情组件
-- 组件列表：
-  - `DrawFaceGraphicsComp` - 绘制面部图形
-  - `HeadControllerComp` - 头部控制器
-  - `EyeballControllerComp` - 眼球控制器
-  - `LidControllerComp` - 眼睑控制器
-  - `BrowControllerComp` - 眉毛控制器
-  - `MouthControllerComp` - 嘴巴控制器
-  - `SkinControllerComp` - 皮肤控制器
-  - `FacialAnimationControllerComp` - 表情动画控制器
-  - （Experimentals）`LidOptionControllerComp` - 眼睑选项控制器
-  - （Experimentals）`EmotionControllerComp` - 情绪控制器
-
-**重要说明**:
-- 动态表情 Defs 和 Patches 必须放在 mod 根目录的 `Defs/` 和 `Patches/` 文件夹下
-- RimWorld 只会扫描根目录下的这些文件夹，子目录不会被加载
+添加呼叫服装贸易商选项。
 
 ### 10. 初始健康状态系统 (Hediffs/)
 
@@ -340,8 +185,19 @@ Languages/
   <description>A deep psychological and physical trauma from past experiences.</description>
   <tendable>true</tendable>
   <isBad>true</isBad>
-  <makesSickThought>true</makesSickThought>
   <initialSeverity>1.0</initialSeverity>
+  <stages>
+    <li>
+      <minSeverity>0.0</minSeverity>
+      <painOffset>0.05</painOffset>
+      <capMods>
+        <li>
+          <capacity>Consciousness</capacity>
+          <offset>-0.1</offset>
+        </li>
+      </capMods>
+    </li>
+  </stages>
   <comps>
     <li Class="HediffCompProperties_TendDuration">
       <baseTendDurationHours>12</baseTendDurationHours>
@@ -367,71 +223,54 @@ Languages/
 - 使用 `Scribe_Values.Look<int>` 保存触发时间
 - 使用 `Scribe_Values.Look<bool>` 保存触发状态
 
-## 代码文件说明
+### 11. 心情效果系统 (Thoughts/)
 
-### HarmonyInit.cs
-```csharp
-[StaticConstructorOnStartup]
-public static class HarmonyInit
-{
-  static HarmonyInit() => new Harmony("com.sylvie.specialtrader").PatchAll();
-}
+**文件位置**: `Defs/Thoughts/Sylvie_Thoughts.xml`
+
+**ThoughtDef 定义**:
+```xml
+<ThoughtDef>
+  <defName>SylvieRace_InitialTraumaThought</defName>
+  <workerClass>ThoughtWorker_Hediff</workerClass>
+  <hediff>SylvieRace_InitialTrauma</hediff>
+  <validWhileDespawned>true</validWhileDespawned>
+  <stages>
+    <li>
+      <label>initial trauma</label>
+      <description>The weight of past experiences weighs heavily...</description>
+      <baseMoodEffect>-15</baseMoodEffect>
+    </li>
+  </stages>
+</ThoughtDef>
 ```
-- Harmony 补丁初始化
-- 补丁 ID: `com.sylvie.specialtrader`
 
-### SylvieGameComponent.cs
-- 继承自 `GameComponent`
-- 自动注册机制：RimWorld 的 `Game.FillComponents()` 会自动实例化所有 `GameComponent` 子类
-- 负责事件触发逻辑
-- **Hediff 触发管理**：
-  - `sylviePawn` - 引用希尔薇 Pawn
-  - `hediffTriggerTick` - Hediff 触发时间
-  - `hediffTriggered` - Hediff 是否已触发
-  - `SetSylviePawn(Pawn)` - 设置希尔薇引用并计算触发时间
-  - `TriggerHediff()` - 触发 Hediff 并发送信件通知
+**心情效果特点**:
+- 使用 `ThoughtWorker_Hediff` 自动关联 Hediff
+- 心情效果值：-15（比默认 Sick 的 -5 更严重）
+- Hediff 消除后心情效果自动消失
+- 可自定义标签和描述文本
 
-### IncidentWorker_SylvieTrader.cs
-- 继承自 `IncidentWorker`
-- 处理奴隶商人事件的生成逻辑
-- 创建商队和希尔薇
-- **纹身设置**: 生成希尔薇时自动设置面部和身体纹身
-  ```csharp
-  if (pawn.style != null)
-  {
-    TattooDef faceTattoo = DefDatabase<TattooDef>.GetNamed("SylvieRace_ScarHead", false);
-    TattooDef bodyTattoo = DefDatabase<TattooDef>.GetNamed("SylvieRace_ScarBody", false);
-    if (faceTattoo != null)
-      pawn.style.FaceTattoo = faceTattoo;
-    if (bodyTattoo != null)
-      pawn.style.BodyTattoo = bodyTattoo;
-  }
-  ```
+**心情数值参考**:
+| 心情值 | 效果级别 |
+|--------|----------|
+| -5 | 轻微不适（默认 Sick） |
+| -10 | 中等不适 |
+| -15 | 较严重不适（当前设置） |
+| -20 | 严重不适 |
 
-### Patch_CommsConsole.cs
-- Harmony Postfix 补丁
-- 目标方法：`Building_CommsConsole.GetFloatMenuOptions`
-- 添加呼叫服装贸易商选项
+## 代码架构原则
 
-### Patch_SylvieName.cs（已移除）
-- ~~Harmony Postfix 补丁~~
-- ~~目标方法：`PawnBioAndNameGenerator.GiveAppropriateBioAndNameTo`~~
-- **注意**：此补丁已被移除，改为在 `IncidentWorker_SylvieTrader.cs` 中直接设置名字
+### 单一职责原则
+每个类只负责一件事：
+- `SylviePawnGenerator` - 只负责生成 Pawn
+- `SylvieHediffManager` - 只负责 Hediff 管理
+- `SylvieGameComponent` - 只负责状态管理
 
-### 名字设置实现 (IncidentWorker_SylvieTrader.cs)
-- 在希尔薇生成后直接设置名字
-- 逻辑：
-  ```csharp
-  if (pawn.Name is NameTriple nameTriple)
-  {
-      string firstName = "SylvieRace_FirstName".Translate();
-      pawn.Name = new NameTriple(firstName, firstName, nameTriple.Last);
-  }
-  ```
-- 翻译键：`SylvieRace_FirstName`
-  - 英文：Sylvie
-  - 中文：希尔薇
-- **特点**：FirstName 和 Nick 都设置为翻译后的名字
+### 开闭原则
+- 使用 `SylvieDefNames` 常量类，添加新 Def 只需修改一处
+
+### 依赖倒置原则
+- 高层模块（`SylvieGameComponent`）依赖低层模块（`SylvieHediffManager`）
 
 ## 编译配置
 
@@ -440,21 +279,19 @@ public static class HarmonyInit
 - 输出路径：`..\Assemblies\`
 - 输出文件：`SylvieRace.dll`
 
-**引用程序集**:
-- 0Harmony.dll
-- Assembly-CSharp.dll
-- UnityEngine.CoreModule.dll
+**编译命令**:
+```bash
+cd Source
+dotnet build --configuration Release
+```
 
 ## 注意事项
 
 1. **服装种族限制**：使用 `apparel.tags` + `PawnKindDef.apparelTags` 机制
 2. **服装不可制作**：使用 `ApparelBase` + `recipeMaker IsNull="True"` 禁用缝纫台配方
 3. **服装储存区识别**：使用自定义 `thingCategories: SylvieRace_Apparel`
-4. **头饰类别继承**：`HatBase` 已包含 `Headgear`，子类需使用 `Inherit="False"` 覆盖
-5. **特性配置**：C# 代码中强制设置特性，XML 中的 `disallowedTraits` 已移除
-6. **GameComponent 自动注册**：无需手动注册，RimWorld 会自动实例化
-7. **动态表情目录结构**：Defs 和 Patches 必须在 mod 根目录下，不能放在子目录
-8. **动态表情依赖**：需要 Facial Animation WIP 和 Facial Animation Experimentals 模组作为前置
-9. **defName 命名规范**：所有 defName 使用 `SylvieRace_` 或 `Sylvie_` 前缀避免冲突
-10. **翻译系统**：Defs 中使用英文，中文翻译通过 Languages 目录注入
-11. **希尔薇唯一生成**：只能通过 `Sylvie_ArrivalEvent` 事件生成，不会随机出现
+4. **GameComponent 自动注册**：无需手动注册，RimWorld 会自动实例化
+5. **动态表情目录结构**：Defs 和 Patches 必须在 mod 根目录下
+6. **defName 命名规范**：所有 defName 使用 `SylvieRace_` 或 `Sylvie_` 前缀
+7. **翻译系统**：Defs 中使用英文，中文翻译通过 Languages 目录注入
+8. **希尔薇唯一生成**：只能通过 `Sylvie_ArrivalEvent` 事件生成

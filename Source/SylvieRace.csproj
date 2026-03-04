@@ -11,6 +11,7 @@
     <FileAlignment>512</FileAlignment>
     <RootNamespace>SylvieMod</RootNamespace>
     <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -47,10 +48,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SylvieGameComponent.cs" />
-    <Compile Include="IncidentWorker_SylvieTrader.cs" />
-    <Compile Include="HarmonyInit.cs" />
-    <Compile Include="Patch_CommsConsole.cs" />
+    <Compile Include="Core\HarmonyInit.cs" />
+    <Compile Include="Core\SylvieDefNames.cs" />
+    <Compile Include="Components\SylvieGameComponent.cs" />
+    <Compile Include="Incidents\IncidentWorker_SylvieTrader.cs" />
+    <Compile Include="Pawns\SylviePawnGenerator.cs" />
+    <Compile Include="Letters\ChoiceLetter_SylvieOffer.cs" />
+    <Compile Include="Hediffs\SylvieHediffManager.cs" />
+    <Compile Include="Patches\Patch_CommsConsole.cs" />
     <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <ThoughtDef>
+    <defName>SylvieRace_InitialTraumaThought</defName>
+    <workerClass>ThoughtWorker_Hediff</workerClass>
+    <hediff>SylvieRace_InitialTrauma</hediff>
+    <validWhileDespawned>true</validWhileDespawned>
+    <stages>
+      <li>
+        <label>SylvieRace_InitialTraumaThought_stages_0_label</label>
+        <description>SylvieRace_InitialTraumaThought_stages_0_description</description>
+        <baseMoodEffect>-15</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+</Defs>
