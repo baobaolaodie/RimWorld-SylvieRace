@@ -2,30 +2,30 @@
 <LanguageData>
   <SylvieRace_Finally.label>Endland Outfit</SylvieRace_Finally.label>
   <SylvieRace_Finally.description>An endland outfit.</SylvieRace_Finally.description>
-  <SylvieRace_FineClothing.label>Fine Clothing</SylvieRace_FineClothing.label>
-  <SylvieRace_FineClothing.description>Fine clothing.</SylvieRace_FineClothing.description>
+  <SylvieRace_FineClothing.label>Black dress</SylvieRace_FineClothing.label>
+  <SylvieRace_FineClothing.description>A solemn and elegant black dress — wearing it should look very graceful, and it would be well-suited for formal occasions.</SylvieRace_FineClothing.description>
   <SylvieRace_Kimono.label>Kimono</SylvieRace_Kimono.label>
-  <SylvieRace_Kimono.description>A kimono.</SylvieRace_Kimono.description>
+  <SylvieRace_Kimono.description>A fully-wrapped kimono outfit; its warm color tones give it an adorable feel. During festivals, many people are sure to be seen wearing one.</SylvieRace_Kimono.description>
   <SylvieRace_MaidOutfit.label>Maid Outfit</SylvieRace_MaidOutfit.label>
   <SylvieRace_MaidOutfit.description>A maid outfit.</SylvieRace_MaidOutfit.description>
   <SylvieRace_ElegantClothing.label>Elegant Clothing</SylvieRace_ElegantClothing.label>
-  <SylvieRace_ElegantClothing.description>Elegant clothing.</SylvieRace_ElegantClothing.description>
+  <SylvieRace_ElegantClothing.description>The classic staff uniform, typically issued to service personnel. It's just... it might be a bit tight.</SylvieRace_ElegantClothing.description>
   <SylvieRace_HeavyMaid.label>Heavy Maid Outfit</SylvieRace_HeavyMaid.label>
   <SylvieRace_HeavyMaid.description>A heavy maid outfit.</SylvieRace_HeavyMaid.description>
   <SylvieRace_StudentUniform.label>Student Uniform</SylvieRace_StudentUniform.label>
-  <SylvieRace_StudentUniform.description>A student uniform.</SylvieRace_StudentUniform.description>
+  <SylvieRace_StudentUniform.description>A thin sailor uniform brimming with the colors of youth. But in this world, there doesn't seem to be a requirement for standardized uniforms — so it's probably just worn for the sake of looking good.</SylvieRace_StudentUniform.description>
   <SylvieRace_Suits.label>Suit</SylvieRace_Suits.label>
-  <SylvieRace_Suits.description>A suit.</SylvieRace_Suits.description>
+  <SylvieRace_Suits.description>An outfit that exudes a sense of seriousness, generally reserved for management. Yet, for some inexplicable reason, it stirs an intense desire in peop</SylvieRace_Suits.description>
   <SylvieRace_Cheongsam.label>Cheongsam</SylvieRace_Cheongsam.label>
-  <SylvieRace_Cheongsam.description>A cheongsam.</SylvieRace_Cheongsam.description>
+  <SylvieRace_Cheongsam.description>A purple qipao; although the slit isn't particularly high, it still stirs the imagination.</SylvieRace_Cheongsam.description>
   <SylvieRace_SpringFestivalWedding.label>Spring Festival Wedding</SylvieRace_SpringFestivalWedding.label>
-  <SylvieRace_SpringFestivalWedding.description>A spring festival wedding dress.</SylvieRace_SpringFestivalWedding.description>
+  <SylvieRace_SpringFestivalWedding.description>This outfit seems to have been made to celebrate an ancient festival; its fiery red color always draws one's gaze irresistibly.</SylvieRace_SpringFestivalWedding.description>
   <SylvieRace_PurpleDress.label>Purple Dress</SylvieRace_PurpleDress.label>
   <SylvieRace_PurpleDress.description>A purple dress.</SylvieRace_PurpleDress.description>
   <SylvieRace_BlueDress.label>Blue Dress</SylvieRace_BlueDress.label>
-  <SylvieRace_BlueDress.description>A blue dress.</SylvieRace_BlueDress.description>
+  <SylvieRace_BlueDress.description>A light blue, elegant dress with a refined aura — it must look quite lovely when worn.</SylvieRace_BlueDress.description>
   <SylvieRace_FloralDress.label>Floral Dress</SylvieRace_FloralDress.label>
-  <SylvieRace_FloralDress.description>A floral dress.</SylvieRace_FloralDress.description>
+  <SylvieRace_FloralDress.description>It carries a rich summer atmosphere, giving an exceptionally refreshing feeling.</SylvieRace_FloralDress.description>
   <SylvieRace_ElegantClothingPants.label>Elegant Clothing Pants</SylvieRace_ElegantClothingPants.label>
   <SylvieRace_ElegantClothingPants.description>Elegant clothing pants.</SylvieRace_ElegantClothingPants.description>
   <SylvieRace_StudentUniformPants.label>Student Uniform Pants</SylvieRace_StudentUniformPants.label>
@@ -33,9 +33,9 @@
   <SylvieRace_SpringFestivalHeadwear.label>Spring Festival Headwear</SylvieRace_SpringFestivalHeadwear.label>
   <SylvieRace_SpringFestivalHeadwear.description>A spring festival headwear.</SylvieRace_SpringFestivalHeadwear.description>
   <SylvieRace_Bandaid.label>Bandaid</SylvieRace_Bandaid.label>
-  <SylvieRace_Bandaid.description>A bandaid.</SylvieRace_Bandaid.description>
+  <SylvieRace_Bandaid.description>Who on earth came up with the idea of using band-aids as clothing? How is this any different from being completely naked?</SylvieRace_Bandaid.description>
   <SylvieRace_Swimsuit.label>Swimsuit</SylvieRace_Swimsuit.label>
-  <SylvieRace_Swimsuit.description>A swimsuit.</SylvieRace_Swimsuit.description>
+  <SylvieRace_Swimsuit.description>It's just an ordinary swimsuit, yet it never fails to set one's pulse racing.</SylvieRace_Swimsuit.description>
   <SylvieRace_Shawl.label>Shawl</SylvieRace_Shawl.label>
   <SylvieRace_Shawl.description>A shawl.</SylvieRace_Shawl.description>
 </LanguageData>

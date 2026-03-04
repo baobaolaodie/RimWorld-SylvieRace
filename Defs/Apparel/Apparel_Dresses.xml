@@ -59,7 +59,7 @@
   <ThingDef ParentName="ApparelBase">
     <defName>SylvieRace_BlueDress</defName>
     <label>Blue Dress</label>
-    <description>A blue dress.</description>
+    <description>A light blue, elegant dress with a refined aura — it must look quite lovely when worn.</description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
     <tradeability>All</tradeability>
@@ -115,7 +115,7 @@
   <ThingDef ParentName="ApparelBase">
     <defName>SylvieRace_FloralDress</defName>
     <label>Floral Dress</label>
-    <description>A floral dress.</description>
+    <description>It carries a rich summer atmosphere, giving an exceptionally refreshing feeling.</description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
     <tradeability>All</tradeability>

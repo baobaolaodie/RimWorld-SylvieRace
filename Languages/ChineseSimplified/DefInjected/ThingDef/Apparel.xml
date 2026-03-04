@@ -2,30 +2,30 @@
 <LanguageData>
   <SylvieRace_Finally.label>终末地服装</SylvieRace_Finally.label>
   <SylvieRace_Finally.description>终末地服装。</SylvieRace_Finally.description>
-  <SylvieRace_FineClothing.label>华丽服装</SylvieRace_FineClothing.label>
-  <SylvieRace_FineClothing.description>华丽服装。</SylvieRace_FineClothing.description>
+  <SylvieRace_FineClothing.label>黑色连衣裙</SylvieRace_FineClothing.label>
+  <SylvieRace_FineClothing.description>庄重典雅的黑色连衣裙，穿上去应该很优雅，应该很适合在正式场合穿着</SylvieRace_FineClothing.description>
   <SylvieRace_Kimono.label>和服</SylvieRace_Kimono.label>
-  <SylvieRace_Kimono.description>和服。</SylvieRace_Kimono.description>
+  <SylvieRace_Kimono.description>全身包裹的和服服装，温暖的色调让人觉得十分可爱，庆典的时候一定会有很多人穿着。</SylvieRace_Kimono.description>
   <SylvieRace_MaidOutfit.label>女仆装</SylvieRace_MaidOutfit.label>
   <SylvieRace_MaidOutfit.description>女仆装。</SylvieRace_MaidOutfit.description>
   <SylvieRace_ElegantClothing.label>典雅服装</SylvieRace_ElegantClothing.label>
-  <SylvieRace_ElegantClothing.description>典雅服装。</SylvieRace_ElegantClothing.description>
+  <SylvieRace_ElegantClothing.description>经典的社员制服，一般发给服务人员，就是。。。可能有点紧。</SylvieRace_ElegantClothing.description>
   <SylvieRace_HeavyMaid.label>重装女仆</SylvieRace_HeavyMaid.label>
   <SylvieRace_HeavyMaid.description>重装女仆。</SylvieRace_HeavyMaid.description>
   <SylvieRace_StudentUniform.label>学生服</SylvieRace_StudentUniform.label>
-  <SylvieRace_StudentUniform.description>学生服。</SylvieRace_StudentUniform.description>
+  <SylvieRace_StudentUniform.description>单薄的水手服洋溢着青春的色彩，但这个世界好像不用统一制服，所以，只是为了好看吧。</SylvieRace_StudentUniform.description>
   <SylvieRace_Suits.label>西装</SylvieRace_Suits.label>
-  <SylvieRace_Suits.description>西装。</SylvieRace_Suits.description>
+  <SylvieRace_Suits.description>令人感到严肃的服饰，一般给管理层使用，但莫名让人有种强烈的欲望。</SylvieRace_Suits.description>
   <SylvieRace_Cheongsam.label>旗袍</SylvieRace_Cheongsam.label>
-  <SylvieRace_Cheongsam.description>旗袍。</SylvieRace_Cheongsam.description>
+  <SylvieRace_Cheongsam.description>一件紫色的旗袍，开叉虽然不高但总是让人浮想联翩。</SylvieRace_Cheongsam.description>
   <SylvieRace_SpringFestivalWedding.label>新春花嫁</SylvieRace_SpringFestivalWedding.label>
-  <SylvieRace_SpringFestivalWedding.description>新春花嫁。</SylvieRace_SpringFestivalWedding.description>
+  <SylvieRace_SpringFestivalWedding.description>似乎是为了庆祝一个古老的节日而制作的服装，火红的颜色总让人移不开眼。</SylvieRace_SpringFestivalWedding.description>
   <SylvieRace_PurpleDress.label>紫色连衣裙</SylvieRace_PurpleDress.label>
   <SylvieRace_PurpleDress.description>紫色连衣裙。</SylvieRace_PurpleDress.description>
   <SylvieRace_BlueDress.label>蓝色连衣裙</SylvieRace_BlueDress.label>
-  <SylvieRace_BlueDress.description>蓝色连衣裙。</SylvieRace_BlueDress.description>
+  <SylvieRace_BlueDress.description>蓝色淡雅的连衣裙服装，有一股典雅的气息，穿上去应该很好看吧。</SylvieRace_BlueDress.description>
   <SylvieRace_FloralDress.label>连衣花裙</SylvieRace_FloralDress.label>
-  <SylvieRace_FloralDress.description>连衣花裙。</SylvieRace_FloralDress.description>
+  <SylvieRace_FloralDress.description>有一股浓厚的夏日氛围，有格外清爽的感觉。</SylvieRace_FloralDress.description>
   <SylvieRace_ElegantClothingPants.label>典雅服装下装</SylvieRace_ElegantClothingPants.label>
   <SylvieRace_ElegantClothingPants.description>典雅服装下装。</SylvieRace_ElegantClothingPants.description>
   <SylvieRace_StudentUniformPants.label>学生服下装</SylvieRace_StudentUniformPants.label>
@@ -33,9 +33,9 @@
   <SylvieRace_SpringFestivalHeadwear.label>新春头饰</SylvieRace_SpringFestivalHeadwear.label>
   <SylvieRace_SpringFestivalHeadwear.description>新春头饰。</SylvieRace_SpringFestivalHeadwear.description>
   <SylvieRace_Bandaid.label>创口贴</SylvieRace_Bandaid.label>
-  <SylvieRace_Bandaid.description>创口贴。</SylvieRace_Bandaid.description>
+  <SylvieRace_Bandaid.description>不知道是哪个人想到的把创口贴当作衣服的，这和全裸有什么区别。</SylvieRace_Bandaid.description>
   <SylvieRace_Swimsuit.label>泳装</SylvieRace_Swimsuit.label>
-  <SylvieRace_Swimsuit.description>泳装。</SylvieRace_Swimsuit.description>
+  <SylvieRace_Swimsuit.description>只是一件平平无奇的泳装，但总是让人感到血脉喷张。</SylvieRace_Swimsuit.description>
   <SylvieRace_Shawl.label>披肩</SylvieRace_Shawl.label>
   <SylvieRace_Shawl.description>披肩。</SylvieRace_Shawl.description>
 </LanguageData>

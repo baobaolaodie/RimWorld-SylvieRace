@@ -58,8 +58,8 @@
 
   <ThingDef ParentName="ApparelBase">
     <defName>SylvieRace_FineClothing</defName>
-    <label>Fine Clothing</label>
-    <description>A fine clothing.</description>
+    <label>Black dress</label>
+    <description>A solemn and elegant black dress — wearing it should look very graceful, and it would be well-suited for formal occasions.</description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
     <tradeability>All</tradeability>
@@ -81,6 +81,9 @@
       <ArmorRating_Blunt>0.15</ArmorRating_Blunt>
       <ArmorRating_Heat>0.15</ArmorRating_Heat>
     </statBases>
+	<equippedStatOffsets>
+	  <SocialImpact>0.10</SocialImpact>
+	</equippedStatOffsets>
     <costStuffCount>40</costStuffCount>
     <stuffCategories>
       <li>Fabric</li>
@@ -115,7 +118,7 @@
   <ThingDef ParentName="ApparelBase">
     <defName>SylvieRace_Kimono</defName>
     <label>Kimono</label>
-    <description>A kimono.</description>
+    <description>A fully-wrapped kimono outfit; its warm color tones give it an adorable feel. During festivals, many people are sure to be seen wearing one.</description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
     <tradeability>All</tradeability>
@@ -137,6 +140,9 @@
       <ArmorRating_Blunt>0.15</ArmorRating_Blunt>
       <ArmorRating_Heat>0.15</ArmorRating_Heat>
     </statBases>
+	<equippedStatOffsets>
+	  <SocialImpact>0.10</SocialImpact>
+    </equippedStatOffsets>
     <costStuffCount>40</costStuffCount>
     <stuffCategories>
       <li>Fabric</li>
@@ -227,7 +233,7 @@
   <ThingDef ParentName="ApparelBase">
     <defName>SylvieRace_ElegantClothing</defName>
     <label>Elegant Clothing</label>
-    <description>An elegant clothing.</description>
+    <description>The classic staff uniform, typically issued to service personnel. It's just... it might be a bit tight.</description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
     <tradeability>All</tradeability>
@@ -249,6 +255,9 @@
       <ArmorRating_Blunt>0.15</ArmorRating_Blunt>
       <ArmorRating_Heat>0.15</ArmorRating_Heat>
     </statBases>
+	<equippedStatOffsets>
+      <WorkSpeedGlobal>0.05</WorkSpeedGlobal>
+	</equippedStatOffsets>
     <costStuffCount>40</costStuffCount>
     <stuffCategories>
       <li>Fabric</li>
@@ -338,7 +347,7 @@
   <ThingDef ParentName="ApparelBase">
     <defName>SylvieRace_StudentUniform</defName>
     <label>Student Uniform</label>
-    <description>A student uniform.</description>
+    <description>A thin sailor uniform brimming with the colors of youth. But in this world, there doesn't seem to be a requirement for standardized uniforms — so it's probably just worn for the sake of looking good.</description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
     <tradeability>All</tradeability>
@@ -360,6 +369,9 @@
       <ArmorRating_Blunt>0.15</ArmorRating_Blunt>
       <ArmorRating_Heat>0.15</ArmorRating_Heat>
     </statBases>
+	<equippedStatOffsets>
+	  <SocialImpact>0.10</SocialImpact>
+	</equippedStatOffsets>
     <costStuffCount>40</costStuffCount>
     <stuffCategories>
       <li>Fabric</li>
@@ -393,7 +405,7 @@
   <ThingDef ParentName="ApparelBase">
     <defName>SylvieRace_Suits</defName>
     <label>Suit</label>
-    <description>A suit.</description>
+    <description>An outfit that exudes a sense of seriousness, generally reserved for management. Yet, for some inexplicable reason, it stirs an intense desire in peop</description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
     <tradeability>All</tradeability>
@@ -415,6 +427,9 @@
       <ArmorRating_Blunt>0.15</ArmorRating_Blunt>
       <ArmorRating_Heat>0.15</ArmorRating_Heat>
     </statBases>
+	<equippedStatOffsets>
+	  <SocialImpact>0.10</SocialImpact>
+	</equippedStatOffsets>
     <costStuffCount>40</costStuffCount>
     <stuffCategories>
       <li>Fabric</li>
@@ -449,7 +464,7 @@
   <ThingDef ParentName="ApparelBase">
     <defName>SylvieRace_Cheongsam</defName>
     <label>Cheongsam</label>
-    <description>A cheongsam.</description>
+    <description>A purple qipao; although the slit isn't particularly high, it still stirs the imagination.</description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
     <tradeability>All</tradeability>
@@ -471,6 +486,9 @@
       <ArmorRating_Blunt>0.15</ArmorRating_Blunt>
       <ArmorRating_Heat>0.15</ArmorRating_Heat>
     </statBases>
+	<equippedStatOffsets>
+	  <SocialImpact>0.10</SocialImpact>
+	</equippedStatOffsets>
     <costStuffCount>40</costStuffCount>
     <stuffCategories>
       <li>Fabric</li>
@@ -505,7 +523,7 @@
   <ThingDef ParentName="ApparelBase">
     <defName>SylvieRace_SpringFestivalWedding</defName>
     <label>Spring Festival Wedding</label>
-    <description>A spring festival wedding outfit.</description>
+    <description>This outfit seems to have been made to celebrate an ancient festival; its fiery red color always draws one's gaze irresistibly.</description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
     <tradeability>All</tradeability>
