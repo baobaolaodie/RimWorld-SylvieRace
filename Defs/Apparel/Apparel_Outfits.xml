@@ -373,7 +373,7 @@
       <ArmorRating_Heat>0.15</ArmorRating_Heat>
     </statBases>
 	<equippedStatOffsets>
-	  <SocialImpact>0.10</SocialImpact>
+		<WorkSpeedGlobal>0.05</WorkSpeedGlobal>
 	</equippedStatOffsets>
     <costStuffCount>40</costStuffCount>
     <stuffCategories>
@@ -431,7 +431,7 @@
       <ArmorRating_Heat>0.15</ArmorRating_Heat>
     </statBases>
 	<equippedStatOffsets>
-	  <SocialImpact>0.10</SocialImpact>
+		<WorkSpeedGlobal>0.05</WorkSpeedGlobal>
 	</equippedStatOffsets>
     <costStuffCount>40</costStuffCount>
     <stuffCategories>
