@@ -3,7 +3,7 @@
   <ThingDef ParentName="ApparelBase">
     <defName>SylvieRace_PurpleDress</defName>
     <label>Purple Dress</label>
-    <description>A purple dress.</description>
+    <description>The seductive purple is always captivating and unforgettable. Its fluffy texture gives it a feeling entirely different from that of the black dress, making one yearn to catch a glimpse of the person beneath it.</description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
     <tradeability>All</tradeability>
@@ -25,6 +25,9 @@
       <ArmorRating_Blunt>0.15</ArmorRating_Blunt>
       <ArmorRating_Heat>0.15</ArmorRating_Heat>
     </statBases>
+	<equippedStatOffsets>
+	  <SocialImpact>0.10</SocialImpact>
+	</equippedStatOffsets>
     <costStuffCount>40</costStuffCount>
     <stuffCategories>
       <li>Fabric</li>

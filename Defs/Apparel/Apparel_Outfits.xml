@@ -3,7 +3,7 @@
   <ThingDef ParentName="ApparelBase">
     <defName>SylvieRace_Finally</defName>
     <label>Endland Outfit</label>
-    <description>An endland outfit.</description>
+    <description>This appears to be an old man's clothing — it doesn't seem like something from this world.</description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
     <tradeability>All</tradeability>
@@ -291,7 +291,7 @@
   <ThingDef ParentName="ApparelBase">
     <defName>SylvieRace_HeavyMaid</defName>
     <label>Heavy Maid Outfit</label>
-    <description>A heavy maid outfit.</description>
+    <description>A maid outfit fastened with numerous ribbons and layered many times over. Its heavy, substantial feel provides a sense of comfort and security.</description>
     <recipeMaker Inherit="False" IsNull="True" />
     <techLevel>Medieval</techLevel>
     <tradeability>All</tradeability>
@@ -309,10 +309,13 @@
       <StuffEffectMultiplierInsulation_Cold>0.2</StuffEffectMultiplierInsulation_Cold>
       <StuffEffectMultiplierInsulation_Heat>0.2</StuffEffectMultiplierInsulation_Heat>
       <EquipDelay>2</EquipDelay>
-      <ArmorRating_Sharp>0.15</ArmorRating_Sharp>
-      <ArmorRating_Blunt>0.15</ArmorRating_Blunt>
+      <ArmorRating_Sharp>0.8</ArmorRating_Sharp>
+      <ArmorRating_Blunt>0.5</ArmorRating_Blunt>
       <ArmorRating_Heat>0.15</ArmorRating_Heat>
     </statBases>
+    <equippedStatOffsets>
+	  <MoveSpeed>-0.1</MoveSpeed>
+	</equippedStatOffsets>
     <costStuffCount>40</costStuffCount>
     <stuffCategories>
       <li>Fabric</li>
@@ -575,4 +578,60 @@
       <li>SylvieClothesTag</li>
     </tradeTags>
   </ThingDef>
+
+	<ThingDef ParentName="ApparelBase">
+		<defName>SylvieRace_NurseUniform</defName>
+		<label>Nurse uniform</label>
+		<description>A work-oriented nurse uniform made of delicate silk that gives a sense of reassurance. Through the thin fabric, one can faintly make out a slender figure beneath. It seems to have a peculiar effect on patients.</description>
+		<recipeMaker Inherit="False" IsNull="True" />
+		<techLevel>Medieval</techLevel>
+		<tradeability>All</tradeability>
+		<thingCategories>
+			<li>SylvieRace_Apparel</li>
+		</thingCategories>
+		<graphicData>
+			<texPath>Things/Clothes/nurseuniform_Female_south</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<statBases>
+			<MaxHitPoints>100</MaxHitPoints>
+			<Mass>2.0</Mass>
+			<StuffEffectMultiplierArmor>0.15</StuffEffectMultiplierArmor>
+			<StuffEffectMultiplierInsulation_Cold>0.2</StuffEffectMultiplierInsulation_Cold>
+			<StuffEffectMultiplierInsulation_Heat>0.2</StuffEffectMultiplierInsulation_Heat>
+			<EquipDelay>2</EquipDelay>
+			<ArmorRating_Sharp>0.15</ArmorRating_Sharp>
+			<ArmorRating_Blunt>0.15</ArmorRating_Blunt>
+			<ArmorRating_Heat>0.15</ArmorRating_Heat>
+		</statBases>
+		<costStuffCount>50</costStuffCount>
+		<stuffCategories>
+			<li>Fabric</li>
+		</stuffCategories>
+		<apparel>
+			<wornGraphicPath>Things/Clothes/nurseuniform</wornGraphicPath>
+			<bodyPartGroups>
+				<li>Torso</li>
+				<li>Neck</li>
+				<li>Shoulders</li>
+				<li>Arms</li>
+				<li>Legs</li>
+			</bodyPartGroups>
+			<layers>
+				<li>Middle</li>
+			</layers>
+			<tags>
+				<li>SylvieRace_Apparel</li>
+			</tags>
+			<defaultOutfitTags>
+				<li>Worker</li>
+			</defaultOutfitTags>
+			<countsAsClothingForNudity>true</countsAsClothingForNudity>
+			<developmentalStageFilter>Child, Adult</developmentalStageFilter>
+			<canBeDesiredForIdeo>false</canBeDesiredForIdeo>
+		</apparel>
+		<tradeTags>
+			<li>SylvieClothesTag</li>
+		</tradeTags>
+	</ThingDef>
 </Defs>

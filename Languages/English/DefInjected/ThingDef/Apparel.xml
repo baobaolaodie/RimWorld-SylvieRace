@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SylvieRace_Finally.label>Endland Outfit</SylvieRace_Finally.label>
-  <SylvieRace_Finally.description>An endland outfit.</SylvieRace_Finally.description>
+  <SylvieRace_Finally.description>This appears to be an old man's clothing — it doesn't seem like something from this world.</SylvieRace_Finally.description>
   <SylvieRace_FineClothing.label>Black dress</SylvieRace_FineClothing.label>
   <SylvieRace_FineClothing.description>A solemn and elegant black dress — wearing it should look very graceful, and it would be well-suited for formal occasions.</SylvieRace_FineClothing.description>
   <SylvieRace_Kimono.label>Kimono</SylvieRace_Kimono.label>
@@ -11,7 +11,7 @@
   <SylvieRace_ElegantClothing.label>Elegant Clothing</SylvieRace_ElegantClothing.label>
   <SylvieRace_ElegantClothing.description>The classic staff uniform, typically issued to service personnel. It's just... it might be a bit tight.</SylvieRace_ElegantClothing.description>
   <SylvieRace_HeavyMaid.label>Heavy Maid Outfit</SylvieRace_HeavyMaid.label>
-  <SylvieRace_HeavyMaid.description>A heavy maid outfit.</SylvieRace_HeavyMaid.description>
+  <SylvieRace_HeavyMaid.description>A maid outfit fastened with numerous ribbons and layered many times over. Its heavy, substantial feel provides a sense of comfort and security.</SylvieRace_HeavyMaid.description>
   <SylvieRace_StudentUniform.label>Student Uniform</SylvieRace_StudentUniform.label>
   <SylvieRace_StudentUniform.description>A thin sailor uniform brimming with the colors of youth. But in this world, there doesn't seem to be a requirement for standardized uniforms — so it's probably just worn for the sake of looking good.</SylvieRace_StudentUniform.description>
   <SylvieRace_Suits.label>Suit</SylvieRace_Suits.label>
@@ -21,7 +21,7 @@
   <SylvieRace_SpringFestivalWedding.label>Spring Festival Wedding</SylvieRace_SpringFestivalWedding.label>
   <SylvieRace_SpringFestivalWedding.description>This outfit seems to have been made to celebrate an ancient festival; its fiery red color always draws one's gaze irresistibly.</SylvieRace_SpringFestivalWedding.description>
   <SylvieRace_PurpleDress.label>Purple Dress</SylvieRace_PurpleDress.label>
-  <SylvieRace_PurpleDress.description>A purple dress.</SylvieRace_PurpleDress.description>
+  <SylvieRace_PurpleDress.description>The seductive purple is always captivating and unforgettable. Its fluffy texture gives it a feeling entirely different from that of the black dress, making one yearn to catch a glimpse of the person beneath it.</SylvieRace_PurpleDress.description>
   <SylvieRace_BlueDress.label>Blue Dress</SylvieRace_BlueDress.label>
   <SylvieRace_BlueDress.description>A light blue, elegant dress with a refined aura — it must look quite lovely when worn.</SylvieRace_BlueDress.description>
   <SylvieRace_FloralDress.label>Floral Dress</SylvieRace_FloralDress.label>
@@ -38,4 +38,6 @@
   <SylvieRace_Swimsuit.description>It's just an ordinary swimsuit, yet it never fails to set one's pulse racing.</SylvieRace_Swimsuit.description>
   <SylvieRace_Shawl.label>Shawl</SylvieRace_Shawl.label>
   <SylvieRace_Shawl.description>A shawl.</SylvieRace_Shawl.description>
+  <SylvieRace_NurseUniform.label>Nurse uniform</SylvieRace_NurseUniform.label>
+  <SylvieRace_NurseUniform.description>A work-oriented nurse uniform made of delicate silk that gives a sense of reassurance. Through the thin fabric, one can faintly make out a slender figure beneath. It seems to have a peculiar effect on patients.</SylvieRace_NurseUniform.description>
 </LanguageData>
