@@ -4,24 +4,15 @@ using Verse;
 
 namespace SylvieMod;
 
-/// <summary>
-/// Manages Hediff-related functionality for Sylvie.
-/// </summary>
 public static class SylvieHediffManager
 {
-    private const int HediffDelayTicks = 300000; // 5 game days
+    private const int HediffDelayTicks = 300000;
 
-    /// <summary>
-    /// Calculates the tick when the hediff should trigger.
-    /// </summary>
     public static int CalculateTriggerTick()
     {
         return Find.TickManager.TicksGame + HediffDelayTicks;
     }
 
-    /// <summary>
-    /// Triggers the initial trauma hediff on the specified pawn.
-    /// </summary>
     public static bool TryTriggerHediff(Pawn? pawn)
     {
         if (pawn == null || pawn.Dead)
@@ -44,9 +35,6 @@ public static class SylvieHediffManager
         return true;
     }
 
-    /// <summary>
-    /// Sends a letter notification about the hediff.
-    /// </summary>
     private static void SendHediffLetter(Pawn pawn)
     {
         TaggedString label = "SylvieRace_HediffLetterLabel".Translate();
@@ -55,66 +43,108 @@ public static class SylvieHediffManager
     }
 }
 
+public class SylvieRace_CompProperties_NurseHeal : CompProperties
+{
+    public int cooldownTicks = 5000;
+    public HediffDef paralysisHediff = null!;
 
-    public class SylvieRace_CompProperties_AutoHeal : CompProperties
+    public SylvieRace_CompProperties_NurseHeal()
     {
-        public int healIntervalTicks = 120000;
-        public HediffDef paralysisHediff = null!;
+        this.compClass = typeof(SylvieRace_CompNurseHeal);
+    }
+}
 
-        public SylvieRace_CompProperties_AutoHeal()
+public class SylvieRace_CompNurseHeal : ThingComp
+{
+    private int lastUseTick = -999999;
+
+    public SylvieRace_CompProperties_NurseHeal Props
+        => (SylvieRace_CompProperties_NurseHeal)props;
+
+    private Apparel? Apparel => parent as Apparel;
+    
+    private Pawn? Wearer => Apparel?.Wearer;
+
+    private bool IsOnCooldown
+    {
+        get
         {
-            this.compClass = typeof(SylvieRace_CompAutoHeal);
+            return Find.TickManager.TicksGame < lastUseTick + Props.cooldownTicks;
         }
     }
-    public class SylvieRace_CompAutoHeal : ThingComp
+
+    private int CooldownTicksRemaining
     {
-        private int tickCounter = 0;
-
-        public SylvieRace_CompProperties_AutoHeal Props
-            => (SylvieRace_CompProperties_AutoHeal)props;
-
-        public override void CompTickRare()
+        get
         {
-            base.CompTickRare();
-            if (parent is Apparel apparel && apparel.Wearer != null)
-            {
-                tickCounter += 250; 
-
-                if (tickCounter >= Props.healIntervalTicks)
-                {
-                    tickCounter = 0;
-                    DoAutoHeal(apparel.Wearer);
-                }
-            }
-            else
-            {
-                tickCounter = 0;
-            }
-        }
-
-        private void DoAutoHeal(Pawn wearer)
-        {
-            bool hasWounds = false;
-            foreach (Hediff hediff in wearer.health.hediffSet.hediffs)
-            {
-                if (hediff is Hediff_Injury injury && !injury.IsTended())
-                {
-                    injury.Tended(1.0f, 1.0f, 0);
-                    hasWounds = true;
-                }
-            }
-
-            if (hasWounds)
-            {
-                Hediff paralysis = HediffMaker.MakeHediff(
-                    Props.paralysisHediff, wearer);
-                wearer.health.AddHediff(paralysis);
-            }
-        }
-
-        public override void PostExposeData()
-        {
-            base.PostExposeData();
-            Scribe_Values.Look(ref tickCounter, "SylvieRace_tickCounter", 0);
+            return UnityEngine.Mathf.Max(0, lastUseTick + Props.cooldownTicks - Find.TickManager.TicksGame);
         }
     }
+
+    public override System.Collections.Generic.IEnumerable<Gizmo> CompGetWornGizmosExtra()
+    {
+        Pawn? wearer = Wearer;
+        if (wearer == null || !wearer.IsColonistPlayerControlled)
+        {
+            yield break;
+        }
+
+        Command_Action cmd = new Command_Action();
+        cmd.defaultLabel = "SylvieRace_NurseHeal_Label".Translate();
+        cmd.defaultDesc = "SylvieRace_NurseHeal_Desc".Translate();
+        cmd.icon = ContentFinder<UnityEngine.Texture2D>.Get("UI/Commands/MedicalRest", true);
+        cmd.action = TryUseAbility;
+
+        if (IsOnCooldown)
+        {
+            cmd.Disabled = true;
+            cmd.disabledReason = "SylvieRace_NurseHeal_Cooldown".Translate(CooldownTicksRemaining.ToStringTicksToPeriod());
+        }
+
+        yield return cmd;
+    }
+
+    private void TryUseAbility()
+    {
+        Pawn? wearer = Wearer;
+        if (wearer == null) return;
+
+        if (IsOnCooldown)
+        {
+            Messages.Message("SylvieRace_NurseHeal_Cooldown".Translate(CooldownTicksRemaining.ToStringTicksToPeriod()), 
+                MessageTypeDefOf.RejectInput);
+            return;
+        }
+
+        bool hasWounds = false;
+        foreach (Hediff hediff in wearer.health.hediffSet.hediffs)
+        {
+            if (hediff is Hediff_Injury injury && !injury.IsTended())
+            {
+                injury.Tended(1.0f, 1.0f, 0);
+                hasWounds = true;
+            }
+        }
+
+        if (!hasWounds)
+        {
+            Messages.Message("SylvieRace_NurseHeal_NoWounds".Translate(wearer.LabelShort), 
+                MessageTypeDefOf.RejectInput);
+            return;
+        }
+
+        Hediff paralysis = HediffMaker.MakeHediff(Props.paralysisHediff, wearer);
+        wearer.health.AddHediff(paralysis);
+
+        lastUseTick = Find.TickManager.TicksGame;
+
+        Messages.Message("SylvieRace_NurseHeal_Success".Translate(wearer.LabelShort), 
+            wearer, MessageTypeDefOf.PositiveEvent);
+    }
+
+    public override void PostExposeData()
+    {
+        base.PostExposeData();
+        Scribe_Values.Look(ref lastUseTick, "SylvieRace_NurseHeal_lastUseTick", -999999);
+    }
+}

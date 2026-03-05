@@ -141,7 +141,27 @@ public static class SylvieDefNames
 - `TryTriggerHediff(Pawn)` - 触发 Hediff
 - `SendHediffLetter(Pawn)` - 发送信件通知
 
-### 4. SylvieGameComponent（游戏组件）
+### 4. 护士服主动技能组件
+
+**文件位置**: `Source/Hediffs/SylvieHediffManager.cs`
+
+**SylvieRace_CompProperties_NurseHeal**:
+- `cooldownTicks` - 冷却时间（默认 5000 ticks = 2 小时）
+- `paralysisHediff` - 昏迷 Hediff 定义
+
+**SylvieRace_CompNurseHeal**:
+- `CompGetWornGizmosExtra()` - 返回技能 Gizmo 按钮
+- `TryUseAbility()` - 执行治疗逻辑
+- `IsOnCooldown` - 检查冷却状态
+- `CooldownTicksRemaining` - 剩余冷却时间
+
+**使用方式**:
+- 穿着护士服后，装备栏显示"紧急治疗"技能按钮
+- 点击后立即包扎所有未处理的伤口
+- 触发 1 小时昏迷效果
+- 2 小时冷却时间
+
+### 5. SylvieGameComponent（游戏组件）
 
 **文件位置**: `Source/Components/SylvieGameComponent.cs`
 
@@ -150,7 +170,7 @@ public static class SylvieDefNames
 - `RegisterSylviePawn(Pawn)` - 注册希尔薇并安排 Hediff 触发
 - `GameComponentTick()` - 定期检查事件触发
 
-### 5. IncidentWorker_SylvieTrader（事件处理器）
+### 6. IncidentWorker_SylvieTrader（事件处理器）
 
 **文件位置**: `Source/Incidents/IncidentWorker_SylvieTrader.cs`
 
@@ -159,7 +179,7 @@ public static class SylvieDefNames
 - 使用 `SylviePawnGenerator` 生成希尔薇
 - 发送选择信件
 
-### 6. ChoiceLetter_SylvieOffer（信件类）
+### 7. ChoiceLetter_SylvieOffer（信件类）
 
 **文件位置**: `Source/Letters/ChoiceLetter_SylvieOffer.cs`
 
@@ -168,13 +188,13 @@ public static class SylvieDefNames
 - 处理购买和拒绝逻辑
 - 转移希尔薇到玩家派系
 
-### 7. Patch_CommsConsole（通讯台补丁）
+### 8. Patch_CommsConsole（通讯台补丁）
 
 **文件位置**: `Source/Patches/Patch_CommsConsole.cs`
 
 添加呼叫服装贸易商选项。
 
-### 10. 初始健康状态系统 (Hediffs/)
+### 9. 初始健康状态系统 (Hediffs/)
 
 **文件位置**: `Defs/Hediffs/Sylvie_Hediffs.xml`
 
@@ -224,7 +244,7 @@ public static class SylvieDefNames
 - 使用 `Scribe_Values.Look<int>` 保存触发时间
 - 使用 `Scribe_Values.Look<bool>` 保存触发状态
 
-### 11. 心情效果系统 (Thoughts/)
+### 10. 心情效果系统 (Thoughts/)
 
 **文件位置**: `Defs/Thoughts/Sylvie_Thoughts.xml`
 
@@ -297,8 +317,9 @@ dotnet build --configuration Release
 项目启用了 `#nullable enable`，对于通过 XML 配置注入的字段（如 `CompProperties` 中的 `HediffDef`），使用 `= null!` 标记：
 
 ```csharp
-public class SylvieRace_CompProperties_AutoHeal : CompProperties
+public class SylvieRace_CompProperties_NurseHeal : CompProperties
 {
+    public int cooldownTicks = 5000;
     public HediffDef paralysisHediff = null!;  // XML 注入字段
 }
 ```

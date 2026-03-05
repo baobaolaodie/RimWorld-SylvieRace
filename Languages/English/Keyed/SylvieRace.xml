@@ -13,4 +13,9 @@
   <Sylvie_Refuse>Refuse</Sylvie_Refuse>
   <SylvieRace_HediffLetterLabel>Sylvie's Health Issue</SylvieRace_HediffLetterLabel>
   <SylvieRace_HediffLetterText>{0} seems to be showing signs of trauma from past experiences. She may need medical attention and care.</SylvieRace_HediffLetterText>
+  <SylvieRace_NurseHeal_Label>Emergency Treatment</SylvieRace_NurseHeal_Label>
+  <SylvieRace_NurseHeal_Desc>Immediately bandage all untreated wounds, but causes 1 hour of paralysis. 2 hour cooldown.</SylvieRace_NurseHeal_Desc>
+  <SylvieRace_NurseHeal_Cooldown>Cooldown remaining: {0}</SylvieRace_NurseHeal_Cooldown>
+  <SylvieRace_NurseHeal_NoWounds>{0} has no untreated wounds to heal.</SylvieRace_NurseHeal_NoWounds>
+  <SylvieRace_NurseHeal_Success>{0}'s wounds have been bandaged, but she is now paralyzed for 1 hour.</SylvieRace_NurseHeal_Success>
 </LanguageData>

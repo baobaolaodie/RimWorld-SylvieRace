@@ -14,4 +14,9 @@
   <Sylvie_Refuse>拒绝</Sylvie_Refuse>
   <SylvieRace_HediffLetterLabel>希尔薇的健康问题</SylvieRace_HediffLetterLabel>
   <SylvieRace_HediffLetterText>{0} 似乎表现出了过去经历带来的创伤症状。她可能需要医疗照顾和关怀。</SylvieRace_HediffLetterText>
+  <SylvieRace_NurseHeal_Label>紧急治疗</SylvieRace_NurseHeal_Label>
+  <SylvieRace_NurseHeal_Desc>立即包扎所有未处理的伤口，但会导致1小时昏迷。冷却时间2小时。</SylvieRace_NurseHeal_Desc>
+  <SylvieRace_NurseHeal_Cooldown>冷却剩余: {0}</SylvieRace_NurseHeal_Cooldown>
+  <SylvieRace_NurseHeal_NoWounds>{0} 没有需要处理的伤口。</SylvieRace_NurseHeal_NoWounds>
+  <SylvieRace_NurseHeal_Success>{0} 的伤口已被包扎，但她将昏迷1小时。</SylvieRace_NurseHeal_Success>
 </LanguageData>

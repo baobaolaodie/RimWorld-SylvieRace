@@ -584,7 +584,6 @@
 		<label>Nurse uniform</label>
 		<description>A work-oriented nurse uniform made of delicate silk that gives a sense of reassurance. Through the thin fabric, one can faintly make out a slender figure beneath. It seems to have a peculiar effect on patients.</description>
 		<recipeMaker Inherit="False" IsNull="True" />
-		<tickerType>Rare</tickerType>
 		<techLevel>Medieval</techLevel>
 		<tradeability>All</tradeability>
 		<thingCategories>
@@ -606,9 +605,9 @@
 			<ArmorRating_Heat>0.15</ArmorRating_Heat>
 		</statBases>
 		<comps>
-			<li Class="SylvieMod.SylvieRace_CompProperties_AutoHeal">
-				<compClass>SylvieMod.SylvieRace_CompAutoHeal</compClass>
-				<healIntervalTicks>25000</healIntervalTicks><!--时间直接在这里改就行，不用管C#-->
+			<li Class="SylvieMod.SylvieRace_CompProperties_NurseHeal">
+				<compClass>SylvieMod.SylvieRace_CompNurseHeal</compClass>
+				<cooldownTicks>5000</cooldownTicks>
 				<paralysisHediff>SylvieRace_NurseParalysis</paralysisHediff>
 			</li>
 		</comps>
