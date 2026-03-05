@@ -59,7 +59,7 @@ public static class SylvieHediffManager
     public class SylvieRace_CompProperties_AutoHeal : CompProperties
     {
         public int healIntervalTicks = 120000;
-        public HediffDef paralysisHediff;
+        public HediffDef paralysisHediff = null!;
 
         public SylvieRace_CompProperties_AutoHeal()
         {

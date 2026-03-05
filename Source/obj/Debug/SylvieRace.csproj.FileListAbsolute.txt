@@ -4,3 +4,7 @@ C:\Users\EDY\rimworld\RimWorld-Dev-Selfuse\SylvieRace\Source\obj\Debug\SylvieRac
 C:\Users\EDY\rimworld\RimWorld-Dev-Selfuse\SylvieRace\Source\obj\Debug\SylvieRace.csproj.CoreCompileInputs.cache
 C:\Users\EDY\rimworld\RimWorld-Dev-Selfuse\SylvieRace\Source\obj\Debug\SylvieRace.dll
 C:\Users\EDY\rimworld\RimWorld-Dev-Selfuse\SylvieRace\Source\obj\Debug\SylvieRace.pdb
+D:\LongYinHaHa\VSCode\Rimworld\sylvierace\source\obj\Debug\SylvieRace.csproj.AssemblyReference.cache
+D:\LongYinHaHa\VSCode\Rimworld\sylvierace\source\obj\Debug\SylvieRace.csproj.CoreCompileInputs.cache
+D:\LongYinHaHa\VSCode\Rimworld\sylvierace\source\obj\Debug\SylvieRace.dll
+D:\LongYinHaHa\VSCode\Rimworld\sylvierace\source\obj\Debug\SylvieRace.pdb

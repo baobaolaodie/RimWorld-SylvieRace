@@ -163,6 +163,8 @@ SylvieRace/
 - 添加健康问题信件通知
 - 添加中英文翻译支持
 - 尝试修复 HediffDef 配置错误（hediffClass 需使用 HediffWithComps）
+- 修复 CS8618 可空性警告（CompProperties 字段使用 null! 标记）
+- 恢复 DLL 引用路径为 GameDll/（原路径因目录被误删导致编译失败）
 
 ### v0.0.3 (2026-03-03)
 - 修复翻译系统，将语言目录从 SimplifiedChinese 重命名为 ChineseSimplified

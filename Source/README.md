@@ -280,11 +280,30 @@ public static class SylvieDefNames
 - 输出路径：`..\1.6\Assemblies\`
 - 输出文件：`SylvieRace.dll`
 
+**DLL 引用路径**:
+游戏 DLL 文件位于工作区的 `GameDll/` 目录：
+- `0Harmony.dll` - Harmony 补丁框架
+- `Assembly-CSharp.dll` - RimWorld 核心程序集
+- `UnityEngine.CoreModule.dll` - Unity 核心模块
+
 **编译命令**:
 ```bash
 cd Source
 dotnet build --configuration Release
 ```
+
+## 可空性处理
+
+项目启用了 `#nullable enable`，对于通过 XML 配置注入的字段（如 `CompProperties` 中的 `HediffDef`），使用 `= null!` 标记：
+
+```csharp
+public class SylvieRace_CompProperties_AutoHeal : CompProperties
+{
+    public HediffDef paralysisHediff = null!;  // XML 注入字段
+}
+```
+
+这告诉编译器该字段会在运行时由 RimWorld 的 XML 反序列化系统赋值。
 
 ## 注意事项
 
