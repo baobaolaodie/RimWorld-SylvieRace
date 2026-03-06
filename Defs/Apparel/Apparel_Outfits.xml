@@ -39,6 +39,7 @@
         <li>Legs</li>
       </bodyPartGroups>
       <layers>
+		  <li>OnSkin</li>
         <li>Middle</li>
       </layers>
       <tags>
@@ -98,6 +99,7 @@
         <li>Legs</li>
       </bodyPartGroups>
       <layers>
+		  <li>OnSkin</li>
         <li>Middle</li>
       </layers>
       <tags>
@@ -157,6 +159,7 @@
         <li>Legs</li>
       </bodyPartGroups>
       <layers>
+		<li>OnSkin</li>
         <li>Middle</li>
       </layers>
       <tags>
@@ -213,6 +216,7 @@
         <li>Legs</li>
       </bodyPartGroups>
       <layers>
+		  <li>OnSkin</li>
         <li>Middle</li>
       </layers>
       <tags>
@@ -330,6 +334,7 @@
         <li>Legs</li>
       </bodyPartGroups>
       <layers>
+		  <li>OnSkin</li>
         <li>Middle</li>
       </layers>
       <tags>
@@ -447,6 +452,7 @@
         <li>Legs</li>
       </bodyPartGroups>
       <layers>
+		  <li>OnSkin</li>
         <li>Middle</li>
       </layers>
       <tags>
@@ -506,6 +512,7 @@
         <li>Legs</li>
       </bodyPartGroups>
       <layers>
+		  <li>OnSkin</li>
         <li>Middle</li>
       </layers>
       <tags>
@@ -562,6 +569,7 @@
         <li>Legs</li>
       </bodyPartGroups>
       <layers>
+		  <li>OnSkin</li>
         <li>Middle</li>
       </layers>
       <tags>
@@ -625,6 +633,7 @@
 				<li>Legs</li>
 			</bodyPartGroups>
 			<layers>
+				<li>OnSkin</li>
 				<li>Middle</li>
 			</layers>
 			<tags>
