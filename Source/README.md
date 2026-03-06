@@ -21,11 +21,11 @@ SylvieRace/
 │   ├── Apparel/
 │   │   ├── Apparel_Dresses.xml    # 连衣裙类 (3件)
 │   │   ├── Apparel_Outfits.xml    # 套装类 (10件)
-│   │   ├── Apparel_Pants.xml      # 下装类 (2件)
+│   │   ├── Apparel_Pants.xml      # 下装类 (3件)
 │   │   ├── Apparel_Special.xml    # 特殊服装 (3件)
 │   │   └── Apparel_Headwear.xml   # 头饰 (1件)
 │   ├── Hair/
-│   │   └── Sylvie_Hair.xml        # 发型定义
+│   │   └── Sylvie_Hair.xml        # 发型定义 (3种发型)
 │   ├── Incidents/
 │   │   └── Sylvie_Incident.xml    # 事件定义
 │   ├── Letters/

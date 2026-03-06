@@ -13,4 +13,18 @@
     <texPath>Things/Pawn/Humanlike/Sylvie/Hair/Hair</texPath>
     <hairGender>Female</hairGender>
   </HairDef>
+
+  <HairDef ParentName="BaseSylvieHair">
+    <defName>Sylvie_Hair_Hair02</defName>
+    <label>Ribbon Hair</label>
+    <texPath>Things/Pawn/Humanlike/Sylvie/Hair/Hair02</texPath>
+    <hairGender>Female</hairGender>
+  </HairDef>
+
+  <HairDef ParentName="BaseSylvieHair">
+    <defName>Sylvie_Hair_LongHair</defName>
+    <label>Long Hair</label>
+    <texPath>Things/Pawn/Humanlike/Sylvie/Hair/LongHair</texPath>
+    <hairGender>Female</hairGender>
+  </HairDef>
 </Defs>

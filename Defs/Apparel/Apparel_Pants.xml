@@ -97,4 +97,53 @@
       <li>SylvieClothesTag</li>
     </tradeTags>
   </ThingDef>
+
+  <ThingDef ParentName="ApparelBase">
+    <defName>SylvieRace_SuitsPants</defName>
+    <label>Suits Pants</label>
+    <description>Suits pants that match the formal suit jacket.</description>
+    <recipeMaker Inherit="False" IsNull="True" />
+    <techLevel>Medieval</techLevel>
+    <tradeability>All</tradeability>
+    <thingCategories>
+      <li>SylvieRace_Apparel</li>
+    </thingCategories>
+    <graphicData>
+      <texPath>Things/Clothes/SuitsPants_north</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <statBases>
+      <MaxHitPoints>100</MaxHitPoints>
+      <Mass>0.5</Mass>
+      <EquipDelay>1.5</EquipDelay>
+      <StuffEffectMultiplierArmor>0.2</StuffEffectMultiplierArmor>
+      <StuffEffectMultiplierInsulation_Cold>0.20</StuffEffectMultiplierInsulation_Cold>
+      <StuffEffectMultiplierInsulation_Heat>0.20</StuffEffectMultiplierInsulation_Heat>
+    </statBases>
+    <costStuffCount>40</costStuffCount>
+    <stuffCategories>
+      <li>Fabric</li>
+    </stuffCategories>
+    <apparel>
+      <wornGraphicPath>Things/Clothes/SuitsPants</wornGraphicPath>
+      <bodyPartGroups>
+        <li>Legs</li>
+      </bodyPartGroups>
+      <layers>
+        <li>OnSkin</li>
+      </layers>
+      <tags>
+        <li>SylvieRace_Apparel</li>
+      </tags>
+      <defaultOutfitTags>
+        <li>Worker</li>
+      </defaultOutfitTags>
+      <countsAsClothingForNudity>true</countsAsClothingForNudity>
+      <developmentalStageFilter>Child, Adult</developmentalStageFilter>
+      <canBeDesiredForIdeo>false</canBeDesiredForIdeo>
+    </apparel>
+    <tradeTags>
+      <li>SylvieClothesTag</li>
+    </tradeTags>
+  </ThingDef>
 </Defs>
