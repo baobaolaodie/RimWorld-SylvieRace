@@ -3,5 +3,5 @@
   <SylvieRace_InitialTrauma.label>初始创伤</SylvieRace_InitialTrauma.label>
   <SylvieRace_InitialTrauma.description>来自过去经历的深层心理和身体创伤。需要细心的医疗照顾和时间来治愈。</SylvieRace_InitialTrauma.description>
   <SylvieRace_NurseParalysis.label>护士服麻痹</SylvieRace_NurseParalysis.label>
-  <SylvieRace_NurseParalysis.description>护士服自动包扎伤口时引发的暂时性麻痹。在此期间无法移动和操作。</SylvieRace_NurseParalysis.description>
+  <SylvieRace_NurseParalysis.description>护士服在包扎伤口时引发的暂时性麻痹。在此期间无法移动和操作。</SylvieRace_NurseParalysis.description>
 </LanguageData>
