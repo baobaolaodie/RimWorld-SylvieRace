@@ -42,7 +42,7 @@
         <li>Legs</li>
       </bodyPartGroups>
       <layers>
-		  <li>OnSkin</li>
+		    <li>OnSkin</li>
         <li>Middle</li>
       </layers>
       <tags>
@@ -87,7 +87,6 @@
     </statBases>
     <costStuffCount>40</costStuffCount>
     <stuffCategories>
-		<li>OnSkin</li>
       <li>Fabric</li>
     </stuffCategories>
     <apparel>
@@ -100,6 +99,7 @@
         <li>Legs</li>
       </bodyPartGroups>
       <layers>
+		    <li>OnSkin</li>
         <li>Middle</li>
       </layers>
       <tags>
@@ -156,7 +156,7 @@
         <li>Legs</li>
       </bodyPartGroups>
       <layers>
-		  <li>OnSkin</li>
+		    <li>OnSkin</li>
         <li>Middle</li>
       </layers>
       <tags>

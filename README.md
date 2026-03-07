@@ -149,8 +149,25 @@ SylvieRace/
 
 ## 更新日志
 
-### v0.0.4-pre (2026-03-06)
-- 新增两种发型：短发、长发
+### v0.0.4-pre (2026-03-08)
+- **修复 Belt 层服装渲染问题**：
+  - 创口贴和泳装现在正确渲染在 Pawn 身体上
+  - 添加 `renderUtilityAsPack: false` 配置，使 Belt 层正常渲染
+- **修复 Belt 层服装渲染顺序**：
+  - 创口贴和泳装现在渲染在 OnSkin 服装之下，Pawn body 之上
+  - 使用 `apparel.drawData` 配置（layer: 15）控制渲染层级
+  - layer: 15 是绝对层级值，位于 Body (0-10) 和 Apparel root (20) 之间
+- **改进服装种族限制**：
+  - 改用 Humanoid Alien Races 框架原生的 `raceRestriction` 功能
+  - 移除 Harmony 补丁，提高兼容性和稳定性
+  - 非希尔薇种族现在无法穿戴任何希尔薇服装
+- **技术改进**：
+  - 删除 `ApparelRestrictionPatches.cs`（改用 HAR 原生支持）
+  - 删除 `ApparelLayerPatches.cs`（改用 XML 配置）
+  - 在种族定义中添加 `raceRestriction.apparelList` 配置
+
+### v0.0.4-pre (2026-03-07)
+- 新增两种发型：丝带发型、长发
 - 新增西装下装（第 21 种服装）
 - 新增护士服（第 20 种服装）
 - 为部分服装添加特殊效果：
@@ -169,6 +186,13 @@ SylvieRace/
 - 修复 CS8618 可空性警告（CompProperties 字段使用 null! 标记）
 - 恢复 DLL 引用路径为 GameDll/（原路径因目录被误删导致编译失败）
 - 将护士服被动效果改为主动技能，玩家可手动触发治疗
+- **服装系统优化**：
+  - 泳装和创口贴改为配件层（Belt），可与其他服装同时穿戴
+  - 使用 Harmony 补丁拦截 `ApparelProperties.PawnCanWear`，非希尔薇种族无法穿戴希尔薇服装
+- **修复**：
+  - 移除错误位置的 `raceRestriction` 配置（该字段应放在种族 ThingDef 的 `alienRace` 节点下）
+  - 修复西装下装贴图路径错误
+  - 修复服装种族限制补丁目标方法错误（从 `Apparel.PawnCanWear` 改为 `ApparelProperties.PawnCanWear`）
 
 ### v0.0.3 (2026-03-03)
 - 修复翻译系统，将语言目录从 SimplifiedChinese 重命名为 ChineseSimplified

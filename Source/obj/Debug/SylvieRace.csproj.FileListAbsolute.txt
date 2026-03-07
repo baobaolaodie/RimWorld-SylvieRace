@@ -8,3 +8,9 @@ D:\LongYinHaHa\VSCode\Rimworld\sylvierace\source\obj\Debug\SylvieRace.csproj.Ass
 D:\LongYinHaHa\VSCode\Rimworld\sylvierace\source\obj\Debug\SylvieRace.csproj.CoreCompileInputs.cache
 D:\LongYinHaHa\VSCode\Rimworld\sylvierace\source\obj\Debug\SylvieRace.dll
 D:\LongYinHaHa\VSCode\Rimworld\sylvierace\source\obj\Debug\SylvieRace.pdb
+D:\LongYinHaHa\VSCode\Rimworld\SylvieRace\1.6\Assemblies\SylvieRace.dll
+D:\LongYinHaHa\VSCode\Rimworld\SylvieRace\1.6\Assemblies\SylvieRace.pdb
+D:\LongYinHaHa\VSCode\Rimworld\SylvieRace\Source\obj\Debug\SylvieRace.GeneratedMSBuildEditorConfig.editorconfig
+D:\LongYinHaHa\VSCode\Rimworld\SylvieRace\Source\obj\Debug\SylvieRace.AssemblyInfoInputs.cache
+D:\LongYinHaHa\VSCode\Rimworld\SylvieRace\Source\obj\Debug\SylvieRace.AssemblyInfo.cs
+D:\LongYinHaHa\VSCode\Rimworld\SylvieRace\Source\obj\Debug\SylvieRace.sourcelink.json

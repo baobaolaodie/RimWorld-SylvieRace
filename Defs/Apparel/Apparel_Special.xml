@@ -11,7 +11,7 @@
       <li>SylvieRace_Apparel</li>
     </thingCategories>
     <graphicData>
-      <texPath>Things/Clothes/Bandaid_Female_south</texPath>
+      <texPath>Things/Clothes/Bandaid_south</texPath>
       <graphicClass>Graphic_Single</graphicClass>
     </graphicData>
     <statBases>
@@ -35,7 +35,7 @@
         <li>Torso</li>
       </bodyPartGroups>
       <layers>
-        <li>OnSkin</li>
+        <li>Belt</li>
       </layers>
       <tags>
         <li>SylvieRace_Apparel</li>
@@ -46,6 +46,23 @@
       <countsAsClothingForNudity>true</countsAsClothingForNudity>
       <developmentalStageFilter>Child, Adult</developmentalStageFilter>
       <canBeDesiredForIdeo>false</canBeDesiredForIdeo>
+      <wornGraphicData>
+        <renderUtilityAsPack>false</renderUtilityAsPack>
+      </wornGraphicData>
+      <drawData>
+        <dataNorth>
+          <layer>15</layer>
+        </dataNorth>
+        <dataSouth>
+          <layer>15</layer>
+        </dataSouth>
+        <dataEast>
+          <layer>15</layer>
+        </dataEast>
+        <dataWest>
+          <layer>15</layer>
+        </dataWest>
+      </drawData>
     </apparel>
     <tradeTags>
       <li>SylvieClothesTag</li>
@@ -63,7 +80,7 @@
       <li>SylvieRace_Apparel</li>
     </thingCategories>
     <graphicData>
-      <texPath>Things/Clothes/Swimsuit_Female_south</texPath>
+      <texPath>Things/Clothes/Swimsuit_south</texPath>
       <graphicClass>Graphic_Single</graphicClass>
     </graphicData>
     <statBases>
@@ -90,7 +107,7 @@
         <li>Torso</li>
       </bodyPartGroups>
       <layers>
-        <li>OnSkin</li>
+        <li>Belt</li>
       </layers>
       <tags>
         <li>SylvieRace_Apparel</li>
@@ -101,6 +118,23 @@
       <countsAsClothingForNudity>true</countsAsClothingForNudity>
       <developmentalStageFilter>Child, Adult</developmentalStageFilter>
       <canBeDesiredForIdeo>false</canBeDesiredForIdeo>
+      <wornGraphicData>
+        <renderUtilityAsPack>false</renderUtilityAsPack>
+      </wornGraphicData>
+      <drawData>
+        <dataNorth>
+          <layer>15</layer>
+        </dataNorth>
+        <dataSouth>
+          <layer>15</layer>
+        </dataSouth>
+        <dataEast>
+          <layer>15</layer>
+        </dataEast>
+        <dataWest>
+          <layer>15</layer>
+        </dataWest>
+      </drawData>
     </apparel>
     <tradeTags>
       <li>SylvieClothesTag</li>

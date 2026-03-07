@@ -59,6 +59,32 @@
           </value>
         </li>
       </styleSettings>
+
+      <raceRestriction>
+        <apparelList>
+          <li>SylvieRace_Bandaid</li>
+          <li>SylvieRace_Swimsuit</li>
+          <li>SylvieRace_Shawl</li>
+          <li>SylvieRace_ElegantClothingPants</li>
+          <li>SylvieRace_StudentUniformPants</li>
+          <li>SylvieRace_SuitsPants</li>
+          <li>SylvieRace_SpringFestivalHeadwear</li>
+          <li>SylvieRace_PurpleDress</li>
+          <li>SylvieRace_BlueDress</li>
+          <li>SylvieRace_FloralDress</li>
+          <li>SylvieRace_Finally</li>
+          <li>SylvieRace_FineClothing</li>
+          <li>SylvieRace_Kimono</li>
+          <li>SylvieRace_MaidOutfit</li>
+          <li>SylvieRace_ElegantClothing</li>
+          <li>SylvieRace_HeavyMaid</li>
+          <li>SylvieRace_StudentUniform</li>
+          <li>SylvieRace_Suits</li>
+          <li>SylvieRace_Cheongsam</li>
+          <li>SylvieRace_SpringFestivalWedding</li>
+          <li>SylvieRace_NurseUniform</li>
+        </apparelList>
+      </raceRestriction>
     </alienRace>
 
     <statBases>

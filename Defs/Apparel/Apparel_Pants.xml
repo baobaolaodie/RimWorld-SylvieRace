@@ -109,7 +109,7 @@
       <li>SylvieRace_Apparel</li>
     </thingCategories>
     <graphicData>
-      <texPath>Things/Clothes/SuitsPants_north</texPath>
+      <texPath>Things/Clothes/SuitsPants_Female_south</texPath>
       <graphicClass>Graphic_Single</graphicClass>
     </graphicData>
     <statBases>

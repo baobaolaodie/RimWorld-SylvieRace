@@ -328,7 +328,7 @@ public class SylvieRace_CompProperties_NurseHeal : CompProperties
 
 ## 注意事项
 
-1. **服装种族限制**：使用 `apparel.tags` + `PawnKindDef.apparelTags` 机制
+1. **服装种族限制**：使用 `apparel.tags` + `PawnKindDef.apparelTags` 机制，同时使用 `apparel.raceRestriction` 限制非希尔薇种族穿戴
 2. **服装不可制作**：使用 `ApparelBase` + `recipeMaker IsNull="True"` 禁用缝纫台配方
 3. **服装储存区识别**：使用自定义 `thingCategories: SylvieRace_Apparel`
 4. **GameComponent 自动注册**：无需手动注册，RimWorld 会自动实例化
@@ -336,3 +336,107 @@ public class SylvieRace_CompProperties_NurseHeal : CompProperties
 6. **defName 命名规范**：所有 defName 使用 `SylvieRace_` 或 `Sylvie_` 前缀
 7. **翻译系统**：Defs 中使用英文，中文翻译通过 Languages 目录注入
 8. **希尔薇唯一生成**：只能通过 `Sylvie_ArrivalEvent` 事件生成
+9. **服装层级配置**：泳装和创口贴使用 Belt 层（配件层），可与其他服装同时穿戴
+
+## 服装系统技术细节
+
+### 层级配置
+| 服装类型 | layers | 说明 |
+|---------|--------|------|
+| 连衣裙/套装 | OnSkin, Middle | 覆盖躯干、手臂、腿部 |
+| 下装 | OnSkin | 仅覆盖腿部 |
+| 泳装/创口贴 | Belt | 配件层，可与其他服装同时穿戴 |
+| 披肩 | Shell | 最外层 |
+| 头饰 | Overhead | 头部层 |
+
+### Belt 层服装渲染顺序
+Belt 层服装（创口贴、泳衣）需要特殊配置以确保正确的渲染顺序：
+
+**问题**：Belt 层服装默认渲染在 OnSkin 服装之上
+
+**解决方案**：使用 `apparel.drawData` 配置渲染层级
+
+```xml
+<!-- Apparel_Special.xml -->
+<apparel>
+  <wornGraphicData>
+    <renderUtilityAsPack>false</renderUtilityAsPack>
+  </wornGraphicData>
+  <drawData>
+    <dataNorth>
+      <layer>15</layer>
+    </dataNorth>
+    <dataSouth>
+      <layer>15</layer>
+    </dataSouth>
+    <dataEast>
+      <layer>15</layer>
+    </dataEast>
+    <dataWest>
+      <layer>15</layer>
+    </dataWest>
+  </drawData>
+</apparel>
+```
+
+**关键配置说明**：
+- `renderUtilityAsPack: false` - 确保 Belt 层服装正常渲染为身体服装而非背包
+- `drawData` - RimWorld 的渲染数据配置，包含方向性层级设置
+- `dataNorth/dataSouth/dataEast/dataWest` - 各方向的渲染数据
+- `layer: 15` - 渲染层级，位于 Body (0-10) 和 Apparel root (20) 之间
+
+**重要说明**：
+- `layer: 15` 是**绝对层级值**，不是相对于 defaultLayer 的偏移
+- 根据 `DrawData.LayerForRot()` 方法逻辑：如果 `dataNorth.layer` 有值，直接返回该值
+- 这会使 Belt 服装渲染在 Body (0-10) 之上，Apparel root (20) 之下
+
+**注意**：`wornGraphicData` 中的 `north/south/east/west` 节点没有 `layer` 字段，正确的配置位置是 `apparel.drawData`
+
+**渲染层级参考**：
+| 节点 | 层级 |
+|------|------|
+| Body | 0-10 |
+| Body tattoo | 2 |
+| Wounds - pre apparel | 8 |
+| **Belt 服装（配置后）** | **15** |
+| Apparel root (body) | 20 |
+| OnSkin/Middle/Shell 服装 | 20+ |
+
+**已排除的方案**：
+1. `renderNodeProperties` + `baseLayer` - 节点添加到错误的父节点，不按预期工作
+2. `renderNodeProperties` + `parentTagDef` + `baseLayer` - 仍然不按预期工作
+3. Harmony 补丁修改 `PawnRenderNodeWorker.LayerFor` - 补丁未生效，存在其他对象可以成功，但考虑到能不写cs就不写cs，放弃此方法
+
+最终使用 `wornGraphicData` 的方向性 `layer` 配置，这是 RimWorld 原生的渲染层级覆盖机制。
+
+### 种族限制实现
+使用 Humanoid Alien Races (HAR) 框架原生的 `raceRestriction` 功能：
+
+**配置位置**: `Defs/Races/Sylvie_Race.xml`
+
+```xml
+<alienRace>
+  <raceRestriction>
+    <apparelList>
+      <li>SylvieRace_Bandaid</li>
+      <li>SylvieRace_Swimsuit</li>
+      <!-- 其他服装 defName -->
+    </apparelList>
+  </raceRestriction>
+</alienRace>
+```
+
+**工作原理**：
+- HAR 框架会在穿戴检查时自动验证种族限制
+- 只有在 `apparelList` 中列出的服装才能被该种族穿戴
+- 其他种族尝试穿戴时会收到"无法穿戴"的提示
+
+**优势**：
+- 使用框架原生功能，兼容性更好
+- 无需维护 Harmony 补丁
+- 与其他使用 HAR 的模组兼容
+
+### 材料与颜色
+- 服装保留 `stuffCategories` 和 `costStuffCount`，允许使用不同材料制作
+- 服装颜色会随材料变化（RimWorld 原版机制）
+- 如需固定颜色，需移除 `stuffCategories` 并使用固定的 `costList`
