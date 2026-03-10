@@ -17,6 +17,7 @@ public class SylvieGameComponent : GameComponent
 
     private const int CheckInterval = 2500;
     private const int InitialEventTick = 5000;
+    private const string SylvieRaceDefName = "Sylvie_Race";
 
     public SylvieGameComponent(Game game) { }
 
@@ -29,6 +30,11 @@ public class SylvieGameComponent : GameComponent
 
         if (!hasSylvieSpawned && Find.TickManager.TicksGame >= InitialEventTick)
         {
+            if (CheckForExistingSylvie())
+            {
+                hasSylvieSpawned = true;
+                return;
+            }
             TryForceSylvieEvent();
         }
 
@@ -39,6 +45,25 @@ public class SylvieGameComponent : GameComponent
                 hediffTriggered = true;
             }
         }
+    }
+
+    private bool CheckForExistingSylvie()
+    {
+        foreach (Map map in Find.Maps)
+        {
+            if (map.IsPlayerHome)
+            {
+                foreach (Pawn pawn in map.mapPawns.FreeColonistsSpawned)
+                {
+                    if (pawn.def.defName == SylvieRaceDefName)
+                    {
+                        sylviePawn = pawn;
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private void TryForceSylvieEvent()

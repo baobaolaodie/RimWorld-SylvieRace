@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Defs>
+  <FacialAnimation.LidOptionShapeDef>
+    <defName>crosshair1</defName>
+  </FacialAnimation.LidOptionShapeDef>
+
+  <FacialAnimation.LidOptionShapeDef>
+    <defName>crosshair2</defName>
+  </FacialAnimation.LidOptionShapeDef>
+
+  <FacialAnimation.LidOptionShapeDef>
+    <defName>crosshair3</defName>
+  </FacialAnimation.LidOptionShapeDef>
+</Defs>

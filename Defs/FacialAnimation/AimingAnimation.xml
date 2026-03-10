@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Defs>
+  <FacialAnimation.FaceAnimationDef>
+    <defName>Sylvie_AimingAnimation</defName>
+    <animationFrames>
+      <li>
+        <duration>30</duration>
+        <browShapeDef>angled</browShapeDef>
+        <mouthShapeDef>inverted_v</mouthShapeDef>
+        <lidOptionShapeDef>crosshair1</lidOptionShapeDef>
+      </li>
+      <li>
+        <duration>30</duration>
+        <browShapeDef>aiming</browShapeDef>
+        <mouthShapeDef>m_shape</mouthShapeDef>
+        <lidOptionShapeDef>crosshair2</lidOptionShapeDef>
+      </li>
+      <li>
+        <duration>30</duration>
+        <browShapeDef>aiming</browShapeDef>
+        <mouthShapeDef>m_shape</mouthShapeDef>
+        <lidOptionShapeDef>crosshair3</lidOptionShapeDef>
+      </li>
+    </animationFrames>
+    <targetJobs>
+      <li>AttackStatic</li>
+    </targetJobs>
+    <priority>10300</priority>
+  </FacialAnimation.FaceAnimationDef>
+</Defs>

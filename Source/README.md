@@ -43,12 +43,16 @@ SylvieRace/
 │   └── FacialAnimation/       # 动态表情定义
 │       ├── EyeType.xml         # 眼睛类型
 │       ├── MouthType.xml       # 嘴巴类型
+│       ├── MouthShapeEx.xml    # 瞄准嘴巴形状定义
 │       ├── BrowType.xml        # 眉毛类型
+│       ├── BrowShapeEx.xml     # 瞄准眉毛形状定义
 │       ├── LidType.xml         # 眼睑类型
-│       ├── LidOptionType.xml   # 眼睑选项
+│       ├── LidOptionType.xml   # 眼睑选项类型
+│       ├── LidOptionShapeEx.xml # 准星形状定义
 │       ├── EmotionType.xml     # 情绪类型
 │       ├── HeadType.xml        # 头部类型
 │       ├── SkinType.xml        # 皮肤类型
+│       ├── AimingAnimation.xml # 瞄准动画定义
 │       └── Sylvie_RaceFaceAdjustment.xml  # 面部调整
 ├── Patches/
 │   └── Sylvie_Race_FacialAnimation_Patches.xml  # 动态表情补丁
@@ -67,7 +71,8 @@ SylvieRace/
 │   ├── Hediffs/
 │   │   └── SylvieHediffManager.cs   # Hediff 管理逻辑
 │   ├── Patches/
-│   │   └── Patch_CommsConsole.cs    # 通讯台补丁
+│   │   ├── Patch_CommsConsole.cs    # 通讯台补丁
+│   │   └── Patch_Stance_Warmup.cs   # 瞄准动画同步补丁
 │   ├── SylvieRace.csproj      # 项目文件
 │   ├── SylvieRace.sln         # 解决方案
 │   └── AssemblyInfo.cs        # 程序集信息
@@ -167,8 +172,12 @@ public static class SylvieDefNames
 
 负责状态管理和事件触发：
 - `hasSylvieSpawned` - 希尔薇是否已生成
+- `CheckForExistingSylvie()` - 检查殖民地是否已有希尔薇种族的殖民者
 - `RegisterSylviePawn(Pawn)` - 注册希尔薇并安排 Hediff 触发
 - `GameComponentTick()` - 定期检查事件触发
+
+**防止重复生成机制**：
+在触发事件前，会先检查殖民地是否已有希尔薇种族的殖民者（通过 `pawn.def.defName == "Sylvie_Race"` 判断）。如果已有，则设置 `hasSylvieSpawned = true` 并跳过事件触发。
 
 ### 6. IncidentWorker_SylvieTrader（事件处理器）
 
@@ -178,6 +187,7 @@ public static class SylvieDefNames
 - 生成商队
 - 使用 `SylviePawnGenerator` 生成希尔薇
 - 发送选择信件
+- **智能检测**：如果殖民地已有希尔薇种族的殖民者，事件不会触发
 
 ### 7. ChoiceLetter_SylvieOffer（信件类）
 
@@ -440,3 +450,105 @@ Belt 层服装（创口贴、泳衣）需要特殊配置以确保正确的渲染
 - 服装保留 `stuffCategories` 和 `costStuffCount`，允许使用不同材料制作
 - 服装颜色会随材料变化（RimWorld 原版机制）
 - 如需固定颜色，需移除 `stuffCategories` 并使用固定的 `costList`
+
+## 瞄准动画系统
+
+### 技术实现
+瞄准动画通过 Facial Animation 的 ShapeDef 实现，贴图整合到现有的 Normal 目录中。
+
+### 重要原则
+**不要创建新的 TypeDef！** 每个种族只需要一个 BrowTypeDef、一个 MouthTypeDef 和一个 LidOptionTypeDef。新形状的贴图应该添加到现有的 Normal 目录中。
+
+### 文件结构
+```
+Defs/FacialAnimation/
+├── BrowShapeEx.xml      # 瞄准眉毛形状定义（只定义形状，不定义贴图路径）
+├── MouthShapeEx.xml     # 瞄准嘴巴形状定义
+├── LidOptionShapeEx.xml # 准星形状定义
+└── AimingAnimation.xml  # 瞄准动画定义
+
+Textures/Things/Pawn/Sylvie/
+├── Brows/Normal/Unisex/     # 所有眉毛形状贴图（包括 aiming）
+├── Mouth/Normal/Unisex/     # 所有嘴巴形状贴图（包括 inverted_v, m_shape）
+└── LidOptions/Normal/Unisex/ # 所有眼睑选项贴图（包括 crosshair1/2/3）
+```
+
+### 动画帧序列
+| 帧 | 眉毛 | 嘴巴 | 准星 |
+|----|------|------|------|
+| 1 | angled（生气） | inverted_v（反V嘴） | crosshair1 |
+| 2 | aiming（瞄准） | m_shape（M嘴） | crosshair2 |
+| 3 | aiming（瞄准） | m_shape（M嘴） | crosshair3 |
+
+### 关键配置
+```xml
+<FacialAnimation.FaceAnimationDef>
+  <defName>Sylvie_AimingAnimation</defName>
+  <targetJobs>
+    <li>AttackStatic</li>  <!-- 远程攻击 Job -->
+  </targetJobs>
+  <priority>10300</priority>  <!-- 高于普通动画 -->
+</FacialAnimation.FaceAnimationDef>
+```
+
+### 准星实现方案
+准星使用 Facial Animation 的 `LidOptionType` 组件实现：
+- `LidOptionType` 原本用于渲染眼睑上的额外效果（如眼泪）
+- 通过 `lidOptionShapeDef` 在动画帧中切换显示不同的准星形状
+- 贴图需要放到 `LidOptions/Normal/Unisex/` 目录中
+
+### 贴图命名规范
+Facial Animation 使用 `TypePath/Gender/shape_direction.png` 的命名规则：
+- `aiming_south.png` - 正面瞄准眉毛
+- `aiming_east.png` - 侧面瞄准眉毛
+- `m_shape_south.png` - 正面M嘴
+- `crosshair1_south.png` - 正面准星帧1
+
+## 瞄准动画同步系统
+
+### 技术实现
+由于 Facial Animation 的动画选择基于 Job，而 `AttackStatic` Job 在整个射击过程中都存在（warmup + cooldown + burst），动画的 `startTick` 是在 Job 开始时设置的。因此使用 Harmony 补丁直接检查 `Stance_Warmup` 状态来实现动态动画同步。
+
+### 核心组件
+
+#### SylvieAimingTracker
+**文件位置**: `Source/Patches/Patch_Stance_Warmup.cs`
+
+简化的组件，仅用于缓存 Pawn 引用和静态字典查找。
+
+#### Harmony 补丁
+**文件位置**: `Source/Patches/Patch_Stance_Warmup.cs`
+
+- `Patch_Pawn_SpawnSetup` - 为 Sylvie 种族 Pawn 添加跟踪器组件
+- `Patch_FaceAnimation_GetCurrentFrame` - 拦截 Facial Animation 的帧计算
+  - `Stance_Warmup` 状态：基于 warmup 进度计算帧（帧0 → 帧1 → 帧2）
+  - `Stance_Cooldown` 状态：只显示第一帧（帧0）
+  - 其他状态：返回原始逻辑
+- `Patch_FacialAnimationControllerComp_InitializeIfNeed` - 注册动画到 Pawn 的映射
+
+### 瞄准时间计算
+```
+总瞄准时间 = 武器.warmupTime × Pawn.AimingDelayFactor
+```
+
+### 关键 API
+```csharp
+// 武器词条
+Verb.verbProps.warmupTime           // 瞄准时间（秒）
+
+// Pawn 属性
+pawn.GetStatValue(StatDefOf.AimingDelayFactor)   // 瞄准时间乘数
+
+// Stance_Warmup 状态
+warmup.ticksLeft    // 剩余瞄准 ticks
+warmup.verb         // 当前使用的 Verb
+```
+
+### 动画帧计算
+假设动画有 3 帧，总瞄准时间为 T ticks：
+- `elapsedTicks = totalWarmupTicks - warmup.ticksLeft`
+- `progress = elapsedTicks / totalWarmupTicks`
+- `frameIndex = (int)(progress * 3)`
+- 帧1：进度 0% - 33%
+- 帧2：进度 33% - 66%
+- 帧3：进度 66% - 100%（射击发生）
