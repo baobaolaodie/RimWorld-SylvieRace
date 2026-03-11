@@ -69,13 +69,12 @@ SylvieRace/
 │   ├── Letters/
 │   │   └── ChoiceLetter_SylvieOffer.cs  # 信件类
 │   ├── Hediffs/
-│   │   └── SylvieHediffManager.cs   # Hediff 管理逻辑
+│   │   └── SylvieHediffManager.cs   # Hediff 管理逻辑和护士服组件
 │   ├── Patches/
 │   │   ├── Patch_CommsConsole.cs    # 通讯台补丁
 │   │   └── Patch_Stance_Warmup.cs   # 瞄准动画同步补丁
 │   ├── SylvieRace.csproj      # 项目文件
-│   ├── SylvieRace.sln         # 解决方案
-│   └── AssemblyInfo.cs        # 程序集信息
+│   └── SylvieRace.sln         # 解决方案
 ├── Textures/
 │   └── Things/
 │       ├── Clothes/           # 服装贴图
@@ -119,10 +118,23 @@ public static class SylvieDefNames
     public const string Incident_ArrivalEvent = "Sylvie_ArrivalEvent";
     public const string PawnKind_Sylvie = "Sylvie_PawnKind";
     public const string Hediff_InitialTrauma = "SylvieRace_InitialTrauma";
-    // ... 更多常量
+    public const string Letter_OfferLetter = "Sylvie_OfferLetter";
+    public const string Tattoo_ScarHead = "SylvieRace_ScarHead";
+    public const string Tattoo_ScarBody = "SylvieRace_ScarBody";
+    public const string Trader_ClothingTrader = "Sylvie_ClothingTrader";
+    public const string Gene_SkinSheerWhite = "Skin_SheerWhite";
+    public const string Gene_HairSnowWhite = "Hair_SnowWhite";
     
     // 便捷属性
     public static HediffDef? Hediff_InitialTraumaDef => HediffDef.Named(Hediff_InitialTrauma);
+    public static PawnKindDef? PawnKind_SylvieDef => PawnKindDef.Named(PawnKind_Sylvie);
+    public static IncidentDef? Incident_ArrivalEventDef => IncidentDef.Named(Incident_ArrivalEvent);
+    public static LetterDef? Letter_OfferLetterDef => DefDatabase<LetterDef>.GetNamed(Letter_OfferLetter, false);
+    public static TraderKindDef? Trader_ClothingTraderDef => DefDatabase<TraderKindDef>.GetNamed(Trader_ClothingTrader, false);
+    public static TattooDef? Tattoo_ScarHeadDef => DefDatabase<TattooDef>.GetNamed(Tattoo_ScarHead, false);
+    public static TattooDef? Tattoo_ScarBodyDef => DefDatabase<TattooDef>.GetNamed(Tattoo_ScarBody, false);
+    public static GeneDef? Gene_SkinSheerWhiteDef => DefDatabase<GeneDef>.GetNamed(Gene_SkinSheerWhite, false);
+    public static GeneDef? Gene_HairSnowWhiteDef => DefDatabase<GeneDef>.GetNamed(Gene_HairSnowWhite, false);
 }
 ```
 
@@ -131,11 +143,12 @@ public static class SylvieDefNames
 **文件位置**: `Source/Pawns/SylviePawnGenerator.cs`
 
 封装希尔薇 Pawn 生成逻辑：
-- `GenerateSylvie(Faction)` - 生成希尔薇 Pawn
-- `ConfigureName(Pawn)` - 设置名字
-- `ConfigureGenes(Pawn)` - 设置基因（皮肤、发色）
-- `ConfigureTraits(Pawn)` - 设置特性
-- `ConfigureTattoos(Pawn)` - 设置纹身
+- `GenerateSylvie(Faction)` - 生成希尔薇 Pawn（固定 19 岁，女性）
+- `ConfigureName(Pawn)` - 设置名字（使用翻译键 `SylvieRace_FirstName`）
+- `ConfigureGenes(Pawn)` - 设置基因（透白皮肤、雪白发色）
+- `TryAddGene(Pawn, GeneDef, EndogeneCategory)` - 添加基因并移除冲突基因
+- `ConfigureTraits(Pawn)` - 设置特性（清除所有特性并添加 Kind）
+- `ConfigureTattoos(Pawn)` - 设置纹身（头部和身体疤痕）
 
 ### 3. SylvieHediffManager（Hediff 管理器）
 
@@ -143,7 +156,7 @@ public static class SylvieDefNames
 
 封装 Hediff 相关逻辑：
 - `CalculateTriggerTick()` - 计算触发时间
-- `TryTriggerHediff(Pawn)` - 触发 Hediff
+- `TryTriggerHediff(Pawn)` - 触发 Hediff，返回 `bool` 表示是否成功触发
 - `SendHediffLetter(Pawn)` - 发送信件通知
 
 ### 4. 护士服主动技能组件
@@ -151,12 +164,13 @@ public static class SylvieDefNames
 **文件位置**: `Source/Hediffs/SylvieHediffManager.cs`
 
 **SylvieRace_CompProperties_NurseHeal**:
-- `cooldownTicks` - 冷却时间（默认 5000 ticks = 2 小时）
-- `paralysisHediff` - 昏迷 Hediff 定义
+- `cooldownTicks` - 冷却时间（默认 5000 ticks ≈ 1.4 游戏小时）
+- `paralysisHediff` - 昏迷 Hediff 定义（XML 注入字段）
 
 **SylvieRace_CompNurseHeal**:
 - `CompGetWornGizmosExtra()` - 返回技能 Gizmo 按钮
 - `TryUseAbility()` - 执行治疗逻辑
+- `PostExposeData()` - 存档数据持久化（保存冷却状态）
 - `IsOnCooldown` - 检查冷却状态
 - `CooldownTicksRemaining` - 剩余冷却时间
 
@@ -177,7 +191,12 @@ public static class SylvieDefNames
 - `GameComponentTick()` - 定期检查事件触发
 
 **防止重复生成机制**：
-在触发事件前，会先检查殖民地是否已有希尔薇种族的殖民者（通过 `pawn.def.defName == "Sylvie_Race"` 判断）。如果已有，则设置 `hasSylvieSpawned = true` 并跳过事件触发。
+在触发事件前，会先检查殖民地是否已有希尔薇种族的殖民者（通过 `pawn.def.defName == SylvieRaceDefName` 判断，常量值为 `"Sylvie_Race"`）。如果已有，则设置 `hasSylvieSpawned = true` 并跳过事件触发。
+
+**游戏组件常量**：
+- `CheckInterval = 2500` - 检查间隔（约 41 秒）
+- `InitialEventTick = 5000` - 初始事件触发时间（约 83 秒）
+- `SylvieRaceDefName = "Sylvie_Race"` - 种族定义名称
 
 ### 6. IncidentWorker_SylvieTrader（事件处理器）
 
@@ -202,7 +221,10 @@ public static class SylvieDefNames
 
 **文件位置**: `Source/Patches/Patch_CommsConsole.cs`
 
-添加呼叫服装贸易商选项。
+为通讯台添加呼叫特殊服装贸易商选项：
+- `Postfix` - 在原有选项后添加"呼叫特殊服装贸易商"选项
+- `SpawnSpecialTrader` - 生成服装贸易商飞船
+- `IsTraderAlreadyInOrbit` - 检查是否已有同名贸易商在轨道上
 
 ### 9. 初始健康状态系统 (Hediffs/)
 
@@ -306,15 +328,19 @@ public static class SylvieDefNames
 ## 编译配置
 
 **项目文件**: `Source/SylvieRace.csproj`
-- 目标框架：.NET Framework 4.8
+- 目标框架：.NET Framework 4.7.2
 - 输出路径：`..\1.6\Assemblies\`
 - 输出文件：`SylvieRace.dll`
+- 根命名空间：`SylvieMod`
 
 **DLL 引用路径**:
 游戏 DLL 文件位于工作区的 `GameDll/` 目录：
 - `0Harmony.dll` - Harmony 补丁框架
 - `Assembly-CSharp.dll` - RimWorld 核心程序集
 - `UnityEngine.CoreModule.dll` - Unity 核心模块
+
+**模组 DLL 引用**:
+- `FacialAnimation.dll` - [NL] Facial Animation 模组程序集（用于瞄准动画系统）
 
 **编译命令**:
 ```bash
@@ -514,18 +540,30 @@ Facial Animation 使用 `TypePath/Gender/shape_direction.png` 的命名规则：
 #### SylvieAimingTracker
 **文件位置**: `Source/Patches/Patch_Stance_Warmup.cs`
 
-简化的组件，仅用于缓存 Pawn 引用和静态字典查找。
+ThingComp 组件，用于缓存 Pawn 引用和静态字典查找：
+- `Pawn` - 获取缓存的 Pawn 引用
+- `GetTracker(Pawn)` - 静态方法，从字典获取或创建跟踪器
 
 #### Harmony 补丁
 **文件位置**: `Source/Patches/Patch_Stance_Warmup.cs`
 
 - `Patch_Pawn_SpawnSetup` - 为 Sylvie 种族 Pawn 添加跟踪器组件
-- `Patch_FaceAnimation_GetCurrentFrame` - 拦截 Facial Animation 的帧计算
+- `Patch_FaceAnimation_GetCurrentFrame` - 使用 Prefix 拦截 Facial Animation 的帧计算
   - `Stance_Warmup` 状态：基于 warmup 进度计算帧（帧0 → 帧1 → 帧2）
   - `VerbState.Bursting` 状态：显示最后一帧（帧2）
   - `Stance_Cooldown` 状态：只显示第一帧（帧0）
-  - 其他状态：返回原始逻辑
+  - 其他状态：返回 `true` 让原始方法执行
+  - **注意**：Prefix 返回 `false` 时会跳过原始方法，直接返回 `__result`
 - `Patch_FacialAnimationControllerComp_InitializeIfNeed` - 注册动画到 Pawn 的映射
+
+### 动画帧边界处理
+当计算的帧索引超出范围时，代码会进行边界检查：
+- 如果 `frameIndex >= totalFrames`，设置为最后一帧
+- 如果 `frameIndex < 0`，设置为第一帧
+
+### 连发状态处理
+在 `Stance_Cooldown` 状态下，如果武器处于 `VerbState.Bursting` 状态，
+则继续显示最后一帧动画，直到连发结束。
 
 ### 瞄准时间计算
 ```
