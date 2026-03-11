@@ -89,8 +89,15 @@ public static class Patch_FaceAnimation_GetCurrentFrame
             __result = frames[frameIndex];
             return false;
         }
-        else if (curStance is Stance_Cooldown)
+        else if (curStance is Stance_Cooldown cooldown)
         {
+            Verb? verb = cooldown.verb;
+            if (verb != null && verb.state == VerbState.Bursting)
+            {
+                __result = frames[frames.Count - 1];
+                return false;
+            }
+            
             __result = frames[0];
             return false;
         }

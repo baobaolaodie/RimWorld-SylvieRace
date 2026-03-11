@@ -522,6 +522,7 @@ Facial Animation 使用 `TypePath/Gender/shape_direction.png` 的命名规则：
 - `Patch_Pawn_SpawnSetup` - 为 Sylvie 种族 Pawn 添加跟踪器组件
 - `Patch_FaceAnimation_GetCurrentFrame` - 拦截 Facial Animation 的帧计算
   - `Stance_Warmup` 状态：基于 warmup 进度计算帧（帧0 → 帧1 → 帧2）
+  - `VerbState.Bursting` 状态：显示最后一帧（帧2）
   - `Stance_Cooldown` 状态：只显示第一帧（帧0）
   - 其他状态：返回原始逻辑
 - `Patch_FacialAnimationControllerComp_InitializeIfNeed` - 注册动画到 Pawn 的映射
