@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Defs>
+  <FacialAnimation.FaceAnimationDef>
+    <defName>Sylvie_CooldownAnimation</defName>
+    <animationFrames>
+      <li>
+        <duration>30</duration>
+        <browShapeDef>confused</browShapeDef>
+      </li>
+    </animationFrames>
+    <targetJobs>
+      <li>AttackStatic</li>
+    </targetJobs>
+    <priority>10200</priority>
+  </FacialAnimation.FaceAnimationDef>
+</Defs>

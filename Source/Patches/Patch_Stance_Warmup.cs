@@ -31,12 +31,29 @@ public static class Patch_Pawn_SpawnSetup
 {
     public static void Postfix(Pawn __instance)
     {
-        if (__instance.def.defName == "Sylvie_Race" && __instance.GetComp<SylvieAimingTracker>() == null)
+        if (__instance.def.defName == "Sylvie_Race")
         {
-            __instance.AllComps.Add(new SylvieAimingTracker
+            if (__instance.GetComp<SylvieAimingTracker>() == null)
             {
-                parent = __instance
-            });
+                __instance.AllComps.Add(new SylvieAimingTracker
+                {
+                    parent = __instance
+                });
+            }
+            if (__instance.GetComp<SylvieCooldownTracker>() == null)
+            {
+                __instance.AllComps.Add(new SylvieCooldownTracker
+                {
+                    parent = __instance
+                });
+            }
+            if (__instance.GetComp<SylvieCooldownOverlayComp>() == null)
+            {
+                __instance.AllComps.Add(new SylvieCooldownOverlayComp
+                {
+                    parent = __instance
+                });
+            }
         }
     }
 }
@@ -45,10 +62,48 @@ public static class Patch_Pawn_SpawnSetup
 public static class Patch_FaceAnimation_GetCurrentFrame
 {
     private static Dictionary<FaceAnimation, Pawn> animationToPawn = new Dictionary<FaceAnimation, Pawn>();
+    private static FaceAnimationDef.AnimationFrame? cachedCooldownFrame;
+    private static BrowShapeDef? confusedBrowDef;
     
     public static void RegisterAnimation(FaceAnimation animation, Pawn pawn)
     {
         animationToPawn[animation] = pawn;
+    }
+    
+    private static BrowShapeDef ConfusedBrowDef
+    {
+        get
+        {
+            if (confusedBrowDef == null)
+                confusedBrowDef = DefDatabase<BrowShapeDef>.GetNamedSilentFail("confused");
+            return confusedBrowDef!;
+        }
+    }
+    
+    private static EyeballShapeDef? lookdownEyeballDef;
+    
+    private static EyeballShapeDef LookdownEyeballDef
+    {
+        get
+        {
+            if (lookdownEyeballDef == null)
+                lookdownEyeballDef = DefDatabase<EyeballShapeDef>.GetNamedSilentFail("lookdown");
+            return lookdownEyeballDef!;
+        }
+    }
+    
+    private static FaceAnimationDef.AnimationFrame GetCooldownFrame()
+    {
+        if (cachedCooldownFrame == null)
+        {
+            cachedCooldownFrame = new FaceAnimationDef.AnimationFrame
+            {
+                duration = 30,
+                browShapeDef = ConfusedBrowDef,
+                eyeballShapeDef = LookdownEyeballDef
+            };
+        }
+        return cachedCooldownFrame;
     }
     
     public static bool Prefix(FaceAnimation __instance, int tickGame, ref FaceAnimationDef.AnimationFrame? __result)
@@ -98,7 +153,7 @@ public static class Patch_FaceAnimation_GetCurrentFrame
                 return false;
             }
             
-            __result = frames[0];
+            __result = GetCooldownFrame();
             return false;
         }
         

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Defs>
+  <FacialAnimation.EyeballShapeDef>
+    <defName>lookdown</defName>
+    <label>lookdown</label>
+  </FacialAnimation.EyeballShapeDef>
+</Defs>

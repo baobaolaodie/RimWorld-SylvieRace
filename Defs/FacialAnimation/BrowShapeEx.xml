@@ -4,4 +4,8 @@
   <FacialAnimation.BrowShapeDef>
     <defName>aiming</defName>
   </FacialAnimation.BrowShapeDef>
+
+  <FacialAnimation.BrowShapeDef>
+    <defName>confused</defName>
+  </FacialAnimation.BrowShapeDef>
 </Defs>

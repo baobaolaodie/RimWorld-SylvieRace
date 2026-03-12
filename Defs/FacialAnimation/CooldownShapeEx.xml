@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Defs>
+  <FacialAnimation.LidOptionShapeDef>
+    <defName>sweat1</defName>
+  </FacialAnimation.LidOptionShapeDef>
+
+  <FacialAnimation.LidOptionShapeDef>
+    <defName>sweat2</defName>
+  </FacialAnimation.LidOptionShapeDef>
+
+  <FacialAnimation.LidOptionShapeDef>
+    <defName>sweat3</defName>
+  </FacialAnimation.LidOptionShapeDef>
+
+  <FacialAnimation.LidOptionShapeDef>
+    <defName>magazine</defName>
+  </FacialAnimation.LidOptionShapeDef>
+
+  <FacialAnimation.LidOptionShapeDef>
+    <defName>bullet_insert1</defName>
+  </FacialAnimation.LidOptionShapeDef>
+
+  <FacialAnimation.LidOptionShapeDef>
+    <defName>bullet_insert2</defName>
+  </FacialAnimation.LidOptionShapeDef>
+
+  <FacialAnimation.LidOptionShapeDef>
+    <defName>bullet_insert3</defName>
+  </FacialAnimation.LidOptionShapeDef>
+
+  <FacialAnimation.LidOptionShapeDef>
+    <defName>bullet1</defName>
+  </FacialAnimation.LidOptionShapeDef>
+
+  <FacialAnimation.LidOptionShapeDef>
+    <defName>bullet2</defName>
+  </FacialAnimation.LidOptionShapeDef>
+
+  <FacialAnimation.LidOptionShapeDef>
+    <defName>bullet3</defName>
+  </FacialAnimation.LidOptionShapeDef>
+
+  <FacialAnimation.LidOptionShapeDef>
+    <defName>bullet4</defName>
+  </FacialAnimation.LidOptionShapeDef>
+
+  <FacialAnimation.LidOptionShapeDef>
+    <defName>bullet5</defName>
+  </FacialAnimation.LidOptionShapeDef>
+</Defs>

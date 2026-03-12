@@ -42,17 +42,21 @@ SylvieRace/
 │   │   └── Sylvie_Thoughts.xml    # 心情效果定义
 │   └── FacialAnimation/       # 动态表情定义
 │       ├── EyeType.xml         # 眼睛类型
+│       ├── EyeShapeEx.xml      # 眼睛形状扩展（lookdown）
 │       ├── MouthType.xml       # 嘴巴类型
 │       ├── MouthShapeEx.xml    # 瞄准嘴巴形状定义
 │       ├── BrowType.xml        # 眉毛类型
-│       ├── BrowShapeEx.xml     # 瞄准眉毛形状定义
+│       ├── BrowShapeEx.xml     # 眉毛形状扩展（aiming, confused）
 │       ├── LidType.xml         # 眼睑类型
 │       ├── LidOptionType.xml   # 眼睑选项类型
 │       ├── LidOptionShapeEx.xml # 准星形状定义
+│       ├── CooldownShapeEx.xml  # 冷却动画形状定义（汗液、弹匣、子弹）
+│       ├── CooldownOverlayType.xml # 冷却叠加层类型
 │       ├── EmotionType.xml     # 情绪类型
 │       ├── HeadType.xml        # 头部类型
 │       ├── SkinType.xml        # 皮肤类型
 │       ├── AimingAnimation.xml # 瞄准动画定义
+│       ├── CooldownAnimation.xml # 冷却动画定义
 │       └── Sylvie_RaceFaceAdjustment.xml  # 面部调整
 ├── Patches/
 │   └── Sylvie_Race_FacialAnimation_Patches.xml  # 动态表情补丁
@@ -61,7 +65,9 @@ SylvieRace/
 │   │   ├── HarmonyInit.cs           # Harmony 初始化
 │   │   └── SylvieDefNames.cs        # Def 名称常量
 │   ├── Components/
-│   │   └── SylvieGameComponent.cs   # 游戏组件（状态管理）
+│   │   ├── SylvieGameComponent.cs   # 游戏组件（状态管理）
+│   │   ├── SylvieCooldownTracker.cs # 冷却状态跟踪组件
+│   │   └── SylvieCooldownOverlayComp.cs # 冷却叠加层渲染组件
 │   ├── Incidents/
 │   │   └── IncidentWorker_SylvieTrader.cs  # 事件处理器
 │   ├── Pawns/
@@ -72,7 +78,8 @@ SylvieRace/
 │   │   └── SylvieHediffManager.cs   # Hediff 管理逻辑和护士服组件
 │   ├── Patches/
 │   │   ├── Patch_CommsConsole.cs    # 通讯台补丁
-│   │   └── Patch_Stance_Warmup.cs   # 瞄准动画同步补丁
+│   │   ├── Patch_Stance_Warmup.cs   # 瞄准动画同步补丁
+│   │   └── Patch_FaceAnimation_GetCurrentFrame.cs # 冷却动画补丁
 │   ├── SylvieRace.csproj      # 项目文件
 │   └── SylvieRace.sln         # 解决方案
 ├── Textures/
@@ -91,7 +98,8 @@ SylvieRace/
 │               ├── LidOptions/
 │               ├── Emotions/
 │               ├── Heads_Blank/
-│               └── Skins/
+│               ├── Skins/
+│               └── CooldownOverlay/  # 冷却动画叠加层贴图
 ├── Languages/
 │   ├── English/
 │   │   ├── Keyed/
@@ -198,7 +206,86 @@ public static class SylvieDefNames
 - `InitialEventTick = 5000` - 初始事件触发时间（约 83 秒）
 - `SylvieRaceDefName = "Sylvie_Race"` - 种族定义名称
 
-### 6. IncidentWorker_SylvieTrader（事件处理器）
+### 6. SylvieCooldownTracker（冷却状态跟踪组件）
+
+**文件位置**: `Source/Components/SylvieCooldownTracker.cs`
+
+ThingComp 组件，用于跟踪远程武器冷却状态：
+
+**核心属性**：
+- `IsInRangedCooldown` - 检测是否处于远程武器冷却状态（排除连发和近战攻击）
+- `CooldownProgress` - 冷却进度（0-1 浮点数）
+
+**动画帧计算方法**：
+- `GetSweatFrame()` - 根据冷却进度计算汗液动画帧（1-3）
+  - 进度 0-33%：帧 1
+  - 进度 33-66%：帧 2
+  - 进度 66-100%：帧 3
+- `GetBulletAnimationState()` - 计算子弹装填动画状态
+  - 返回 `(insertFrame, bulletCount)` 元组
+  - `insertFrame`：子弹投入帧（0-3，0 表示不显示）
+  - `bulletCount`：已装填子弹数量（1-5）
+
+**实现细节**：
+```csharp
+public bool IsInRangedCooldown
+{
+    get
+    {
+        var stance = Pawn.stances?.curStance as Stance_Cooldown;
+        if (stance == null) return false;
+        
+        Verb? verb = stance.verb;
+        if (verb == null) return false;
+        
+        if (verb.state == VerbState.Bursting) return false;
+        if (verb.verbProps.IsMeleeAttack) return false;
+        
+        return true;
+    }
+}
+```
+
+### 7. SylvieCooldownOverlayComp（冷却叠加层渲染组件）
+
+**文件位置**: `Source/Components/SylvieCooldownOverlayComp.cs`
+
+ThingComp 组件，在远程武器冷却期间渲染汗液、弹匣、子弹动画：
+
+**渲染逻辑**：
+- 使用 `PostDraw` 方法在 Pawn 绘制后执行
+- 通过 `Matrix4x4.TRS` 进行缩放变换
+- 贴图缩放：使用 1.5 倍缩放（`DrawScale = new Vector3(1.5f, 1f, 1.5f)`）
+
+**渲染元素**：
+1. **汗液动画**（3 帧）：`sweat1`, `sweat2`, `sweat3`
+2. **弹匣贴图**：`magazine`（全程显示）
+3. **子弹投入动画**（3 帧）：`bullet_insert1`, `bullet_insert2`, `bullet_insert3`
+4. **子弹计数**（5 帧）：`bullet1` - `bullet5`
+
+**渲染代码示例**：
+```csharp
+public override void PostDraw()
+{
+    base.PostDraw();
+    
+    if (Pawn.def.defName != "Sylvie_Race")
+        return;
+    
+    var tracker = SylvieCooldownTracker.GetTracker(Pawn);
+    if (tracker == null || !tracker.IsInRangedCooldown)
+        return;
+    
+    Vector3 drawPos = Pawn.DrawPos + GetFaceDrawOffset();
+    drawPos.y += 0.01f;
+    
+    // 使用 Matrix4x4.TRS 进行缩放渲染
+    Matrix4x4 matrix = Matrix4x4.TRS(drawPos, Quaternion.identity, DrawScale);
+    Graphics.DrawMesh(MeshPool.plane10, matrix, mat, 0);
+}
+```
+
+### 8. IncidentWorker_SylvieTrader（事件处理器）
 
 **文件位置**: `Source/Incidents/IncidentWorker_SylvieTrader.cs`
 
@@ -208,7 +295,7 @@ public static class SylvieDefNames
 - 发送选择信件
 - **智能检测**：如果殖民地已有希尔薇种族的殖民者，事件不会触发
 
-### 7. ChoiceLetter_SylvieOffer（信件类）
+### 9. ChoiceLetter_SylvieOffer（信件类）
 
 **文件位置**: `Source/Letters/ChoiceLetter_SylvieOffer.cs`
 
@@ -217,7 +304,7 @@ public static class SylvieDefNames
 - 处理购买和拒绝逻辑
 - 转移希尔薇到玩家派系
 
-### 8. Patch_CommsConsole（通讯台补丁）
+### 10. Patch_CommsConsole（通讯台补丁）
 
 **文件位置**: `Source/Patches/Patch_CommsConsole.cs`
 
@@ -226,7 +313,55 @@ public static class SylvieDefNames
 - `SpawnSpecialTrader` - 生成服装贸易商飞船
 - `IsTraderAlreadyInOrbit` - 检查是否已有同名贸易商在轨道上
 
-### 9. 初始健康状态系统 (Hediffs/)
+### 11. Patch_Stance_Warmup（瞄准动画同步补丁）
+
+**文件位置**: `Source/Patches/Patch_Stance_Warmup.cs`
+
+Harmony 补丁，拦截 Facial Animation 的 `GetCurrentFrame` 方法，实现瞄准动画同步：
+
+**核心功能**：
+- `SylvieAimingTracker` - ThingComp 组件，缓存 Pawn 引用
+- `Patch_Pawn_SpawnSetup` - 为希尔薇种族 Pawn 添加跟踪器组件
+- `Patch_FaceAnimation_GetCurrentFrame` - 拦截动画帧计算
+- `Patch_FacialAnimationControllerComp_InitializeIfNeed` - 注册动画到 Pawn 的映射
+
+**动画帧逻辑**：
+- `Stance_Warmup` 状态：基于 warmup 进度计算帧（帧0 → 帧1 → 帧2）
+- `VerbState.Bursting` 状态：显示最后一帧（帧2）
+- `Stance_Cooldown` 状态：返回冷却帧（包含 `browShapeDef: confused` 和 `eyeballShapeDef: lookdown`）
+- 其他状态：返回 `true` 让原始方法执行
+
+**冷却帧构造**：
+```csharp
+private static FaceAnimationDef.AnimationFrame GetCooldownFrame()
+{
+    if (cachedCooldownFrame == null)
+    {
+        cachedCooldownFrame = new FaceAnimationDef.AnimationFrame
+        {
+            duration = 30,
+            browShapeDef = ConfusedBrowDef,      // 困惑眉毛
+            eyeballShapeDef = LookdownEyeballDef  // 向下看的眼球
+        };
+    }
+    return cachedCooldownFrame;
+}
+```
+
+**关键 API**：
+```csharp
+// 武器词条
+Verb.verbProps.warmupTime           // 瞄准时间（秒）
+
+// Pawn 属性
+pawn.GetStatValue(StatDefOf.AimingDelayFactor)   // 瞄准时间乘数
+
+// Stance_Warmup 状态
+warmup.ticksLeft    // 剩余瞄准 ticks
+warmup.verb         // 当前使用的 Verb
+```
+
+### 12. 初始健康状态系统 (Hediffs/)
 
 **文件位置**: `Defs/Hediffs/Sylvie_Hediffs.xml`
 
@@ -276,7 +411,7 @@ public static class SylvieDefNames
 - 使用 `Scribe_Values.Look<int>` 保存触发时间
 - 使用 `Scribe_Values.Look<bool>` 保存触发状态
 
-### 10. 心情效果系统 (Thoughts/)
+### 13. 心情效果系统 (Thoughts/)
 
 **文件位置**: `Defs/Thoughts/Sylvie_Thoughts.xml`
 
@@ -318,6 +453,8 @@ public static class SylvieDefNames
 - `SylviePawnGenerator` - 只负责生成 Pawn
 - `SylvieHediffManager` - 只负责 Hediff 管理
 - `SylvieGameComponent` - 只负责状态管理
+- `SylvieCooldownTracker` - 只负责冷却状态跟踪
+- `SylvieCooldownOverlayComp` - 只负责冷却叠加层渲染
 
 ### 开闭原则
 - 使用 `SylvieDefNames` 常量类，添加新 Def 只需修改一处
@@ -488,7 +625,7 @@ Belt 层服装（创口贴、泳衣）需要特殊配置以确保正确的渲染
 ### 文件结构
 ```
 Defs/FacialAnimation/
-├── BrowShapeEx.xml      # 瞄准眉毛形状定义（只定义形状，不定义贴图路径）
+├── BrowShapeEx.xml      # 瞄准眉毛形状定义（aiming, confused）
 ├── MouthShapeEx.xml     # 瞄准嘴巴形状定义
 ├── LidOptionShapeEx.xml # 准星形状定义
 └── AimingAnimation.xml  # 瞄准动画定义
@@ -529,6 +666,225 @@ Facial Animation 使用 `TypePath/Gender/shape_direction.png` 的命名规则：
 - `aiming_east.png` - 侧面瞄准眉毛
 - `m_shape_south.png` - 正面M嘴
 - `crosshair1_south.png` - 正面准星帧1
+
+## 冷却动画系统
+
+### 功能概述
+远程武器冷却期间显示完整的装填动画，包括：
+- 困惑眉毛（全程）
+- 向下看的眼睛（冷却期间替换眼球类型）
+- 汗液动画（3帧，根据冷却进度）
+- 弹匣显示（全程）
+- 子弹装填动画（投入1→投入2→投入3→N颗子弹，循环到5颗）
+
+### 系统架构
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    冷却动画系统架构                          │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  ┌─────────────────────┐    ┌─────────────────────────────┐ │
+│  │ SylvieCooldownTracker│    │ SylvieCooldownOverlayComp  │ │
+│  │   (ThingComp)        │    │   (ThingComp)              │ │
+│  ├─────────────────────┤    ├─────────────────────────────┤ │
+│  │ - IsInRangedCooldown │    │ - PostDraw()               │ │
+│  │ - CooldownProgress   │    │ - 渲染汗液/弹匣/子弹        │ │
+│  │ - GetSweatFrame()    │    │                            │ │
+│  │ - GetBulletAnimation │    │                            │ │
+│  └─────────────────────┘    └─────────────────────────────┘ │
+│            │                              │                 │
+│            └──────────────┬───────────────┘                 │
+│                           │                                 │
+│            ┌──────────────▼───────────────┐                 │
+│            │  Patch_FaceAnimation_GetCurrentFrame │         │
+│            │      (Harmony Patch)         │                 │
+│            ├──────────────────────────────┤                 │
+│            │ - 拦截 FA 的 GetCurrentFrame  │                 │
+│            │ - 冷却期间返回冷却帧           │                 │
+│            │ - browShapeDef: confused     │                 │
+│            │ - eyeballShapeDef: lookdown  │                 │
+│            └──────────────────────────────┘                 │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### 核心组件
+
+#### SylvieCooldownTracker
+**文件位置**: `Source/Components/SylvieCooldownTracker.cs`
+
+ThingComp 组件，用于跟踪冷却状态和计算动画帧：
+- `IsInRangedCooldown` - 是否处于远程武器冷却状态
+- `CooldownProgress` - 冷却进度（0-1）
+- `GetSweatFrame()` - 获取当前汗液帧（1-3）
+- `GetBulletAnimationState()` - 获取子弹动画状态（投入帧，子弹数量）
+
+#### SylvieCooldownOverlayComp
+**文件位置**: `Source/Components/SylvieCooldownOverlayComp.cs`
+
+ThingComp 组件，用于渲染冷却期间的叠加层：
+- 汗液贴图（3帧）
+- 弹匣贴图
+- 子弹投入贴图（3帧）
+- 子弹计数贴图（5帧）
+
+**渲染流程**：
+```
+PostDraw() 
+  → 检查种族和冷却状态
+  → GetFaceDrawOffset() 获取面部偏移
+  → 按顺序渲染：汗液 → 弹匣 → 子弹投入 → 子弹计数
+  → 使用 Matrix4x4.TRS 进行 1.5 倍缩放
+  → Graphics.DrawMesh 绘制
+```
+
+### 渲染流程详解
+
+```
+┌────────────────────────────────────────┐
+│           PostDraw 渲染流程            │
+├────────────────────────────────────────┤
+│                                        │
+│  1. 检查 Pawn.def.defName == "Sylvie_Race" │
+│     └─ 不匹配则直接返回                │
+│                                        │
+│  2. 获取 SylvieCooldownTracker         │
+│     └─ 检查 IsInRangedCooldown         │
+│                                        │
+│  3. 计算绘制位置                       │
+│     drawPos = Pawn.DrawPos + faceOffset│
+│     drawPos.y += 0.01f (层级调整)      │
+│                                        │
+│  4. 渲染汗液 (3帧循环)                 │
+│     Matrix4x4.TRS(drawPos, Quaternion.identity, DrawScale)│
+│     Graphics.DrawMesh(MeshPool.plane10, matrix, mat, 0)   │
+│                                        │
+│  5. 渲染弹匣 (全程显示)                │
+│                                        │
+│  6. 渲染子弹投入动画 (3帧)             │
+│                                        │
+│  7. 渲染子弹计数 (1-5颗)               │
+│                                        │
+└────────────────────────────────────────┘
+```
+
+### 与 Facial Animation 集成
+
+冷却动画通过 `Patch_FaceAnimation_GetCurrentFrame` 补丁与 FA 系统集成：
+
+```csharp
+[HarmonyPatch(typeof(FaceAnimation), nameof(FaceAnimation.GetCurrentFrame))]
+public static class Patch_FaceAnimation_GetCurrentFrame
+{
+    public static bool Prefix(FaceAnimation __instance, int tickGame, 
+                            ref FaceAnimationDef.AnimationFrame? __result)
+    {
+        // 只处理 Sylvie_AimingAnimation
+        if (__instance.animationDef.defName != "Sylvie_AimingAnimation") 
+            return true;
+        
+        // ... 瞄准帧计算逻辑 ...
+        
+        // 冷却期间返回冷却帧
+        else if (curStance is Stance_Cooldown cooldown)
+        {
+            __result = GetCooldownFrame();
+            return false;  // 跳过原始方法
+        }
+        
+        return true;
+    }
+    
+    private static FaceAnimationDef.AnimationFrame GetCooldownFrame()
+    {
+        return new FaceAnimationDef.AnimationFrame
+        {
+            duration = 30,
+            browShapeDef = ConfusedBrowDef,      // 困惑眉毛
+            eyeballShapeDef = LookdownEyeballDef  // 向下看的眼球
+        };
+    }
+}
+```
+
+**关键点**：
+- 通过 `eyeballShapeDef` 替换眼球形状为 `lookdown`
+- 通过 `browShapeDef` 设置眉毛为 `confused`
+- Prefix 返回 `false` 时跳过原始方法，直接使用 `__result`
+
+### 子弹装填动画逻辑
+
+```
+冷却进度 → 动画序列
+0-20%    → 投入1 → 投入2 → 投入3 → 1颗
+20-40%   → 投入1 → 投入2 → 投入3 → 2颗
+40-60%   → 投入1 → 投入2 → 投入3 → 3颗
+60-80%   → 投入1 → 投入2 → 投入3 → 4颗
+80-100%  → 投入1 → 投入2 → 投入3 → 5颗
+```
+
+### 贴图资产
+
+| 资产 | South | East |
+|-----|-------|------|
+| 困惑眉毛 | confused_south.png | confused_east.png |
+| 向下看的眼睛 | lookdown_south.png | lookdown_east.png |
+| 汗液1 | sweat1_south.png | sweat1_east.png |
+| 汗液2 | sweat2_south.png | sweat2_east.png |
+| 汗液3 | sweat3_south.png | sweat3_east.png |
+| 弹匣 | magazine_south.png | magazine_east.png |
+| 子弹投入1 | bullet_insert1_south.png | bullet_insert1_east.png |
+| 子弹投入2 | bullet_insert2_south.png | bullet_insert2_east.png |
+| 子弹投入3 | bullet_insert3_south.png | bullet_insert3_east.png |
+| 一颗子弹 | bullet1_south.png | bullet1_east.png |
+| 两颗子弹 | bullet2_south.png | bullet2_east.png |
+| 三颗子弹 | bullet3_south.png | bullet3_east.png |
+| 四颗子弹 | bullet4_south.png | bullet4_east.png |
+| 五颗子弹 | bullet5_south.png | bullet5_east.png |
+
+### XML 定义
+
+**冷却动画定义** (`CooldownAnimation.xml`):
+```xml
+<FacialAnimation.FaceAnimationDef>
+  <defName>Sylvie_CooldownAnimation</defName>
+  <animationFrames>
+    <li>
+      <duration>30</duration>
+      <browShapeDef>confused</browShapeDef>
+    </li>
+  </animationFrames>
+  <targetJobs>
+    <li>AttackStatic</li>
+  </targetJobs>
+  <priority>10200</priority>
+</FacialAnimation.FaceAnimationDef>
+```
+
+**眉毛形状定义** (`BrowShapeEx.xml`):
+```xml
+<FacialAnimation.BrowShapeDef>
+  <defName>confused</defName>
+</FacialAnimation.BrowShapeDef>
+```
+
+**眼球形状定义** (`EyeShapeEx.xml`):
+```xml
+<FacialAnimation.EyeballShapeDef>
+  <defName>lookdown</defName>
+  <label>lookdown</label>
+</FacialAnimation.EyeballShapeDef>
+```
+
+**冷却叠加层形状定义** (`CooldownShapeEx.xml`):
+```xml
+<!-- 汗液、弹匣、子弹等 LidOptionShapeDef 定义 -->
+<FacialAnimation.LidOptionShapeDef>
+  <defName>sweat1</defName>
+</FacialAnimation.LidOptionShapeDef>
+<!-- ... sweat2, sweat3, magazine, bullet_insert1-3, bullet1-5 -->
+```
 
 ## 瞄准动画同步系统
 
