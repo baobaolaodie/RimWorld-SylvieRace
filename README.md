@@ -182,61 +182,13 @@ SylvieRace/
   - 为动画贴图添加缩放支持，优化显示效果
 
 ### v0.0.4 (2026-03-11)
-- **新增瞄准动画系统**：
-  - 希尔薇使用远程武器时显示专属动态表情
-  - 眉毛动画：第一帧生气表情（angled），后续瞄准专用眉毛
-  - 嘴巴动画：第一帧反V嘴，后续M嘴
-  - 眼睛动画：全程单眼闭合
-  - 准星动画：叠加显示瞄准准星（瞄准1→瞄准2→瞄准3）
-- **修复瞄准动画同步问题**：
-  - 修复瞄准动画在 warmup 期间不显示的问题
-  - 直接检查 `pawn.stances.curStance` 是否为 `Stance_Warmup`
-  - 使用 `warmup.ticksLeft` 和 `verb.verbProps.warmupTime` 实时计算当前帧
-- **修复冷却期间动画行为**：
-  - 修复远程冷却期间动画播放完整动画的问题
-  - 冷却期间（`Stance_Cooldown`）只显示动画第一帧
-- **修复射击阶段动画帧**：
-  - 连发武器射击时（`VerbState.Bursting`）显示动画最后一帧
-  - 完整流程：瞄准（帧0→帧1→帧2）→ 射击（帧2）→ 冷却（帧0）
-- **修复希尔薇重复生成问题**：
-  - 在触发事件前检查殖民地是否已有希尔薇种族的殖民者
-  - 如果已有，则跳过事件触发，防止重复生成
-- **代码简化**：
-  - 简化 `SylvieAimingTracker` 组件，移除不必要的状态管理
-  - 移除 `Patch_SetStance` 和 `Patch_Stance_Warmup_StanceTick`
-- **技术实现**：
-  - 新增 BrowShapeEx.xml（瞄准眉毛形状定义）
-  - 新增 MouthShapeEx.xml（瞄准嘴巴形状定义）
-  - 新增 LidOptionShapeEx.xml（准星形状定义）
-  - 新增 AimingAnimation.xml（瞄准动画定义）
-  - 新增 Patch_Stance_Warmup.cs（动画同步补丁）
-  - 准星使用 Facial Animation 的 LidOptionType 组件实现
-- **服装系统扩展与优化**：
-  - 新增两种发型：丝带发型、长发
-  - 新增西装下装（第 21 种服装）
-  - 新增护士服（第 20 种服装），带有主动技能"紧急治疗"
-  - 为部分服装添加特殊效果（社交影响力、工作速度、移动速度等）
-  - 调整重装女仆的护甲值
-- **初始健康状态系统**：
-  - 希尔薇加入殖民地后 5 个游戏日自动获得"初始创伤"Hediff
-  - 添加 Hediff 治疗机制，需要持续医疗照顾才能治愈
-  - 添加健康问题信件通知
-- **Belt 层服装渲染修复**：
-  - 创口贴和泳装现在正确渲染在 Pawn 身体上
-  - 渲染在 OnSkin 服装之下，Pawn body 之上
-  - 使用 `apparel.drawData` 配置（layer: 15）控制渲染层级
-- **服装种族限制改进**：
-  - 改用 Humanoid Alien Races 框架原生的 `raceRestriction` 功能
-  - 移除 Harmony 补丁，提高兼容性和稳定性
-  - 删除 `ApparelRestrictionPatches.cs` 和 `ApparelLayerPatches.cs`
-- **翻译与本地化**：
-  - 添加中英文翻译支持
-  - 修复翻译系统，将语言目录从 SimplifiedChinese 重命名为 ChineseSimplified
-  - 修复名字翻译，FirstName 和 Nick 都正确显示为"Sylvie"/"希尔薇"
-- **其他修复**：
-  - 修复 HediffDef 配置错误
-  - 修复 CS8618 可空性警告
-  - 修复西装下装贴图路径错误
+- **瞄准动画系统**：希尔薇使用远程武器时显示专属动态表情（眉毛、嘴巴、眼睛、准星动画），修复动画同步问题
+- **服装系统扩展**：新增丝带发型、长发、西装下装、护士服（带紧急治疗技能），为部分服装添加特殊效果
+- **初始健康状态**：希尔薇加入殖民地后 5 日自动获得"初始创伤"Hediff，需持续医疗照顾治愈
+- **Belt 层服装渲染修复**：创口贴和泳装正确渲染在 Pawn 身体上
+- **服装种族限制改进**：改用 HAR 框架原生 `raceRestriction` 功能，移除 Harmony 补丁
+- **翻译与本地化**：添加中英文翻译支持，修复名字翻译显示
+- **其他修复**：修复 HediffDef 配置、可空性警告、贴图路径等问题
 
 ### v0.0.3 (2026-03-03)
 - 修复翻译系统，将语言目录从 SimplifiedChinese 重命名为 ChineseSimplified
