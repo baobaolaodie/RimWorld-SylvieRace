@@ -9,5 +9,6 @@
     <minColor>(1,1,1,1)</minColor>
     <maxColor>(1,1,1,1)</maxColor>
     <enableUnisexTexPath>True</enableUnisexTexPath>
+    <probability>0</probability>
   </FacialAnimation.LidOptionTypeDef>
 </Defs>

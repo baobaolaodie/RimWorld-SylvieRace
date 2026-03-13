@@ -100,10 +100,10 @@ public class SylvieCooldownOverlayComp : ThingComp
     
     private static readonly Vector3[] FaceOffsets = new Vector3[]
     {
-        new Vector3(0f, 1f, 0.35f),   // North
-        new Vector3(0.10f, 1f, 0.35f),  // East
-        new Vector3(0f, 1f, 0.35f),   // South
-        new Vector3(-0.1f, 1f, 0.35f)  // West
+        new Vector3(0f, 1f, 0f),   // North
+        new Vector3(0f, 1f, 0f),  // East
+        new Vector3(0f, 1f, 0f),   // South
+        new Vector3(0f, 1f, 0f)  // West
     };
     
     private Vector3 GetFaceDrawOffset()
@@ -134,8 +134,17 @@ public class SylvieCooldownOverlayComp : ThingComp
         
         Rot4 rot = Pawn.Rotation;
         
-        Vector3 faceOffset = GetFaceDrawOffset();
-        Vector3 drawPos = Pawn.DrawPos + faceOffset;
+        float headSizeFactor = 1f;
+        if (ModsConfig.BiotechActive && Pawn.ageTracker.CurLifeStage.headSizeFactor.HasValue)
+        {
+            headSizeFactor = Pawn.ageTracker.CurLifeStage.headSizeFactor.Value;
+        }
+        
+        Vector3 headOffset = Pawn.Drawer.renderer.BaseHeadOffsetAt(rot);
+        Vector3 faceOffset = GetFaceDrawOffset() * headSizeFactor;
+        Vector3 drawScale = DrawScale * headSizeFactor;
+        
+        Vector3 drawPos = Pawn.DrawPos + headOffset + faceOffset;
         drawPos.y += 0.01f;
         
         int sweatFrame = tracker.GetSweatFrame();
@@ -153,7 +162,7 @@ public class SylvieCooldownOverlayComp : ThingComp
                 Mesh mesh = sweatGraphic.MeshAt(rot);
                 if (mat != null)
                 {
-                    Matrix4x4 matrix = Matrix4x4.TRS(drawPos, Quaternion.identity, DrawScale);
+                    Matrix4x4 matrix = Matrix4x4.TRS(drawPos, Quaternion.identity, drawScale);
                     Graphics.DrawMesh(mesh, matrix, mat, 0);
                 }
             }
@@ -163,7 +172,7 @@ public class SylvieCooldownOverlayComp : ThingComp
         Mesh magazineMesh = MagazineGraphic.MeshAt(rot);
         if (magazineMat != null)
         {
-            Matrix4x4 matrix = Matrix4x4.TRS(drawPos, Quaternion.identity, DrawScale);
+            Matrix4x4 matrix = Matrix4x4.TRS(drawPos, Quaternion.identity, drawScale);
             Graphics.DrawMesh(magazineMesh, matrix, magazineMat, 0);
         }
         
@@ -176,7 +185,7 @@ public class SylvieCooldownOverlayComp : ThingComp
             Mesh insertMesh = insertGraphic.MeshAt(rot);
             if (insertMat != null)
             {
-                Matrix4x4 matrix = Matrix4x4.TRS(drawPos, Quaternion.identity, DrawScale);
+                Matrix4x4 matrix = Matrix4x4.TRS(drawPos, Quaternion.identity, drawScale);
                 Graphics.DrawMesh(insertMesh, matrix, insertMat, 0);
             }
         }
@@ -188,7 +197,7 @@ public class SylvieCooldownOverlayComp : ThingComp
             Mesh bulletMesh = bulletGraphic.MeshAt(rot);
             if (bulletMat != null)
             {
-                Matrix4x4 matrix = Matrix4x4.TRS(drawPos, Quaternion.identity, DrawScale);
+                Matrix4x4 matrix = Matrix4x4.TRS(drawPos, Quaternion.identity, drawScale);
                 Graphics.DrawMesh(bulletMesh, matrix, bulletMat, 0);
             }
         }
