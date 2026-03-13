@@ -60,6 +60,13 @@
 - 根据心情、健康状况自动切换
 - 支持眨眼、流泪等细节动画
 
+#### 进食动画系统
+进食时显示专属动态表情动画：
+- **眼睛表情**: 向下看的眼睛形状（lookdown shape）
+- **嘴巴动画**: 咀嚼动画序列（eating1 → eating2 → eating3）
+- **头部移动**: 模拟进食时的头部移动（headOffset 动画）
+- **动画帧序列**: 张嘴准备 → 抬头进食 → 低头咀嚼
+
 #### 瞄准动画系统
 使用 Facial Animation 的 AnimationFrame 系统实现：
 - **眉毛替换**: 使用 AnimationFrame 系统替换为瞄准专用眉毛形状
@@ -72,6 +79,29 @@
 - **弹匣显示**: 冷却期间全程显示弹匣贴图
 - **子弹装填**: 显示子弹投入动画（投入1 → 投入2 → 投入3 → N颗子弹，循环到5颗）
 - **眼球方向**: 向下看的眼睛表情
+
+**朝向处理逻辑**:
+
+| 朝向 | 行为 |
+|------|------|
+| South | 显示 south 贴图 |
+| East | 显示 east 贴图 |
+| West | 显示 east 贴图（自动翻转） |
+| North | 智能判断 - 有 north 贴图的组件显示，没有的不显示 |
+
+**贴图资源情况**:
+
+| 组件 | north 贴图 |
+|------|-----------|
+| sweat1-3 | 无 |
+| magazine | 有 |
+| bullet_insert1-3 | 有 |
+| bullet1-5 | 有 |
+
+**实现原理**:
+- 使用 `Graphic.MeshAt(rot)` 获取正确的 mesh（自动处理翻转）
+- 使用 `Graphic.MatAt(rot)` 获取对应朝向的材质
+- 通过比较 `MatNorth` 和 `MatSouth` 判断是否有独立的 north 贴图
 
 - 需要 Facial Animation WIP + Experimentals 前置
 
@@ -154,26 +184,48 @@
 ```
 SylvieRace/
 ├── Defs/
-│   ├── Races/           # 种族定义
-│   ├── Apparel/         # 服装定义
-│   ├── FacialAnimation/ # 动态表情
-│   └── ...
-├── Source/              # C# 源码
-├── Textures/            # 贴图资源
-└── Languages/           # 翻译文件
+│   ├── Races/               # 种族定义
+│   ├── Apparel/             # 服装定义
+│   ├── FacialAnimation/     # 动态表情
+│   │   ├── Animations/      # 动画定义（瞄准、冷却、进食）
+│   │   ├── Types/           # 类型定义（眼睛、眉毛、嘴巴等）
+│   │   └── Shapes/          # 形状扩展（各种表情形状）
+│   ├── Hair/                # 发型定义
+│   ├── Hediffs/             # 健康状态
+│   ├── Incidents/           # 事件定义
+│   ├── Backstories/         # 背景故事
+│   ├── Tattoos/             # 纹身定义
+│   └── Traders/             # 贸易商定义
+├── Source/                  # C# 源码
+├── Textures/                # 贴图资源
+└── Languages/               # 翻译文件
 ```
 
 ---
 
 ## 更新日志
 
-### v0.0.5-pre (2026-03-13)
+### v0.0.5-pre (2026-03-14)
+- **重构动态表情目录结构**：
+  - 按功能分类组织：Animations/、Types/、Shapes/
+  - 提高可维护性和可扩展性
+- **修复动态表情 NullReferenceException 问题**：
+  - 移除动画定义的 raceName 限制（正确做法：TypeDef 需要 raceName，动画定义不应有 raceName）
+  - 避免 FA 框架匹配冲突
+- **新增进食动画系统**：
+  - 进食时显示专属动态表情动画
+  - 眼睛向下看（lookdown shape）
+  - 嘴巴咀嚼动画（eating1 → eating2 → eating3）
+  - 头部移动模拟（headOffset 动画）
+  - 动画帧序列：张嘴准备 → 抬头进食 → 低头咀嚼
 - **新增冷却动画系统**：
   - 远程武器冷却期间显示专属动画效果
   - 汗液动画：根据冷却进度显示汗液1→汗液2→汗液3
   - 弹匣显示：冷却期间全程显示弹匣贴图
   - 子弹装填：投入1→投入2→投入3→N颗子弹（循环到5颗）
   - 眼球向下看：冷却期间显示向下看的眼睛表情
+  - **智能朝向处理**：West 朝向自动翻转 east 贴图，North 朝向智能判断（无 north 贴图则不显示）
+  - **贴图资源**：sweat1-3 无 north 贴图，magazine/bullet_insert1-3/bullet1-5 有 north 贴图
 - **修复眼球替换问题**：
   - 修复瞄准和冷却动画中眼球替换不正确的问题
 - **修复位置偏移**：

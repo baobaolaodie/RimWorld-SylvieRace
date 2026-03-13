@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Defs>
+  <FacialAnimation.FaceAnimationDef>
+    <defName>Sylvie_IngestAnimation</defName>
+    <animationFrames>
+      <li>
+        <duration>60</duration>
+        <headOffset>(0.0,0,0.0025)</headOffset>
+        <eyeballShapeDef>lookdown</eyeballShapeDef>
+        <mouthShapeDef>open</mouthShapeDef>
+      </li>
+      <li>
+        <duration>40</duration>
+        <headOffset>(0.0,0,0.0)</headOffset>
+        <eyeballShapeDef>lookdown</eyeballShapeDef>
+        <mouthShapeDef>eating1</mouthShapeDef>
+      </li>
+      <li>
+        <duration>40</duration>
+        <headOffset>(0.0,0,0)</headOffset>
+        <eyeballShapeDef>lookdown</eyeballShapeDef>
+        <mouthShapeDef>eating2</mouthShapeDef>
+      </li>
+      <li>
+        <duration>40</duration>
+        <headOffset>(0.0,0,0)</headOffset>
+        <eyeballShapeDef>lookdown</eyeballShapeDef>
+        <mouthShapeDef>eating3</mouthShapeDef>
+      </li>
+    </animationFrames>
+    <roopIntervalMin>0</roopIntervalMin>
+    <roopIntervalMax>30</roopIntervalMax>
+    <targetJobs>
+      <li>Ingest</li>
+    </targetJobs>
+    <priority>11</priority>
+    <applyWhenStandingOnly>true</applyWhenStandingOnly>
+  </FacialAnimation.FaceAnimationDef>
+</Defs>

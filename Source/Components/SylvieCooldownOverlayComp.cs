@@ -20,7 +20,7 @@ public class SylvieCooldownOverlayComp : ThingComp
     public Pawn Pawn => cachedPawn ??= (parent as Pawn)!;
     
     private static readonly Vector2 OverlaySize = new Vector2(1.5f, 1.5f);
-    private static readonly Vector3 DrawScale = new Vector3(1.5f, 1f, 1.5f);
+    private static readonly Vector3 DrawScale = Vector3.one;
     
     private Graphic[] SweatGraphics
     {
@@ -100,16 +100,25 @@ public class SylvieCooldownOverlayComp : ThingComp
     
     private static readonly Vector3[] FaceOffsets = new Vector3[]
     {
-        new Vector3(0f, 1f, 0.33f),
-        new Vector3(0f, 1f, 0.33f),
-        new Vector3(0f, 1f, 0.33f),
-        new Vector3(0f, 1f, 0.33f)
+        new Vector3(0f, 1f, 0.35f),   // North
+        new Vector3(0.10f, 1f, 0.35f),  // East
+        new Vector3(0f, 1f, 0.35f),   // South
+        new Vector3(-0.1f, 1f, 0.35f)  // West
     };
     
     private Vector3 GetFaceDrawOffset()
     {
         Rot4 rot = Pawn.Rotation;
         return FaceOffsets[rot.AsInt];
+    }
+    
+    /// <summary>
+    /// 检查 Graphic 是否有独立的 north 贴图
+    /// </summary>
+    private bool HasNorthTexture(Graphic graphic)
+    {
+        // 如果 MatNorth 和 MatSouth 是同一个材质，说明没有独立的 north 贴图
+        return graphic.MatNorth != graphic.MatSouth;
     }
     
     public override void PostDraw()
@@ -123,29 +132,39 @@ public class SylvieCooldownOverlayComp : ThingComp
         if (tracker == null || !tracker.IsInRangedCooldown)
             return;
         
+        Rot4 rot = Pawn.Rotation;
+        
         Vector3 faceOffset = GetFaceDrawOffset();
         Vector3 drawPos = Pawn.DrawPos + faceOffset;
         drawPos.y += 0.01f;
         
-        Rot4 rot = Pawn.Rotation;
-        
         int sweatFrame = tracker.GetSweatFrame();
         if (sweatFrame >= 1 && sweatFrame <= 3)
         {
-            Graphic sweatGraphic = SweatGraphics[sweatFrame - 1];
-            Material mat = sweatGraphic.MatAt(rot);
-            if (mat != null)
+            // North 朝向时，没有 north 贴图的组件不显示
+            if (rot == Rot4.North)
             {
-                Matrix4x4 matrix = Matrix4x4.TRS(drawPos, Quaternion.identity, DrawScale);
-                Graphics.DrawMesh(MeshPool.plane10, matrix, mat, 0);
+                // sweat 没有 north 贴图，不显示
+            }
+            else
+            {
+                Graphic sweatGraphic = SweatGraphics[sweatFrame - 1];
+                Material mat = sweatGraphic.MatAt(rot);
+                Mesh mesh = sweatGraphic.MeshAt(rot);
+                if (mat != null)
+                {
+                    Matrix4x4 matrix = Matrix4x4.TRS(drawPos, Quaternion.identity, DrawScale);
+                    Graphics.DrawMesh(mesh, matrix, mat, 0);
+                }
             }
         }
         
         Material magazineMat = MagazineGraphic.MatAt(rot);
+        Mesh magazineMesh = MagazineGraphic.MeshAt(rot);
         if (magazineMat != null)
         {
             Matrix4x4 matrix = Matrix4x4.TRS(drawPos, Quaternion.identity, DrawScale);
-            Graphics.DrawMesh(MeshPool.plane10, matrix, magazineMat, 0);
+            Graphics.DrawMesh(magazineMesh, matrix, magazineMat, 0);
         }
         
         var (insertFrame, bulletCount) = tracker.GetBulletAnimationState();
@@ -154,10 +173,11 @@ public class SylvieCooldownOverlayComp : ThingComp
         {
             Graphic insertGraphic = BulletInsertGraphics[insertFrame - 1];
             Material insertMat = insertGraphic.MatAt(rot);
+            Mesh insertMesh = insertGraphic.MeshAt(rot);
             if (insertMat != null)
             {
                 Matrix4x4 matrix = Matrix4x4.TRS(drawPos, Quaternion.identity, DrawScale);
-                Graphics.DrawMesh(MeshPool.plane10, matrix, insertMat, 0);
+                Graphics.DrawMesh(insertMesh, matrix, insertMat, 0);
             }
         }
         
@@ -165,10 +185,11 @@ public class SylvieCooldownOverlayComp : ThingComp
         {
             Graphic bulletGraphic = BulletCountGraphics[bulletCount - 1];
             Material bulletMat = bulletGraphic.MatAt(rot);
+            Mesh bulletMesh = bulletGraphic.MeshAt(rot);
             if (bulletMat != null)
             {
                 Matrix4x4 matrix = Matrix4x4.TRS(drawPos, Quaternion.identity, DrawScale);
-                Graphics.DrawMesh(MeshPool.plane10, matrix, bulletMat, 0);
+                Graphics.DrawMesh(bulletMesh, matrix, bulletMat, 0);
             }
         }
     }
