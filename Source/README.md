@@ -254,84 +254,153 @@ public bool IsInRangedCooldown
 
 **文件位置**: `Source/Components/SylvieCooldownOverlayComp.cs`
 
-ThingComp 组件，在远程武器冷却期间渲染汗液、弹匣、子弹动画：
+ThingComp 组件，在远程武器冷却期间渲染汗液、弹匣、子弹动画。
 
-**渲染逻辑**：
-- 使用 `PostDraw` 方法在 Pawn 绘制后执行
-- 通过 `Matrix4x4.TRS` 进行缩放变换
-- **自动缩放**：使用 `CurLifeStage.headSizeFactor` 自动适配不同年龄的 pawn 大小（小孩 0.5/0.75，成年人 1.0）
-- **位置计算**：使用 `BaseHeadOffsetAt` 获取头部位置，组件偏移按 `headSizeFactor` 缩放
-- **智能朝向处理**：使用 `Graphic.MeshAt(rot)` 和 `Graphic.MatAt(rot)` 自动处理不同朝向
+#### 渲染逻辑
 
-**朝向处理逻辑**：
+**核心流程**：
+1. 使用 `PostDraw` 方法在 Pawn 绘制后执行
+2. 通过 `Matrix4x4.TRS` 进行缩放变换
+3. **自动缩放**：使用 `CurLifeStage.headSizeFactor` 自动适配不同年龄的 pawn 大小（小孩 0.5/0.75，成年人 1.0）
+4. **位置计算**：使用 `BaseHeadOffsetAt` 获取头部位置，组件偏移保持固定值（不缩放）
+5. **智能朝向处理**：使用 `Graphic.MeshAt(rot)` 和 `Graphic.MatAt(rot)` 自动处理不同朝向
+
+**渲染层级**：
+- **Sweat 组件**：使用 `baseLayer = 61`（在胡子 60 和头发 62 之间）
+- **其他组件**：保持原有默认层级
+
+#### 朝向处理逻辑
 
 | 朝向 | 行为 |
 |------|------|
 | South | 显示 south 贴图 |
 | East | 显示 east 贴图 |
-| West | 显示 east 贴图（自动翻转） |
+| West | 显示 east 贴图（自动翻转 via MeshAt） |
 | North | 智能判断 - 有 north 贴图的组件显示，没有的不显示 |
 
-**渲染元素**：
+**重要**：必须使用 `Graphic.MeshAt(rot)` 获取 mesh，它会自动处理 West 朝向的翻转。不能使用 `MeshPool.plane10` 配合 scale 负值来翻转 - 这样不会翻转 UV！
+
+#### 渲染元素
+
 1. **汗液动画**（3 帧）：`sweat1`, `sweat2`, `sweat3`
 2. **弹匣贴图**：`magazine`（全程显示）
 3. **子弹投入动画**（3 帧）：`bullet_insert1`, `bullet_insert2`, `bullet_insert3`
 4. **子弹计数**（5 帧）：`bullet1` - `bullet5`
 
-**渲染代码示例**：
+#### 缩放机制说明
+
+RimWorld 原版使用 `headSizeFactor` 控制头部图形大小（小孩 0.5/0.75，成年人 1.0）。本组件的缩放策略：
+
+| 元素 | 缩放方式 | 说明 |
+|------|----------|------|
+| 组件偏移 | **不缩放** | 保持固定值，确保组件相对于头部的位置不变 |
+| 组件大小 | `headSizeFactor` 缩放 | 与头部图形大小同步 |
+| 头部位置 | `BaseHeadOffsetAt` | 已包含 `sqrt(bodySizeFactor)` 缩放 |
+
+这样无论 pawn 是小孩还是成年人，组件都能正确显示在头部，并保持相对位置不变。
+
+#### 完整渲染代码示例
+
 ```csharp
 public override void PostDraw()
 {
     base.PostDraw();
     
+    // 1. 种族检查
     if (Pawn.def.defName != "Sylvie_Race")
         return;
     
+    // 2. 冷却状态检查
     var tracker = SylvieCooldownTracker.GetTracker(Pawn);
     if (tracker == null || !tracker.IsInRangedCooldown)
         return;
     
     Rot4 rot = Pawn.Rotation;
     
-    // 获取头部大小因子（Biotech DLC）
+    // 3. 获取头部大小因子（Biotech DLC）
     float headSizeFactor = 1f;
     if (ModsConfig.BiotechActive && Pawn.ageTracker.CurLifeStage.headSizeFactor.HasValue)
     {
         headSizeFactor = Pawn.ageTracker.CurLifeStage.headSizeFactor.Value;
     }
     
-    // 计算位置：头部基础位置 + 组件偏移（按 headSizeFactor 缩放）
+    // 4. 计算头部基础偏移（已包含 bodySizeFactor 的平方根缩放）
     Vector3 headOffset = Pawn.Drawer.renderer.BaseHeadOffsetAt(rot);
-    Vector3 faceOffset = GetFaceDrawOffset() * headSizeFactor;
-    Vector3 drawScale = Vector3.one * headSizeFactor;
     
+    // 5. 计算面部组件偏移（不缩放，保持固定值）
+    Vector3 faceOffset = GetFaceDrawOffset();
+    
+    // 6. 计算最终绘制位置
     Vector3 drawPos = Pawn.DrawPos + headOffset + faceOffset;
-    drawPos.y += 0.01f;
+    drawPos.y += 0.01f; // 层级微调
     
-    // 使用 MeshAt 获取正确的 mesh（自动处理翻转）
-    Mesh mesh = sweatGraphic.MeshAt(rot);
-    Material mat = sweatGraphic.MatAt(rot);
+    // 7. 计算缩放矩阵（组件大小按 headSizeFactor 缩放）
+    Vector3 drawScale = Vector3.one * headSizeFactor;
     Matrix4x4 matrix = Matrix4x4.TRS(drawPos, Quaternion.identity, drawScale);
-    Graphics.DrawMesh(mesh, matrix, mat, 0);
+    
+    // 8. 渲染汗液动画
+    RenderSweat(rot, matrix, tracker);
+    
+    // 9. 渲染弹匣（North 朝向需检查是否有独立贴图）
+    RenderMagazine(rot, matrix);
+    
+    // 10. 渲染子弹投入动画
+    RenderBulletInsert(rot, matrix, tracker);
+    
+    // 11. 渲染子弹计数
+    RenderBulletCount(rot, matrix, tracker);
 }
 
-// 智能判断是否有 north 贴图
+/// <summary>
+/// 渲染汗液动画 - 使用 baseLayer 61（在胡子和头发之间）
+/// </summary>
+private void RenderSweat(Rot4 rot, Matrix4x4 baseMatrix, SylvieCooldownTracker tracker)
+{
+    Graphic sweatGraphic = GetSweatGraphic(tracker.GetSweatFrame());
+    if (sweatGraphic == null) return;
+    
+    // 使用 MeshAt 获取正确的 mesh（自动处理 West 朝向翻转）
+    Mesh mesh = sweatGraphic.MeshAt(rot);
+    Material mat = sweatGraphic.MatAt(rot);
+    
+    Graphics.DrawMesh(mesh, baseMatrix, mat, 0);
+}
+
+/// <summary>
+/// 渲染弹匣 - North 朝向智能判断
+/// </summary>
+private void RenderMagazine(Rot4 rot, Matrix4x4 baseMatrix)
+{
+    // North 朝向且没有独立 north 贴图时不渲染
+    if (rot == Rot4.North && !HasNorthTexture(magazineGraphic))
+        return;
+    
+    Mesh mesh = magazineGraphic.MeshAt(rot);
+    Material mat = magazineGraphic.MatAt(rot);
+    
+    Graphics.DrawMesh(mesh, baseMatrix, mat, 0);
+}
+
+/// <summary>
+/// 智能判断是否有 north 贴图
+/// 原理：比较 MatNorth 和 MatSouth 是否为同一材质
+/// </summary>
 private bool HasNorthTexture(Graphic graphic)
 {
     return graphic.MatNorth != graphic.MatSouth;
 }
+
+/// <summary>
+/// 获取面部组件偏移 - 固定值，不随头部大小缩放
+/// </summary>
+private Vector3 GetFaceDrawOffset()
+{
+    // 返回固定的偏移值
+    return new Vector3(0f, 0f, 0f);
+}
 ```
 
-**缩放机制说明**：
-
-RimWorld 原版使用 `headSizeFactor` 控制头部图形大小（小孩 0.5/0.75，成年人 1.0）：
-- `BaseHeadOffsetAt` 返回头部相对于 pawn 中心的位置（已包含 `sqrt(bodySizeFactor)` 缩放）
-- 组件偏移按 `headSizeFactor` 缩放，确保组件相对于头部的位置保持不变
-- 组件大小按 `headSizeFactor` 缩放，与头部图形大小同步
-
-这样无论 pawn 是小孩还是成年人，组件都能正确显示在头部，并保持相对位置不变。
-
-**关键实现细节**：
+#### 关键实现细节
 
 ```csharp
 // 1. 获取 headSizeFactor（Biotech DLC 支持不同年龄段头部大小）
@@ -344,15 +413,53 @@ if (ModsConfig.BiotechActive && Pawn.ageTracker.CurLifeStage.headSizeFactor.HasV
 // 2. 获取头部基础偏移（已包含 bodySizeFactor 的平方根缩放）
 Vector3 headOffset = Pawn.Drawer.renderer.BaseHeadOffsetAt(rot);
 
-// 3. 计算面部组件偏移（按 headSizeFactor 缩放以保持相对位置）
-Vector3 faceOffset = GetFaceDrawOffset() * headSizeFactor;
+// 3. 计算面部组件偏移（不缩放，保持固定值）
+Vector3 faceOffset = GetFaceDrawOffset();
 
 // 4. 计算最终绘制位置
 Vector3 drawPos = Pawn.DrawPos + headOffset + faceOffset;
 
-// 5. 计算缩放矩阵
+// 5. 计算缩放矩阵（组件大小按 headSizeFactor 缩放）
 Vector3 drawScale = Vector3.one * headSizeFactor;
 Matrix4x4 matrix = Matrix4x4.TRS(drawPos, Quaternion.identity, drawScale);
+
+// 6. 使用 Graphic.MeshAt 获取 mesh（自动处理翻转）
+Mesh mesh = graphic.MeshAt(rot);
+Material mat = graphic.MatAt(rot);
+```
+
+#### 朝向处理实现细节
+
+**核心原理**：
+- 使用 `Graphic.MeshAt(rot)` 获取正确的 mesh（会自动处理 West 朝向的翻转）
+- 使用 `Graphic.MatAt(rot)` 获取对应朝向的材质
+- 通过比较 `MatNorth` 和 `MatSouth` 判断是否有独立的 north 贴图
+
+**朝向行为表**：
+
+| 朝向 | MeshAt 行为 | MatAt 行为 | 说明 |
+|------|-------------|------------|------|
+| South | 正常 mesh | 返回 south 材质 | 正面显示 |
+| East | 正常 mesh | 返回 east 材质 | 右侧显示 |
+| West | **翻转 mesh** | 返回 east 材质 | 左侧显示（自动翻转） |
+| North | 正常 mesh | 返回 north 材质 | 背面显示 |
+
+**错误做法（不要这样做）**：
+```csharp
+// 错误：使用 MeshPool.plane10 配合 scale 负值
+// 这样不会正确翻转 UV！
+Vector3 wrongScale = new Vector3(-headSizeFactor, 1f, headSizeFactor);
+Matrix4x4 wrongMatrix = Matrix4x4.TRS(drawPos, Quaternion.identity, wrongScale);
+Graphics.DrawMesh(MeshPool.plane10, wrongMatrix, mat, 0); // UV 不会翻转！
+```
+
+**正确做法**：
+```csharp
+// 正确：使用 Graphic.MeshAt(rot)
+Mesh mesh = graphic.MeshAt(rot);  // 自动处理 West 朝向翻转
+Material mat = graphic.MatAt(rot);
+Matrix4x4 matrix = Matrix4x4.TRS(drawPos, Quaternion.identity, drawScale);
+Graphics.DrawMesh(mesh, matrix, mat, 0);
 ```
 
 ### 8. IncidentWorker_SylvieTrader（事件处理器）
@@ -900,14 +1007,19 @@ ThingComp 组件，用于渲染冷却期间的叠加层：
 PostDraw() 
   → 检查种族和冷却状态
   → 获取 headSizeFactor（Biotech DLC）
-  → BaseHeadOffsetAt() 获取头部位置
-  → GetFaceDrawOffset() * headSizeFactor 获取缩放后的组件偏移
+  → BaseHeadOffsetAt() 获取头部位置（已包含 sqrt(bodySizeFactor) 缩放）
+  → GetFaceDrawOffset() 获取固定组件偏移（不缩放）
   → 计算 drawPos = Pawn.DrawPos + headOffset + faceOffset
-  → 计算 drawScale = Vector3.one * headSizeFactor
-  → 按顺序渲染：汗液 → 弹匣 → 子弹投入 → 子弹计数
+  → 计算 drawScale = Vector3.one * headSizeFactor（组件大小缩放）
+  → 按顺序渲染：汗液(baseLayer=61) → 弹匣 → 子弹投入 → 子弹计数
   → 使用 Matrix4x4.TRS(drawPos, Quaternion.identity, drawScale) 进行变换
   → Graphics.DrawMesh 绘制
 ```
+
+**缩放机制要点**：
+- **组件偏移**：保持固定值，不随 `headSizeFactor` 缩放
+- **组件大小**：按 `headSizeFactor` 缩放，与头部图形同步
+- **头部位置**：`BaseHeadOffsetAt` 已包含 `sqrt(bodySizeFactor)` 缩放
 
 ### 渲染流程详解
 
@@ -927,23 +1039,25 @@ PostDraw()
 │  4. 获取头部大小因子                   │
 │     headSizeFactor = CurLifeStage.headSizeFactor ?? 1.0 │
 │     (Biotech DLC 支持不同年龄段头部大小)  │
+│     小孩: 0.5/0.75, 成年人: 1.0        │
 │                                        │
 │  5. 计算头部基础偏移                   │
 │     headOffset = BaseHeadOffsetAt(rot) │
-│     (已包含 bodySizeFactor 的平方根缩放)  │
+│     (已包含 sqrt(bodySizeFactor) 缩放)   │
 │                                        │
-│  6. 计算面部组件偏移（按 headSizeFactor 缩放）│
-│     faceOffset = GetFaceDrawOffset() * headSizeFactor   │
+│  6. 计算面部组件偏移（固定值，不缩放）   │
+│     faceOffset = GetFaceDrawOffset()   │
+│     (保持固定，确保相对位置不变)         │
 │                                        │
 │  7. 计算最终绘制位置                   │
 │     drawPos = Pawn.DrawPos + headOffset + faceOffset    │
 │     drawPos.y += 0.01f (层级调整)      │
 │                                        │
-│  8. 计算缩放矩阵                       │
+│  8. 计算缩放矩阵（组件大小缩放）         │
 │     drawScale = Vector3.one * headSizeFactor            │
 │     matrix = Matrix4x4.TRS(drawPos, Quaternion.identity, drawScale)│
 │                                        │
-│  9. 渲染汗液 (3帧循环)                 │
+│  9. 渲染汗液 (3帧循环, baseLayer=61)   │
 │     Mesh mesh = graphic.MeshAt(rot)    │
 │     Material mat = graphic.MatAt(rot)  │
 │     Graphics.DrawMesh(mesh, matrix, mat, 0)               │
@@ -957,6 +1071,19 @@ PostDraw()
 │                                        │
 └────────────────────────────────────────┘
 ```
+
+**缩放机制详解**：
+
+| 步骤 | 元素 | 处理方式 | 缩放因子 | 说明 |
+|------|------|----------|----------|------|
+| 5 | 头部位置 | `BaseHeadOffsetAt(rot)` | `sqrt(bodySizeFactor)` | RimWorld 原版已处理 |
+| 6 | 组件偏移 | `GetFaceDrawOffset()` | **无缩放** | 保持固定值 |
+| 8 | 组件大小 | `Matrix4x4.TRS` | `headSizeFactor` | 与头部图形同步 |
+
+**关键区别**：
+- **组件偏移不缩放**：确保组件相对于头部的相对位置保持不变
+- **组件大小缩放**：确保组件与头部图形大小同步变化
+- **头部位置已缩放**：`BaseHeadOffsetAt` 返回的位置已经考虑了身体大小
 
 ### 朝向处理实现细节
 
@@ -980,8 +1107,8 @@ if (ModsConfig.BiotechActive && Pawn.ageTracker.CurLifeStage.headSizeFactor.HasV
 // 计算头部基础偏移（已包含 bodySizeFactor 的平方根缩放）
 Vector3 headOffset = Pawn.Drawer.renderer.BaseHeadOffsetAt(rot);
 
-// 计算面部组件偏移（按 headSizeFactor 缩放以保持相对位置）
-Vector3 faceOffset = GetFaceDrawOffset() * headSizeFactor;
+// 计算面部组件偏移（固定值，不缩放）
+Vector3 faceOffset = GetFaceDrawOffset();
 
 // 计算最终绘制位置
 Vector3 drawPos = Pawn.DrawPos + headOffset + faceOffset;
@@ -991,7 +1118,7 @@ drawPos.y += 0.01f; // 层级调整
 Mesh mesh = graphic.MeshAt(rot);
 Material mat = graphic.MatAt(rot);
 
-// 计算缩放矩阵
+// 计算缩放矩阵（组件大小按 headSizeFactor 缩放）
 Vector3 drawScale = Vector3.one * headSizeFactor;
 Matrix4x4 matrix = Matrix4x4.TRS(drawPos, Quaternion.identity, drawScale);
 
@@ -1013,6 +1140,47 @@ private bool HasNorthTexture(Graphic graphic)
 | East | 正常 mesh | 返回 east 材质 | 右侧显示 |
 | West | **翻转 mesh** | 返回 east 材质 | 左侧显示（自动翻转） |
 | North | 正常 mesh | 返回 north 材质 | 背面显示 |
+
+**重要警告**：
+
+**错误做法（不要这样做）**：
+```csharp
+// 错误：使用 MeshPool.plane10 配合 scale 负值来翻转
+// 这样不会正确翻转 UV，导致贴图显示错误！
+Vector3 wrongScale = new Vector3(-headSizeFactor, 1f, headSizeFactor);
+Matrix4x4 wrongMatrix = Matrix4x4.TRS(drawPos, Quaternion.identity, wrongScale);
+Graphics.DrawMesh(MeshPool.plane10, wrongMatrix, mat, 0);
+```
+
+**正确做法**：
+```csharp
+// 正确：使用 Graphic.MeshAt(rot) 获取 mesh
+// 它会自动处理 West 朝向的翻转，包括 UV 翻转
+Mesh mesh = graphic.MeshAt(rot);
+Material mat = graphic.MatAt(rot);
+Vector3 drawScale = Vector3.one * headSizeFactor;
+Matrix4x4 matrix = Matrix4x4.TRS(drawPos, Quaternion.identity, drawScale);
+Graphics.DrawMesh(mesh, matrix, mat, 0);
+```
+
+**North 贴图智能判断**：
+
+某些组件可能没有独立的 north 贴图（使用 south 贴图作为默认）。通过比较 `MatNorth` 和 `MatSouth` 可以判断：
+
+```csharp
+private bool HasNorthTexture(Graphic graphic)
+{
+    // 如果 MatNorth 和 MatSouth 是同一材质，说明没有独立的 north 贴图
+    return graphic.MatNorth != graphic.MatSouth;
+}
+
+// 使用示例
+if (rot == Rot4.North && !HasNorthTexture(magazineGraphic))
+{
+    // North 朝向且没有独立 north 贴图，跳过渲染
+    return;
+}
+```
 
 ### 与 Facial Animation 集成
 

@@ -21,6 +21,7 @@ public class SylvieCooldownOverlayComp : ThingComp
     
     private static readonly Vector2 OverlaySize = new Vector2(1.5f, 1.5f);
     private static readonly Vector3 DrawScale = Vector3.one;
+    private const float SweatLayer = 61f;
     
     private Graphic[] SweatGraphics
     {
@@ -141,7 +142,7 @@ public class SylvieCooldownOverlayComp : ThingComp
         }
         
         Vector3 headOffset = Pawn.Drawer.renderer.BaseHeadOffsetAt(rot);
-        Vector3 faceOffset = GetFaceDrawOffset() * headSizeFactor;
+        Vector3 faceOffset = GetFaceDrawOffset();
         Vector3 drawScale = DrawScale * headSizeFactor;
         
         Vector3 drawPos = Pawn.DrawPos + headOffset + faceOffset;
@@ -162,7 +163,9 @@ public class SylvieCooldownOverlayComp : ThingComp
                 Mesh mesh = sweatGraphic.MeshAt(rot);
                 if (mat != null)
                 {
-                    Matrix4x4 matrix = Matrix4x4.TRS(drawPos, Quaternion.identity, drawScale);
+                    Vector3 sweatDrawPos = drawPos;
+                    sweatDrawPos.y = Pawn.DrawPos.y + PawnRenderUtility.AltitudeForLayer(SweatLayer);
+                    Matrix4x4 matrix = Matrix4x4.TRS(sweatDrawPos, Quaternion.identity, drawScale);
                     Graphics.DrawMesh(mesh, matrix, mat, 0);
                 }
             }
