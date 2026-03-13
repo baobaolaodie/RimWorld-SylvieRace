@@ -103,7 +103,9 @@
 - 使用 `Graphic.MatAt(rot)` 获取对应朝向的材质
 - 通过比较 `MatNorth` 和 `MatSouth` 判断是否有独立的 north 贴图
 - **自动缩放**: 使用 `CurLifeStage.headSizeFactor` 自动适配不同年龄的 pawn 大小（小孩 0.5/0.75，成年人 1.0）
-- **位置计算**: 使用 `BaseHeadOffsetAt` 获取头部位置，组件偏移按 `headSizeFactor` 缩放，确保在不同年龄下组件相对于头部的位置保持不变
+- **位置计算**: 使用 `BaseHeadOffsetAt` 获取头部位置，组件偏移保持固定值（不随年龄缩放），确保在不同年龄下组件相对于头部的视觉位置保持一致
+- **组件大小缩放**: 所有冷却动画组件的大小按 `headSizeFactor` 缩放，确保与头部比例协调
+- **渲染层级**: Sweat 组件使用独立的渲染层级（baseLayer 61，位于胡子和头发之间），其他冷却组件保持原有层级
 
 - 需要 Facial Animation WIP + Experimentals 前置
 
@@ -208,6 +210,13 @@ SylvieRace/
 ## 更新日志
 
 ### v0.0.5-pre (2026-03-14)
+- **修复冷却动画组件渲染层级问题**：
+  - 将 Sweat 组件的渲染层级调整为 baseLayer 61（位于胡子和头发之间）
+  - 解决 Sweat 组件被头发遮挡的问题
+- **修复冷却动画组件缩放和位置计算**：
+  - 修正组件偏移逻辑：偏移值保持固定（不随年龄缩放），仅组件大小按 `headSizeFactor` 缩放
+  - 确保在不同年龄下组件相对于头部的视觉位置保持一致
+  - 参考 FA 和 RimWorld 原版实现机制
 - **修复 LidOption 组件渲染问题**：
   - 修复了 tear 和 crosshair 有概率无法渲染的问题
   - 问题原因：Sylvie 定义了两个 LidOptionTypeDef，当随机选中 Sylvie_CooldownOverlay 时缺少 normal 贴图
@@ -238,11 +247,6 @@ SylvieRace/
   - 修复动画元素位置偏移问题
 - **添加贴图缩放**：
   - 为动画贴图添加缩放支持，优化显示效果
-- **修复冷却动画组件缩放和位置问题**：
-  - 使用 `CurLifeStage.headSizeFactor` 自动适配不同年龄的 pawn 大小（小孩 0.5/0.75，成年人 1.0）
-  - 使用 `BaseHeadOffsetAt` 获取头部位置，组件偏移按 `headSizeFactor` 缩放
-  - 确保在不同年龄下组件相对于头部的位置保持不变
-  - 参考 FA 和 RimWorld 原版实现机制
 
 ### v0.0.4 (2026-03-11)
 - **瞄准动画系统**：希尔薇使用远程武器时显示专属动态表情（眉毛、嘴巴、眼睛、准星动画），修复动画同步问题
