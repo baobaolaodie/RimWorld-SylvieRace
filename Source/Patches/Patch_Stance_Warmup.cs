@@ -31,7 +31,7 @@ public static class Patch_Pawn_SpawnSetup
 {
     public static void Postfix(Pawn __instance)
     {
-        if (__instance.def.defName == "Sylvie_Race")
+        if (SylvieDefNames.IsSylvieRace(__instance.def))
         {
             if (__instance.GetComp<SylvieAimingTracker>() == null)
             {
@@ -50,6 +50,13 @@ public static class Patch_Pawn_SpawnSetup
             if (__instance.GetComp<SylvieCooldownOverlayComp>() == null)
             {
                 __instance.AllComps.Add(new SylvieCooldownOverlayComp
+                {
+                    parent = __instance
+                });
+            }
+            if (__instance.GetComp<SylvieCatEarComp>() == null)
+            {
+                __instance.AllComps.Add(new SylvieCatEarComp
                 {
                     parent = __instance
                 });
@@ -98,7 +105,7 @@ public static class Patch_FaceAnimation_GetCurrentFrame
         {
             cachedCooldownFrame = new FaceAnimationDef.AnimationFrame
             {
-                duration = 30,
+                duration = SylvieConstants.DefaultAnimationDuration,
                 browShapeDef = ConfusedBrowDef,
                 eyeballShapeDef = LookdownEyeballDef
             };
@@ -166,7 +173,7 @@ public static class Patch_FacialAnimationControllerComp_InitializeIfNeed
 {
     public static void Postfix(FacialAnimationControllerComp __instance, Pawn ___pawn, Dictionary<string, List<FaceAnimation>> ___animationDict)
     {
-        if (___pawn == null || ___pawn.def.defName != "Sylvie_Race") return;
+        if (!SylvieDefNames.IsSylvieRace(___pawn)) return;
         
         foreach (var kvp in ___animationDict)
         {

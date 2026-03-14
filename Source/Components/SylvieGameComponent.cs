@@ -15,9 +15,8 @@ public class SylvieGameComponent : GameComponent
     private int hediffTriggerTick = -1;
     private bool hediffTriggered;
 
-    private const int CheckInterval = 2500;
-    private const int InitialEventTick = 5000;
-    private const string SylvieRaceDefName = "Sylvie_Race";
+    private const int CheckInterval = SylvieConstants.CheckIntervalTicks;
+    private const int InitialEventTick = SylvieConstants.InitialEventDelayTicks;
 
     public SylvieGameComponent(Game game) { }
 
@@ -55,7 +54,7 @@ public class SylvieGameComponent : GameComponent
             {
                 foreach (Pawn pawn in map.mapPawns.FreeColonistsSpawned)
                 {
-                    if (pawn.def.defName == SylvieRaceDefName)
+                    if (SylvieDefNames.IsSylvieRace(pawn))
                     {
                         sylviePawn = pawn;
                         return true;

@@ -25,6 +25,11 @@ public static class SylvieDefNames
     public const string Gene_SkinSheerWhite = "Skin_SheerWhite";
     public const string Gene_HairSnowWhite = "Hair_SnowWhite";
     
+    /// <summary>
+    /// 希尔薇种族的 ThingDef 名称。
+    /// </summary>
+    public const string Race_Sylvie = "Sylvie_Race";
+    
     public static HediffDef? Hediff_InitialTraumaDef => HediffDef.Named(Hediff_InitialTrauma);
     public static PawnKindDef? PawnKind_SylvieDef => PawnKindDef.Named(PawnKind_Sylvie);
     public static IncidentDef? Incident_ArrivalEventDef => IncidentDef.Named(Incident_ArrivalEvent);
@@ -34,4 +39,24 @@ public static class SylvieDefNames
     public static TattooDef? Tattoo_ScarBodyDef => DefDatabase<TattooDef>.GetNamed(Tattoo_ScarBody, false);
     public static GeneDef? Gene_SkinSheerWhiteDef => DefDatabase<GeneDef>.GetNamed(Gene_SkinSheerWhite, false);
     public static GeneDef? Gene_HairSnowWhiteDef => DefDatabase<GeneDef>.GetNamed(Gene_HairSnowWhite, false);
+    
+    /// <summary>
+    /// 检查指定的 Pawn 是否为希尔薇种族。
+    /// </summary>
+    /// <param name="pawn">要检查的 Pawn</param>
+    /// <returns>如果是希尔薇种族返回 true，否则返回 false</returns>
+    public static bool IsSylvieRace(Pawn? pawn)
+    {
+        return pawn?.def?.defName == Race_Sylvie;
+    }
+    
+    /// <summary>
+    /// 检查指定的 ThingDef 是否为希尔薇种族。
+    /// </summary>
+    /// <param name="raceDef">要检查的 ThingDef</param>
+    /// <returns>如果是希尔薇种族返回 true，否则返回 false</returns>
+    public static bool IsSylvieRace(ThingDef? raceDef)
+    {
+        return raceDef?.defName == Race_Sylvie;
+    }
 }

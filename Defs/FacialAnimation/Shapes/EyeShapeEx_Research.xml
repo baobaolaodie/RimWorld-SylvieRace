@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Defs>
+  <FacialAnimation.EyeballShapeDef>
+    <defName>white_eye</defName>
+    <label>white eye</label>
+  </FacialAnimation.EyeballShapeDef>
+
+  <FacialAnimation.EyeballShapeDef>
+    <defName>white_eye_right</defName>
+    <label>white eye right</label>
+  </FacialAnimation.EyeballShapeDef>
+
+  <FacialAnimation.EyeballShapeDef>
+    <defName>white_eye_left</defName>
+    <label>white eye left</label>
+  </FacialAnimation.EyeballShapeDef>
+
+  <FacialAnimation.EyeballShapeDef>
+    <defName>circle_eye</defName>
+    <label>circle eye</label>
+  </FacialAnimation.EyeballShapeDef>
+
+  <FacialAnimation.EyeballShapeDef>
+    <defName>circle_eye_down</defName>
+    <label>circle eye down</label>
+  </FacialAnimation.EyeballShapeDef>
+</Defs>

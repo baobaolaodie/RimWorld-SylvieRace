@@ -126,7 +126,7 @@ public class SylvieCooldownOverlayComp : ThingComp
     {
         base.PostDraw();
         
-        if (Pawn.def.defName != "Sylvie_Race")
+        if (!SylvieDefNames.IsSylvieRace(Pawn))
             return;
         
         var tracker = SylvieCooldownTracker.GetTracker(Pawn);
