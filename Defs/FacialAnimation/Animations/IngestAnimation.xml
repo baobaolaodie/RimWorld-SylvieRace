@@ -5,7 +5,7 @@
     <defName>Sylvie_IngestAnimation</defName>
     <animationFrames>
       <li>
-        <duration>60</duration>
+        <duration>30</duration>
         <headOffset>(0.0,0,0.0025)</headOffset>
         <eyeballShapeDef>lookdown</eyeballShapeDef>
         <mouthShapeDef>open</mouthShapeDef>

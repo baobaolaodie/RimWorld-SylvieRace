@@ -44,7 +44,7 @@
         <duration>30</duration>
         <browShapeDef>normal</browShapeDef>
         <mouthShapeDef>w_mouth</mouthShapeDef>
-        <eyeballShapeDef>circle_eye</eyeballShapeDef>
+        <eyeballShapeDef>circle_eye_down</eyeballShapeDef>
         <emotionShapeDef>gloomy</emotionShapeDef>
       </li>
       <li>
