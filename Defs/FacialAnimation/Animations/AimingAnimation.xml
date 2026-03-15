@@ -3,6 +3,7 @@
 <Defs>
   <FacialAnimation.FaceAnimationDef>
     <defName>Sylvie_AimingAnimation</defName>
+    <raceName>Sylvie_Race</raceName>
     <animationFrames>
       <li>
         <duration>30</duration>

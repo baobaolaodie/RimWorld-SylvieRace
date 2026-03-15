@@ -45,7 +45,8 @@ SylvieRace/
 │       │   ├── AimingAnimation.xml   # 瞄准动画
 │       │   ├── IngestAnimation.xml   # 进食动画
 │       │   ├── CooldownAnimation.xml # 冷却动画
-│       │   └── ResearchAnimation.xml # 研究动画
+│       │   ├── ResearchAnimation.xml # 研究动画
+│       │   └── LovinAnimation.xml    # Lovin 动画
 │       ├── Types/             # 类型定义
 │       │   ├── EyeType.xml           # 眼睛/眼球类型
 │       │   ├── MouthType.xml         # 嘴巴类型
@@ -86,6 +87,7 @@ SylvieRace/
 │   │   ├── CompNurseHeal.cs         # 护士服治疗组件
 │   │   └── SylvieHediffManager.cs   # Hediff 管理逻辑
 │   ├── Patches/
+│   │   ├── Patch_FaceAnimationDef_IsSame.cs  # 种族限制核心补丁
 │   │   ├── Patch_CommsConsole.cs    # 通讯台补丁
 │   │   ├── Patch_Stance_Warmup.cs   # 瞄准动画同步补丁
 │   │   └── Patch_ResearchAnimation.cs # 研究动画与猫耳同步补丁
@@ -1395,7 +1397,60 @@ public static class Patch_FacialAnimationControllerComp_InitializeIfNeed_Researc
 - TypeDef（如 `EyeballTypeDef`）**需要**添加 `raceName` 限制
 - 如果动画有 `raceName` 限制而 TypeDef 也有，会导致 FA 框架匹配冲突
 
-### 14. Patch_Stance_Warmup（瞄准动画同步补丁）
+### 14. Patch_FaceAnimationDef_IsSame（种族限制核心补丁）
+
+**文件位置**: `Source/Patches/Patch_FaceAnimationDef_IsSame.cs`
+
+**核心功能**:
+修改 FA 的 `FaceAnimationDef.IsSame` 方法，实现 Sylvie 专属动画与 FA 原版动画共存。
+
+**问题背景**:
+FA 原生的 `IsSame` 方法严格匹配 raceName：
+```csharp
+if (raceName != targetName) return false;
+```
+这导致如果 Sylvie 动画设置 raceName="Sylvie_Race"，FA 原版动画 raceName="" 就无法匹配。
+
+**解决方案**:
+```csharp
+if (!string.IsNullOrEmpty(raceName) && raceName != targetName) return false;
+```
+- raceName 为空 → 允许任何种族使用（FA 原版动画）
+- raceName 不为空 → 只允许对应种族使用（Sylvie 专属动画）
+
+**代码实现**:
+```csharp
+[HarmonyPatch(typeof(FaceAnimationDef), nameof(FaceAnimationDef.IsSame))]
+public static class Patch_FaceAnimationDef_IsSame
+{
+    public static bool Prefix(FaceAnimationDef __instance, string jobName,
+                            string targetName, ref bool __result)
+    {
+        if (string.IsNullOrEmpty(jobName))
+        {
+            __result = false;
+            return false;
+        }
+        if (targetName == "Sylvie_Race")
+        {
+            if (!string.IsNullOrEmpty(__instance.raceName) && __instance.raceName != targetName)
+            {
+                __result = false;
+                return false;
+            }
+            __result = __instance.targetJobs.Contains(jobName);
+            return false;
+        }
+        return true;
+    }
+}
+```
+
+**关键约束**:
+- 只对 targetName == "Sylvie_Race" 应用新逻辑
+- 其他种族使用原生 FA 逻辑，避免影响其他模组
+
+### 15. Patch_Stance_Warmup（瞄准动画同步补丁）
 
 **文件位置**: `Source/Patches/Patch_Stance_Warmup.cs`
 
@@ -1591,7 +1646,7 @@ warmup.ticksLeft    // 剩余瞄准 ticks
 warmup.verb         // 当前使用的 Verb
 ```
 
-### 15. 初始健康状态系统 (Hediffs/)
+### 16. 初始健康状态系统 (Hediffs/)
 
 **文件位置**: `Defs/Hediffs/Sylvie_Hediffs.xml`
 
@@ -1641,7 +1696,7 @@ warmup.verb         // 当前使用的 Verb
 - 使用 `Scribe_Values.Look<int>` 保存触发时间
 - 使用 `Scribe_Values.Look<bool>` 保存触发状态
 
-### 16. 心情效果系统 (Thoughts/)
+### 17. 心情效果系统 (Thoughts/)
 
 **文件位置**: `Defs/Thoughts/Sylvie_Thoughts.xml`
 
@@ -1923,11 +1978,12 @@ public static HediffDef? Hediff_InitialTraumaDef =>
 7. **翻译系统**：Defs 中使用英文，中文翻译通过 Languages 目录注入
 8. **希尔薇唯一生成**：只能通过 `Sylvie_ArrivalEvent` 事件生成
 9. **服装层级配置**：泳装和创口贴使用 Belt 层（配件层），可与其他服装同时穿戴
-10. **动画 raceName 使用方式（重要！）**：
+10. **动画 raceName 使用方式（重要！）**:
     - **TypeDef 需要添加 `raceName` 限制**（如 EyeType、MouthType、CooldownOverlayType 等）
     - **动画定义（FaceAnimationDef）不应添加 `raceName` 限制**
     - 如果动画有 `raceName` 限制，而 TypeDef 也有 `raceName` 限制，会导致 FA 框架匹配冲突，引发 NullReferenceException
     - 正确做法：TypeDef 有 raceName，动画无 raceName，让 FA 的默认动画可以正常应用
+    - 详见"种族限制机制"章节
 
 ### raceName 使用原则详解
 
@@ -2052,6 +2108,42 @@ else
 | West | **翻转 mesh** | 返回 east 材质 | 左侧显示（自动翻转） |
 | North | 正常 mesh | 返回 north 材质 | 背面显示 |
 
+### 动画参数被 FA 默认动画覆盖
+
+#### 问题描述
+Sylvie 动画的某些参数（如眼睛闭合、嘴巴形状）被 FA 默认动画覆盖，显示效果不符合预期。
+
+#### 根本原因
+FA 使用动画累积机制，如果 Sylvie 动画的某帧没有指定某个参数，FA 原版的对应参数可能被应用。
+
+#### 解决方案
+确保 Sylvie 动画的每一帧都包含所有关键参数：
+
+```xml
+<li>
+  <duration>30</duration>
+  <browShapeDef>confused</browShapeDef>
+  <eyeballShapeDef>normal</eyeballShapeDef>
+  <mouthShapeDef>tongue_out</mouthShapeDef>
+  <lidShapeDef>normal</lidShapeDef>          <!-- 必须！ -->
+  <lidOptionShapeDef>sylvie_sweat1</lidOptionShapeDef>
+</li>
+```
+
+**必须指定的参数**：
+- `browShapeDef` - 眉毛形状
+- `eyeballShapeDef` - 眼球形状
+- `mouthShapeDef` - 嘴巴形状
+- `lidShapeDef` - 眼皮形状（即使是 normal 也要指定）
+- `lidOptionShapeDef` - 眼皮选项（如流汗效果）
+
+**Priority 设置**：
+确保 Sylvie 动画的 priority 高于 FA 默认动画：
+- FA Ingest: 10 → Sylvie Ingest: 11
+- FA Lovin: 10400 → Sylvie Lovin: 10600
+
+详见"FA 动画混合机制"章节。
+
 ### 动画 raceName 冲突导致的 NullReferenceException
 
 #### 问题描述
@@ -2090,6 +2182,11 @@ FaceAnimationDef 错误地添加了 `raceName` 限制，而对应的 TypeDef 也
   ...
 </FacialAnimation.BrowTypeDef>
 ```
+
+**使用 Patch_FaceAnimationDef_IsSame**：
+确保 `Patch_FaceAnimationDef_IsSame.cs` 补丁已正确加载，这是实现 Sylvie 专属动画与 FA 原版动画共存的关键。
+
+详见"种族限制机制"章节。
 
 ### Belt 层服装渲染顺序问题
 
@@ -2889,6 +2986,86 @@ public static class Patch_FaceAnimation_GetCurrentFrame
 
 ## 瞄准动画同步系统
 
+## Lovin 动画系统
+
+### 功能概述
+Lovin（亲热）时显示专属动态表情动画（6帧循环），包括流汗效果、眉毛变化、眼球移动和吐舌嘴巴：
+- **流汗效果**：使用 FA 原生 LidOption 系统渲染（sweat1/2/3）
+- **眉毛变化**：confused → confused_down → confused_up
+- **眼球移动**：normal → eye_up → eye_roll
+- **嘴巴形状**：全程 tongue_out（吐舌）
+
+### 动画帧序列表格
+
+| 帧 | duration | Sweat | Brow | Eyeball | Mouth | Lid |
+|----|----------|-------|------|---------|-------|-----|
+| 1 | 30 | sweat1 | confused | normal | tongue_out | normal |
+| 2 | 30 | sweat2 | confused | normal | tongue_out | normal |
+| 3 | 30 | sweat3 | confused_down | eye_up | tongue_out | normal |
+| 4 | 30 | sweat1 | confused_down | eye_up | tongue_out | normal |
+| 5 | 30 | sweat2 | confused_up | eye_roll | tongue_out | normal |
+| 6 | 30 | sweat3 | confused_up | eye_roll | tongue_out | normal |
+
+### 技术实现
+
+**动画定义** (`Defs/FacialAnimation/Animations/LovinAnimation.xml`):
+```xml
+<FacialAnimation.FaceAnimationDef>
+  <defName>Sylvie_LovinAnimation</defName>
+  <animationFrames>
+    <!-- 6帧动画，每帧30 ticks -->
+    <li>
+      <duration>30</duration>
+      <browShapeDef>confused</browShapeDef>
+      <eyeballShapeDef>normal</eyeballShapeDef>
+      <mouthShapeDef>tongue_out</mouthShapeDef>
+      <lidShapeDef>normal</lidShapeDef>          <!-- 重要！ -->
+      <lidOptionShapeDef>sylvie_sweat1</lidOptionShapeDef>
+    </li>
+    <!-- ... 共6帧 ... -->
+  </animationFrames>
+  <targetJobs>
+    <li>Lovin</li>
+    <li>MLI_Jobs_MassLoveIn</li>
+    <li>MLI_Jobs_SingleLoveIn</li>
+  </targetJobs>
+  <priority>10600</priority>  <!-- 高于 FA Lovin2 (10500) -->
+</FacialAnimation.FaceAnimationDef>
+```
+
+**关键设计**:
+- 使用 FA 原生 LidOption 系统渲染流汗效果（替代已废弃的 SylvieLovinOverlayComp 组件）
+- 每帧必须包含完整的参数（特别是 `lidShapeDef>normal`）
+- Priority 10600 确保在 FA Lovin 动画（10400）和 Lovin2 动画（10500）之后应用
+
+**ShapeDef 定义**:
+- `BrowShapeEx.xml` - confused_up, confused_down 眉毛形状
+- `EyeShapeEx.xml` - eye_up, eye_roll 眼球形状
+- `MouthShapeEx.xml` - tongue_out 嘴巴形状
+- `LidOptionShapeEx.xml` - sylvie_sweat1/2/3 流汗形状
+
+### 文件结构
+```
+Defs/FacialAnimation/
+├── Animations/
+│   └── LovinAnimation.xml       # Lovin 动画定义（6帧）
+├── Shapes/
+│   ├── BrowShapeEx.xml          # confused_up, confused_down
+│   ├── EyeShapeEx.xml           # eye_up, eye_roll
+│   ├── MouthShapeEx.xml         # tongue_out
+│   └── LidOptionShapeEx.xml     # sylvie_sweat1/2/3
+└── Types/
+    └── LidOptionType.xml        # LidOption 类型定义
+
+Textures/Things/Pawn/Sylvie/
+├── Brows/Normal/Unisex/         # confused_up/down 贴图
+├── Eyes/                        # eye_up/roll 贴图
+├── Mouth/Normal/Unisex/         # tongue_out 贴图
+└── LidOptions/Normal/Unisex/    # sweat1/2/3 贴图
+```
+
+## 瞄准动画同步系统
+
 ### 技术实现
 由于 Facial Animation 的动画选择基于 Job，而 `AttackStatic` Job 在整个射击过程中都存在（warmup + cooldown + burst），动画的 `startTick` 是在 Job 开始时设置的。因此使用 Harmony 补丁直接检查 `Stance_Warmup` 状态来实现动态动画同步。
 
@@ -2947,6 +3124,91 @@ private static FaceAnimationDef.AnimationFrame GetCooldownFrame()
 总瞄准时间 = 武器.warmupTime × Pawn.AimingDelayFactor
 ```
 
+## FA 动画混合机制
+
+### 核心原理
+FA 使用动画累积机制，而非单一动画选择。这意味着：
+- FA 会累积所有匹配的动画帧
+- 对于每个参数取最后一个非 null 的值
+- 动画按 priority 升序排序后遍历
+
+### 动画累积流程
+
+```csharp
+// AnimationFrameAccumulator.UpdateAnimation
+foreach (FaceAnimation currentJobAnimation in currentJobAnimationList)
+{
+    if (!currentJobAnimation.animationDef.applyWhenStandingOnly || isStanding)
+    {
+        Add(currentJobAnimation.GetCurrentFrame(tickGame));
+    }
+}
+return AccumResultFrameAndClear();
+```
+
+### 参数合并规则
+
+对于每个参数，取累积列表中最后一个非 null 的值：
+
+```csharp
+// AccumResultFrameAndClear
+animationFrame.lidShapeDef = accumFrames
+    .Where(x => x.lidShapeDef != null)
+    .LastOrDefault()?.lidShapeDef;
+```
+
+**这意味着**：
+- 如果 Sylvie 动画的某帧没有指定 `lidShapeDef`，FA 原版的 `lidShapeDef=close` 可能被应用
+- 如果 Sylvie 动画的某帧指定了 `lidShapeDef=normal`，则会覆盖 FA 原版的值
+
+### 动画排序
+
+动画按 priority 升序排列（低 priority 在前，高 priority 在后）：
+
+```csharp
+animationDict[key].Sort((a, b) =>
+    a.animationDef.priority - b.animationDef.priority);
+```
+
+**Priority 配置参考**：
+
+| 动画 | Priority | 说明 |
+|-----|----------|------|
+| FA Ingest | 10 | FA 默认进食动画 |
+| Sylvie Ingest | 11 | 高于 FA 默认 |
+| FA Lovin | 10400 | FA 默认 Lovin |
+| FA Lovin2 | 10500 | FA 默认 Lovin2 |
+| Sylvie Lovin | 10600 | 高于所有 FA Lovin |
+| Sylvie Cooldown | 10200 | 冷却动画 |
+| Sylvie Aiming | 10300 | 瞄准动画 |
+| Sylvie Research | 10003 | 研究动画 |
+
+### 完整参数指定原则
+
+**问题背景**：
+由于动画累积机制，如果 Sylvie 动画某帧缺少某个参数，FA 原版的对应参数可能被应用。
+
+**解决方案**：
+确保 Sylvie 动画的每一帧都包含所有关键参数：
+
+```xml
+<li>
+  <duration>30</duration>
+  <browShapeDef>confused</browShapeDef>
+  <eyeballShapeDef>normal</eyeballShapeDef>
+  <mouthShapeDef>tongue_out</mouthShapeDef>
+  <lidShapeDef>normal</lidShapeDef>          <!-- 必须！ -->
+  <lidOptionShapeDef>sylvie_sweat1</lidOptionShapeDef>
+</li>
+```
+
+**必须指定的参数**：
+- `browShapeDef` - 眉毛形状
+- `eyeballShapeDef` - 眼球形状
+- `mouthShapeDef` - 嘴巴形状
+- `lidShapeDef` - 眼皮形状（即使是 normal 也要指定）
+- `lidOptionShapeDef` - 眼皮选项（如流汗效果）
+
 ### 关键 API
 ```csharp
 // File: Source/Patches/Patch_Stance_Warmup.cs
@@ -2962,6 +3224,117 @@ pawn.GetStatValue(StatDefOf.AimingDelayFactor)   // 瞄准时间乘数
 warmup.ticksLeft    // 剩余瞄准 ticks
 warmup.verb         // 当前使用的 Verb
 ```
+
+## 种族限制机制
+
+### raceName 使用原则
+
+**核心问题**：FA 原生的 `IsSame` 方法严格匹配 raceName，导致 Sylvie 无法同时使用专属动画和 FA 原版动画。
+
+**解决方案**：通过 `Patch_FaceAnimationDef_IsSame` 补丁修改匹配逻辑。
+
+### raceName 使用原则表格
+
+| 定义类型 | 是否需要 raceName | 示例 | 说明 |
+|----------|-------------------|------|------|
+| FaceAnimationDef（动画定义） | **不需要** | Sylvie_LovinAnimation, Sylvie_AimingAnimation | 添加 raceName 会导致 FA 框架匹配冲突 |
+| BrowTypeDef | **需要** | Sylvie_BrowNormal | TypeDef 需要 raceName 限制 |
+| EyeballTypeDef | **需要** | Sylvie_EyeNormal | TypeDef 需要 raceName 限制 |
+| MouthTypeDef | **需要** | Sylvie_MouthNormal | TypeDef 需要 raceName 限制 |
+| LidTypeDef | **需要** | Sylvie_LidNormal | TypeDef 需要 raceName 限制 |
+| LidOptionTypeDef | **需要** | Sylvie_LidOptionNormal, Sylvie_CooldownOverlay | TypeDef 需要 raceName 限制 |
+| HeadTypeDef | **需要** | Sylvie_Head | TypeDef 需要 raceName 限制 |
+| SkinTypeDef | **需要** | Sylvie_SkinRightEye | TypeDef 需要 raceName 限制 |
+| EmotionTypeDef | **需要** | Sylvie_EmotionNormal | TypeDef 需要 raceName 限制 |
+
+### 需要 raceName 的 TypeDef 列表
+
+**必须添加 `raceName>Sylvie_Race` 的 TypeDef**：
+
+```xml
+<!-- 眉毛类型 -->
+<FacialAnimation.BrowTypeDef>
+  <defName>Sylvie_BrowNormal</defName>
+  <raceName>Sylvie_Race</raceName>
+  ...
+</FacialAnimation.BrowTypeDef>
+
+<!-- 眼球类型 -->
+<FacialAnimation.EyeballTypeDef>
+  <defName>Sylvie_EyeNormal</defName>
+  <raceName>Sylvie_Race</raceName>
+  ...
+</FacialAnimation.EyeballTypeDef>
+
+<!-- 嘴巴类型 -->
+<FacialAnimation.MouthTypeDef>
+  <defName>Sylvie_MouthNormal</defName>
+  <raceName>Sylvie_Race</raceName>
+  ...
+</FacialAnimation.MouthTypeDef>
+
+<!-- 眼睑类型 -->
+<FacialAnimation.LidTypeDef>
+  <defName>Sylvie_LidNormal</defName>
+  <raceName>Sylvie_Race</raceName>
+  ...
+</FacialAnimation.LidTypeDef>
+
+<!-- 眼睑选项类型 -->
+<FacialAnimation.LidOptionTypeDef>
+  <defName>Sylvie_LidOptionNormal</defName>
+  <raceName>Sylvie_Race</raceName>
+  ...
+</FacialAnimation.LidOptionTypeDef>
+
+<!-- 头部类型 -->
+<FacialAnimation.HeadTypeDef>
+  <defName>Sylvie_Head</defName>
+  <raceName>Sylvie_Race</raceName>
+  ...
+</FacialAnimation.HeadTypeDef>
+
+<!-- 皮肤类型 -->
+<FacialAnimation.SkinTypeDef>
+  <defName>Sylvie_SkinRightEye</defName>
+  <raceName>Sylvie_Race</raceName>
+  ...
+</FacialAnimation.SkinTypeDef>
+
+<!-- 情绪类型 -->
+<FacialAnimation.EmotionTypeDef>
+  <defName>Sylvie_EmotionNormal</defName>
+  <raceName>Sylvie_Race</raceName>
+  ...
+</FacialAnimation.EmotionTypeDef>
+```
+
+### 不应有 raceName 的动画定义
+
+**FaceAnimationDef 不应添加 raceName**：
+
+```xml
+<!-- 正确：FaceAnimationDef 不应有 raceName -->
+<FacialAnimation.FaceAnimationDef>
+  <defName>Sylvie_LovinAnimation</defName>
+  <animationFrames>...</animationFrames>
+  <targetJobs><li>Lovin</li></targetJobs>
+  <priority>10600</priority>
+</FacialAnimation.FaceAnimationDef>
+
+<!-- 错误：FaceAnimationDef 不应添加 raceName -->
+<FacialAnimation.FaceAnimationDef>
+  <defName>Sylvie_LovinAnimation</defName>
+  <raceName>Sylvie_Race</raceName>  <!-- 删除这行！ -->
+  ...
+</FacialAnimation.FaceAnimationDef>
+```
+
+### 原因说明
+
+- **TypeDef 的 raceName**：用于告诉 FA 框架该类型属于哪个种族，限制该类型的贴图只被对应种族使用
+- **FaceAnimationDef 的 raceName**：动画定义是全局可用的，通过 `targetJobs` 和 `priority` 与 TypeDef 关联
+- **冲突原因**：如果 FaceAnimationDef 也添加 raceName，会导致 FA 框架在匹配动画时产生冲突，引发 NullReferenceException
 
 ### 动画帧计算
 假设动画有 3 帧，总瞄准时间为 T ticks：

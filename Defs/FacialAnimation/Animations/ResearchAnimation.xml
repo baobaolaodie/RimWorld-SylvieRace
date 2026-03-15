@@ -3,24 +3,28 @@
 <Defs>
   <FacialAnimation.FaceAnimationDef>
     <defName>Sylvie_ResearchAnimation</defName>
+    <raceName>Sylvie_Race</raceName>
     <animationFrames>
       <li>
         <duration>30</duration>
         <browShapeDef>normal</browShapeDef>
         <mouthShapeDef>w_mouth</mouthShapeDef>
         <eyeballShapeDef>white_eye</eyeballShapeDef>
+        <lidShapeDef>normal</lidShapeDef>
       </li>
       <li>
         <duration>30</duration>
         <browShapeDef>normal</browShapeDef>
         <mouthShapeDef>w_mouth</mouthShapeDef>
         <eyeballShapeDef>white_eye</eyeballShapeDef>
+        <lidShapeDef>normal</lidShapeDef>
       </li>
       <li>
         <duration>30</duration>
         <browShapeDef>normal</browShapeDef>
         <mouthShapeDef>w_mouth</mouthShapeDef>
         <eyeballShapeDef>white_eye_right</eyeballShapeDef>
+        <lidShapeDef>normal</lidShapeDef>
       </li>
       <li>
         <duration>30</duration>

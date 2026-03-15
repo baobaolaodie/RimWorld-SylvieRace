@@ -5,4 +5,14 @@
     <defName>lookdown</defName>
     <label>lookdown</label>
   </FacialAnimation.EyeballShapeDef>
+
+  <FacialAnimation.EyeballShapeDef>
+    <defName>sylvie_eye_up</defName>
+    <label>eye up</label>
+  </FacialAnimation.EyeballShapeDef>
+
+  <FacialAnimation.EyeballShapeDef>
+    <defName>sylvie_eye_roll</defName>
+    <label>eye roll</label>
+  </FacialAnimation.EyeballShapeDef>
 </Defs>

@@ -20,4 +20,8 @@
   <FacialAnimation.MouthShapeDef>
     <defName>eating3</defName>
   </FacialAnimation.MouthShapeDef>
+
+  <FacialAnimation.MouthShapeDef>
+    <defName>sylvie_tongue_out</defName>
+  </FacialAnimation.MouthShapeDef>
 </Defs>

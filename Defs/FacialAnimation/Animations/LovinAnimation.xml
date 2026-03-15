@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Defs>
+  <FacialAnimation.FaceAnimationDef>
+    <defName>Sylvie_LovinAnimation</defName>
+    <raceName>Sylvie_Race</raceName>
+    <animationFrames>
+      <!-- Frame 1: sweat1, confused (existing), normal (existing), tongue_out -->
+      <li>
+        <duration>60</duration>
+        <browShapeDef>confused</browShapeDef>
+        <eyeballShapeDef>normal</eyeballShapeDef>
+        <mouthShapeDef>sylvie_tongue_out</mouthShapeDef>
+        <lidShapeDef>normal</lidShapeDef>
+        <lidOptionShapeDef>sylvie_sweat1</lidOptionShapeDef>
+        <headOffset>(0.0,0,0.0)</headOffset>
+        <browOffset>(0.0,0,0.0)</browOffset>
+        <lidOffset>(0.0,0,0.0)</lidOffset>
+        <eyeballOffset>(0.0,0,0.0)</eyeballOffset>
+      </li>
+      <!-- Frame 2: sweat2, confused (existing), normal (existing), tongue_out -->
+      <li>
+        <duration>60</duration>
+        <browShapeDef>confused</browShapeDef>
+        <eyeballShapeDef>normal</eyeballShapeDef>
+        <mouthShapeDef>sylvie_tongue_out</mouthShapeDef>
+        <lidShapeDef>normal</lidShapeDef>
+        <lidOptionShapeDef>sylvie_sweat2</lidOptionShapeDef>
+        <headOffset>(0.0,0,0.0)</headOffset>
+        <browOffset>(0.0,0,0.0)</browOffset>
+        <lidOffset>(0.0,0,0.0)</lidOffset>
+        <eyeballOffset>(0.0,0,0.0)</eyeballOffset>
+      </li>
+      <!-- Frame 3: sweat3, confused_brow_down, eye_up, tongue_out -->
+      <li>
+        <duration>60</duration>
+        <browShapeDef>sylvie_confused_brow_down</browShapeDef>
+        <eyeballShapeDef>sylvie_eye_up</eyeballShapeDef>
+        <mouthShapeDef>sylvie_tongue_out</mouthShapeDef>
+        <lidShapeDef>normal</lidShapeDef>
+        <lidOptionShapeDef>sylvie_sweat3</lidOptionShapeDef>
+        <headOffset>(0.0,0,0.0)</headOffset>
+        <browOffset>(0.0,0,0.0)</browOffset>
+        <lidOffset>(0.0,0,0.0)</lidOffset>
+        <eyeballOffset>(0.0,0,0.0)</eyeballOffset>
+      </li>
+      <!-- Frame 4: sweat1, confused_brow_down, eye_up, tongue_out -->
+      <li>
+        <duration>60</duration>
+        <browShapeDef>sylvie_confused_brow_down</browShapeDef>
+        <eyeballShapeDef>sylvie_eye_up</eyeballShapeDef>
+        <mouthShapeDef>sylvie_tongue_out</mouthShapeDef>
+        <lidShapeDef>normal</lidShapeDef>
+        <lidOptionShapeDef>sylvie_sweat1</lidOptionShapeDef>
+      </li>
+      <!-- Frame 5: sweat2, confused_brow_up, eye_roll, tongue_out -->
+      <li>
+        <duration>60</duration>
+        <browShapeDef>sylvie_confused_brow_up</browShapeDef>
+        <eyeballShapeDef>sylvie_eye_roll</eyeballShapeDef>
+        <mouthShapeDef>sylvie_tongue_out</mouthShapeDef>
+        <lidShapeDef>normal</lidShapeDef>
+        <lidOptionShapeDef>sylvie_sweat2</lidOptionShapeDef>
+        <headOffset>(0.0,0,0.0)</headOffset>
+        <browOffset>(0.0,0,0.0)</browOffset>
+        <lidOffset>(0.0,0,0.0)</lidOffset>
+        <eyeballOffset>(0.0,0,0.0)</eyeballOffset>
+      </li>
+      <!-- Frame 6: sweat3, confused_brow_up, eye_roll, tongue_out -->
+      <li>
+        <duration>60</duration>
+        <browShapeDef>sylvie_confused_brow_up</browShapeDef>
+        <eyeballShapeDef>sylvie_eye_roll</eyeballShapeDef>
+        <mouthShapeDef>sylvie_tongue_out</mouthShapeDef>
+        <lidShapeDef>normal</lidShapeDef>
+        <lidOptionShapeDef>sylvie_sweat3</lidOptionShapeDef>
+        <headOffset>(0.0,0,0.0)</headOffset>
+        <browOffset>(0.0,0,0.0)</browOffset>
+        <lidOffset>(0.0,0,0.0)</lidOffset>
+        <eyeballOffset>(0.0,0,0.0)</eyeballOffset>
+      </li>
+    </animationFrames>
+    <applyWhenStandingOnly>true</applyWhenStandingOnly>
+    <targetJobs>
+      <li>Lovin</li>
+      <li>MLI_Jobs_MassLoveIn</li>
+      <li>MLI_Jobs_SingleLoveIn</li>
+    </targetJobs>
+    <priority>10600</priority>
+  </FacialAnimation.FaceAnimationDef>
+</Defs>

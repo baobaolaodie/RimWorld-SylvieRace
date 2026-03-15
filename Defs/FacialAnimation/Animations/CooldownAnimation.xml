@@ -3,6 +3,7 @@
 <Defs>
   <FacialAnimation.FaceAnimationDef>
     <defName>Sylvie_CooldownAnimation</defName>
+    <raceName>Sylvie_Race</raceName>
     <animationFrames>
       <li>
         <duration>30</duration>
@@ -12,6 +13,6 @@
     <targetJobs>
       <li>AttackStatic</li>
     </targetJobs>
-    <priority>10200</priority>
+    <priority>10202</priority>
   </FacialAnimation.FaceAnimationDef>
 </Defs>

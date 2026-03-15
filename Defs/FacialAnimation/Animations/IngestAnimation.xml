@@ -6,31 +6,41 @@
     <animationFrames>
       <li>
         <duration>30</duration>
-        <headOffset>(0.0,0,0.0025)</headOffset>
         <eyeballShapeDef>lookdown</eyeballShapeDef>
         <mouthShapeDef>open</mouthShapeDef>
+        <headOffset>(0.0,0,0.0)</headOffset>
+        <browOffset>(0.0,0,0.0)</browOffset>
+        <lidOffset>(0.0,0,0.0)</lidOffset>
+        <eyeballOffset>(0.0,0,0.0)</eyeballOffset>
       </li>
       <li>
         <duration>40</duration>
-        <headOffset>(0.0,0,0.0)</headOffset>
         <eyeballShapeDef>lookdown</eyeballShapeDef>
         <mouthShapeDef>eating1</mouthShapeDef>
+        <headOffset>(0.0,0,0.0)</headOffset>
+        <browOffset>(0.0,0,0.0)</browOffset>
+        <lidOffset>(0.0,0,0.0)</lidOffset>
+        <eyeballOffset>(0.0,0,0.0)</eyeballOffset>
       </li>
       <li>
         <duration>40</duration>
-        <headOffset>(0.0,0,0)</headOffset>
         <eyeballShapeDef>lookdown</eyeballShapeDef>
         <mouthShapeDef>eating2</mouthShapeDef>
+        <headOffset>(0.0,0,0.0)</headOffset>
+        <browOffset>(0.0,0,0.0)</browOffset>
+        <lidOffset>(0.0,0,0.0)</lidOffset>
+        <eyeballOffset>(0.0,0,0.0)</eyeballOffset>
       </li>
       <li>
         <duration>40</duration>
-        <headOffset>(0.0,0,0)</headOffset>
         <eyeballShapeDef>lookdown</eyeballShapeDef>
         <mouthShapeDef>eating3</mouthShapeDef>
+        <headOffset>(0.0,0,0.0)</headOffset>
+        <browOffset>(0.0,0,0.0)</browOffset>
+        <lidOffset>(0.0,0,0.0)</lidOffset>
+        <eyeballOffset>(0.0,0,0.0)</eyeballOffset>
       </li>
     </animationFrames>
-    <roopIntervalMin>0</roopIntervalMin>
-    <roopIntervalMax>30</roopIntervalMax>
     <targetJobs>
       <li>Ingest</li>
     </targetJobs>

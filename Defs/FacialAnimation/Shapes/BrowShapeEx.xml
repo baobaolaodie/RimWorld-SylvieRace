@@ -8,4 +8,12 @@
   <FacialAnimation.BrowShapeDef>
     <defName>confused</defName>
   </FacialAnimation.BrowShapeDef>
+
+  <FacialAnimation.BrowShapeDef>
+    <defName>sylvie_confused_brow_up</defName>
+  </FacialAnimation.BrowShapeDef>
+
+  <FacialAnimation.BrowShapeDef>
+    <defName>sylvie_confused_brow_down</defName>
+  </FacialAnimation.BrowShapeDef>
 </Defs>
