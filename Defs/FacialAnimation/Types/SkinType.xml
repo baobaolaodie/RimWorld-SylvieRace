@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
 <Defs>
-  <FacialAnimation.SkinTypeDef>
+  <!-- <FacialAnimation.SkinTypeDef>
     <defName>Sylvie_SkinRightEye</defName>
     <texPath>Things/Pawn/Sylvie/Skins/RightEye</texPath>
     <raceName>Sylvie_Race</raceName>
@@ -17,6 +17,13 @@
     <shader>Map/Transparent</shader>
     <enableUnisexTexPath>True</enableUnisexTexPath>
     <probability>0.05</probability>
+  </FacialAnimation.SkinTypeDef> -->
+
+  <FacialAnimation.SkinTypeDef>
+	  <defName>Sylvie_SkinNormal</defName>
+	  <texPath>Things/Pawn/Humanlike/Skins/Normal</texPath>
+    <raceName>Sylvie_Race</raceName>
+	  <shader>Map/CutoutSkin</shader>
   </FacialAnimation.SkinTypeDef>
 
 </Defs>

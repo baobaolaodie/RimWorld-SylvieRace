@@ -8,6 +8,7 @@
       <li>
         <duration>30</duration>
         <browShapeDef>confused</browShapeDef>
+        <mouthShapeDef>m_shape</mouthShapeDef>
       </li>
     </animationFrames>
     <targetJobs>

@@ -55,8 +55,7 @@ SylvieRace/
 │       │   ├── LidOptionType.xml     # 眼睑选项类型
 │       │   ├── EmotionType.xml       # 情绪类型
 │       │   ├── HeadType.xml          # 头部类型
-│       │   ├── SkinType.xml          # 皮肤类型
-│       │   └── CooldownOverlayType.xml # 冷却叠加层类型
+│       │   └── SkinType.xml          # 皮肤类型
 │       ├── Shapes/            # 形状扩展定义
 │       │   ├── EyeShapeEx.xml        # 眼睛形状扩展（lookdown）
 │       │   ├── EyeballShapeEx.xml    # 眼球形状扩展
@@ -1537,7 +1536,7 @@ public static class Patch_Pawn_SpawnSetup
 **动画帧逻辑**：
 - `Stance_Warmup` 状态：基于 warmup 进度计算帧（帧0 → 帧1 → 帧2）
 - `VerbState.Bursting` 状态：显示最后一帧（帧2）
-- `Stance_Cooldown` 状态：返回 `GetCooldownFrame()` 构造的冷却帧（包含 `browShapeDef: confused` 和 `eyeballShapeDef: lookdown`）
+- `Stance_Cooldown` 状态：返回 `GetCooldownFrame()` 构造的冷却帧（包含 `browShapeDef: confused`、`eyeballShapeDef: lookdown` 和 `mouthShapeDef: m_shape`）
 - 其他状态：返回 `true` 让原始方法执行
 
 **实现代码**：
@@ -1994,7 +1993,7 @@ public static HediffDef? Hediff_InitialTraumaDef =>
 | EyeballTypeDef | Sylvie_EyeNormal | 眼睛/眼球类型定义 |
 | MouthTypeDef | Sylvie_MouthNormal | 嘴巴类型定义 |
 | LidTypeDef | Sylvie_LidNormal | 眼睑类型定义 |
-| LidOptionTypeDef | Sylvie_LidOptionNormal, Sylvie_CooldownOverlay | 眼睑选项类型定义 |
+| LidOptionTypeDef | Sylvie_LidOptionNormal | 眼睑选项类型定义 |
 | HeadTypeDef | Sylvie_Head | 头部类型定义 |
 | SkinTypeDef | Sylvie_SkinRightEye, Sylvie_SkinLeftChin | 皮肤类型定义 |
 | EmotionTypeDef | Sylvie_EmotionNormal | 表情类型定义 |
@@ -2010,36 +2009,6 @@ public static HediffDef? Hediff_InitialTraumaDef =>
 - 如果 FaceAnimationDef 也添加 `raceName`，会导致 FA 框架在匹配动画时产生冲突，引发 NullReferenceException
 
 ## 故障排查
-
-### LidOption 组件渲染问题
-
-#### 问题描述
-生成 Sylvie pawn 时，有概率无法呈现任何 LidOption 组件（包括 tear 和 crosshair）。
-
-#### 根本原因
-Sylvie 定义了两个 LidOptionTypeDef：
-1. `Sylvie_LidOptionNormal` - 用于正常的 LidOption 效果（tear, crosshair）
-2. `Sylvie_CooldownOverlay` - 用于冷却动画叠加层
-
-当 pawn 生成时，FA 框架的 `SetRandomFaceType()` 会随机选择这两个 TypeDef 中的一个。如果选中了 `Sylvie_CooldownOverlay`，由于它缺少 `normal` 贴图，导致 LidOption 组件初始化失败。
-
-#### 解决方案
-在 `CooldownOverlayType.xml` 中给 `Sylvie_CooldownOverlay` 添加 `<probability>0</probability>`，这样它不会被随机选中，但仍然可以通过代码直接使用（`SylvieCooldownOverlayComp` 不受影响）。
-
-#### 代码示例（已实现）
-```xml
-<!-- File: Defs/FacialAnimation/Types/CooldownOverlayType.xml -->
-<FacialAnimation.LidOptionTypeDef>
-  <defName>Sylvie_CooldownOverlay</defName>
-  <texPath>Things/Pawn/Sylvie/CooldownOverlay</texPath>
-  <raceName>Sylvie_Race</raceName>
-  <shader>Map/Transparent</shader>
-  <minColor>(1,1,1,1)</minColor>
-  <maxColor>(1,1,1,1)</maxColor>
-  <enableUnisexTexPath>True</enableUnisexTexPath>
-  <probability>0</probability>  <!-- 防止被随机选中 -->
-</FacialAnimation.LidOptionTypeDef>
-```
 
 ### 冷却动画组件朝向问题
 
@@ -2871,7 +2840,8 @@ public static class Patch_FaceAnimation_GetCurrentFrame
         {
             duration = 30,
             browShapeDef = ConfusedBrowDef,      // 困惑眉毛
-            eyeballShapeDef = LookdownEyeballDef  // 向下看的眼球
+            eyeballShapeDef = LookdownEyeballDef, // 向下看的眼球
+            mouthShapeDef = CooldownMouthDef      // 冷却专用嘴巴
         };
     }
 }
@@ -2880,9 +2850,10 @@ public static class Patch_FaceAnimation_GetCurrentFrame
 **关键点**：
 - 通过 `eyeballShapeDef` 替换眼球形状为 `lookdown`（在代码中动态设置）
 - 通过 `browShapeDef` 设置眉毛为 `confused`（在代码中动态设置）
+- 通过 `mouthShapeDef` 设置嘴巴为 `m_shape`（在代码中动态设置）
 - Prefix 返回 `false` 时跳过原始方法，直接使用 `__result`
 
-**注意**：冷却动画的 `eyeballShapeDef: lookdown` 和 `browShapeDef: confused` 是在 `GetCooldownFrame()` 方法中通过代码动态构造的，而不是来自 XML 定义。这种设计允许冷却动画在运行时动态修改眼睛和眉毛形状，而不需要在 XML 中定义多个动画帧。
+**注意**：冷却动画的 `eyeballShapeDef: lookdown`、`browShapeDef: confused` 和 `mouthShapeDef: m_shape` 是在 `GetCooldownFrame()` 方法中通过代码动态构造的，而不是来自 XML 定义。这种设计允许冷却动画在运行时动态修改眼睛、眉毛和嘴巴形状，而不需要在 XML 中定义多个动画帧。
 
 ### 子弹装填动画逻辑
 
@@ -2913,6 +2884,7 @@ public static class Patch_FaceAnimation_GetCurrentFrame
 | 三颗子弹 | bullet3_south.png | bullet3_east.png |
 | 四颗子弹 | bullet4_south.png | bullet4_east.png |
 | 五颗子弹 | bullet5_south.png | bullet5_east.png |
+| M嘴 | m_shape_south.png | m_shape_east.png |
 
 ### XML 定义
 
@@ -2924,6 +2896,7 @@ public static class Patch_FaceAnimation_GetCurrentFrame
     <li>
       <duration>30</duration>
       <browShapeDef>confused</browShapeDef>
+      <mouthShapeDef>m_shape</mouthShapeDef>
     </li>
   </animationFrames>
   <targetJobs>
@@ -2933,7 +2906,7 @@ public static class Patch_FaceAnimation_GetCurrentFrame
 </FacialAnimation.FaceAnimationDef>
 ```
 
-**注意**：`CooldownAnimation.xml` 只定义了困惑眉毛。向下看的眼睛（lookdown）是通过 `Patch_FaceAnimation_GetCurrentFrame` 补丁在代码中动态设置的（见下文 `GetCooldownFrame()` 方法）。
+**注意**：`CooldownAnimation.xml` 定义了困惑眉毛和冷却专用嘴巴。向下看的眼睛（lookdown）是通过 `Patch_FaceAnimation_GetCurrentFrame` 补丁在代码中动态设置的（见下文 `GetCooldownFrame()` 方法）。
 
 **眉毛形状定义** (`BrowShapeEx.xml`):
 ```xml
@@ -2950,6 +2923,14 @@ public static class Patch_FaceAnimation_GetCurrentFrame
 </FacialAnimation.EyeballShapeDef>
 ```
 
+**嘴巴形状定义** (`MouthShapeEx.xml`):
+```xml
+<FacialAnimation.MouthShapeDef>
+  <defName>m_shape</defName>
+  <label>M嘴</label>
+</FacialAnimation.MouthShapeDef>
+```
+
 **冷却叠加层形状定义** (`CooldownShapeEx.xml`):
 ```xml
 <!-- 汗液、弹匣、子弹等 LidOptionShapeDef 定义 -->
@@ -2959,13 +2940,6 @@ public static class Patch_FaceAnimation_GetCurrentFrame
 </FacialAnimation.LidOptionShapeDef>
 <!-- ... sweat2, sweat3, magazine, bullet_insert1-3, bullet1-5 -->
 ```
-
-**冷却叠加层类型定义** (`CooldownOverlayType.xml`):
-```xml
-<FacialAnimation.CooldownOverlayTypeDef>
-  <defName>Sylvie_CooldownOverlay</defName>
-  <raceName>Sylvie_Race</raceName>  <!-- TypeDef 需要 raceName 限制 -->
-  <overlayShapeDefs>
     <li>sweat1</li>
     <li>sweat2</li>
     <li>sweat3</li>
@@ -3085,7 +3059,7 @@ ThingComp（组件），用于缓存 Pawn 引用和静态字典查找：
 - `Patch_FaceAnimation_GetCurrentFrame` - 使用 Prefix 拦截 Facial Animation 的帧计算
   - `Stance_Warmup` 状态：基于 warmup 进度计算帧（帧0 → 帧1 → 帧2）
   - `VerbState.Bursting` 状态：显示最后一帧（帧2）
-  - `Stance_Cooldown` 状态：返回 `GetCooldownFrame()` 构造的冷却帧（包含困惑眉毛和向下看的眼球）
+  - `Stance_Cooldown` 状态：返回 `GetCooldownFrame()` 构造的冷却帧（包含困惑眉毛、向下看的眼球和冷却专用嘴巴）
   - 其他状态：返回 `true` 让原始方法执行
   - **注意**：Prefix 返回 `false` 时会跳过原始方法，直接返回 `__result`
 
@@ -3101,8 +3075,9 @@ private static FaceAnimationDef.AnimationFrame GetCooldownFrame()
         cachedCooldownFrame = new FaceAnimationDef.AnimationFrame
         {
             duration = 30,
-            browShapeDef = ConfusedBrowDef,      // 困惑眉毛
-            eyeballShapeDef = LookdownEyeballDef  // 向下看的眼球
+            browShapeDef = ConfusedBrowDef,       // 困惑眉毛
+            eyeballShapeDef = LookdownEyeballDef, // 向下看的眼球
+            mouthShapeDef = CooldownMouthDef      // 冷却专用嘴巴
         };
     }
     return cachedCooldownFrame;
@@ -3242,7 +3217,7 @@ warmup.verb         // 当前使用的 Verb
 | EyeballTypeDef | **需要** | Sylvie_EyeNormal | TypeDef 需要 raceName 限制 |
 | MouthTypeDef | **需要** | Sylvie_MouthNormal | TypeDef 需要 raceName 限制 |
 | LidTypeDef | **需要** | Sylvie_LidNormal | TypeDef 需要 raceName 限制 |
-| LidOptionTypeDef | **需要** | Sylvie_LidOptionNormal, Sylvie_CooldownOverlay | TypeDef 需要 raceName 限制 |
+| LidOptionTypeDef | **需要** | Sylvie_LidOptionNormal | TypeDef 需要 raceName 限制 |
 | HeadTypeDef | **需要** | Sylvie_Head | TypeDef 需要 raceName 限制 |
 | SkinTypeDef | **需要** | Sylvie_SkinRightEye | TypeDef 需要 raceName 限制 |
 | EmotionTypeDef | **需要** | Sylvie_EmotionNormal | TypeDef 需要 raceName 限制 |
