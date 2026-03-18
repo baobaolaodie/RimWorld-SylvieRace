@@ -651,4 +651,66 @@
 			<li>SylvieClothesTag</li>
 		</tradeTags>
 	</ThingDef>
+	
+	<ThingDef ParentName="ApparelBase">
+		<defName>steampunk</defName>
+		<label>steampunk</label>
+		<description>The armor-like clothes that only noble lords could afford were more like a suit of armor than actual garments. The built-in steam system could endow the wearer with a more powerful physique. The high-tech of the nobility enabled the armor to have an auxiliary aiming system, allowing the wearer to aim more precisely. The thick armor could defend against the vast majority of attacks. However, this armor was not fireproof, and due to its huge size, it was almost impossible to do other work. Logically speaking, commoners could not own such things. Perhaps it had been sold on the black market after the bankruptcy of that noble.</description>
+		<recipeMaker Inherit="False" IsNull="True" />
+		<techLevel>Medieval</techLevel>
+		<tradeability>All</tradeability>
+		<thingCategories>
+			<li>SylvieRace_Apparel</li>
+		</thingCategories>
+		<graphicData>
+			<texPath>Things/Clothes/steampunk_Female_south</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<statBases>
+			<MaxHitPoints>200</MaxHitPoints>
+			<Mass>2.0</Mass>
+			<StuffEffectMultiplierArmor>0.15</StuffEffectMultiplierArmor>
+			<StuffEffectMultiplierInsulation_Cold>0.2</StuffEffectMultiplierInsulation_Cold>
+			<StuffEffectMultiplierInsulation_Heat>0.2</StuffEffectMultiplierInsulation_Heat>
+			<EquipDelay>2</EquipDelay>
+			<ArmorRating_Sharp>1.1</ArmorRating_Sharp>
+			<ArmorRating_Blunt>1.1</ArmorRating_Blunt>
+			<ArmorRating_Heat>0.1</ArmorRating_Heat>
+		</statBases>
+		<equippedStatOffsets>
+			<WorkSpeedGlobal>-0.4</WorkSpeedGlobal>
+			<AimingDelayFactor>-0.15</AimingDelayFactor>
+		</equippedStatOffsets>
+		<costStuffCount>50</costStuffCount>
+		<stuffCategories>
+			<li>Fabric</li>
+		</stuffCategories>
+		<apparel>
+			<wornGraphicPath>Things/Clothes/steampunk</wornGraphicPath>
+			<bodyPartGroups>
+				<li>Torso</li>
+				<li>Neck</li>
+				<li>Shoulders</li>
+				<li>Arms</li>
+				<li>Legs</li>
+			</bodyPartGroups>
+			<layers>
+				<li>OnSkin</li>
+				<li>Middle</li>
+				<li>Shell</li>
+			</layers>
+			<tags>
+				<li>SylvieRace_Apparel</li>
+			</tags>
+			<defaultOutfitTags>
+				<li>Worker</li>
+			</defaultOutfitTags>
+			<countsAsClothingForNudity>true</countsAsClothingForNudity>
+			<developmentalStageFilter>Child, Adult</developmentalStageFilter>
+			<canBeDesiredForIdeo>false</canBeDesiredForIdeo>
+		</apparel>
+		<tradeTags>
+			<li>SylvieClothesTag</li>
+		</tradeTags>
+	</ThingDef>
 </Defs>
