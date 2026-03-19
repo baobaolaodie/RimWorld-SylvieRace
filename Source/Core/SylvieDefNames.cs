@@ -30,15 +30,28 @@ public static class SylvieDefNames
     /// </summary>
     public const string Race_Sylvie = "Sylvie_Race";
     
-    public static HediffDef? Hediff_InitialTraumaDef => HediffDef.Named(Hediff_InitialTrauma);
-    public static PawnKindDef? PawnKind_SylvieDef => PawnKindDef.Named(PawnKind_Sylvie);
-    public static IncidentDef? Incident_ArrivalEventDef => IncidentDef.Named(Incident_ArrivalEvent);
+    // 寻求抚摸功能
+    public const string Job_SeekPetting = "Sylvie_SeekPetting";
+    public const string Thought_WasPetted = "Sylvie_WasPetted";
+    public const string Thought_PettedSomeone = "Sylvie_PettedSomeone";
+    public const string Thought_PettedMe_Social = "Sylvie_PettedMe_Social";
+    public const string Thought_WasPetted_Social = "Sylvie_WasPetted_Social";
+    
+    public static HediffDef? Hediff_InitialTraumaDef => DefDatabase<HediffDef>.GetNamed(Hediff_InitialTrauma, false);
+    public static PawnKindDef? PawnKind_SylvieDef => DefDatabase<PawnKindDef>.GetNamed(PawnKind_Sylvie, false);
+    public static IncidentDef? Incident_ArrivalEventDef => DefDatabase<IncidentDef>.GetNamed(Incident_ArrivalEvent, false);
     public static LetterDef? Letter_OfferLetterDef => DefDatabase<LetterDef>.GetNamed(Letter_OfferLetter, false);
     public static TraderKindDef? Trader_ClothingTraderDef => DefDatabase<TraderKindDef>.GetNamed(Trader_ClothingTrader, false);
     public static TattooDef? Tattoo_ScarHeadDef => DefDatabase<TattooDef>.GetNamed(Tattoo_ScarHead, false);
     public static TattooDef? Tattoo_ScarBodyDef => DefDatabase<TattooDef>.GetNamed(Tattoo_ScarBody, false);
     public static GeneDef? Gene_SkinSheerWhiteDef => DefDatabase<GeneDef>.GetNamed(Gene_SkinSheerWhite, false);
     public static GeneDef? Gene_HairSnowWhiteDef => DefDatabase<GeneDef>.GetNamed(Gene_HairSnowWhite, false);
+    
+    public static JobDef? Job_SeekPettingDef => DefDatabase<JobDef>.GetNamed(Job_SeekPetting, false);
+    public static ThoughtDef? Thought_WasPettedDef => DefDatabase<ThoughtDef>.GetNamed(Thought_WasPetted, false);
+    public static ThoughtDef? Thought_PettedSomeoneDef => DefDatabase<ThoughtDef>.GetNamed(Thought_PettedSomeone, false);
+    public static ThoughtDef? Thought_PettedMe_SocialDef => DefDatabase<ThoughtDef>.GetNamed(Thought_PettedMe_Social, false);
+    public static ThoughtDef? Thought_WasPetted_SocialDef => DefDatabase<ThoughtDef>.GetNamed(Thought_WasPetted_Social, false);
     
     /// <summary>
     /// 检查指定的 Pawn 是否为希尔薇种族。

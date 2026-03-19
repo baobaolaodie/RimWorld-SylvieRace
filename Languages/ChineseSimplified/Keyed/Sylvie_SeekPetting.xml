@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- Job 报告文本 -->
+  <Sylvie_SeekPetting_JobReport>向 {0} 寻求抚摸</Sylvie_SeekPetting_JobReport>
+  
+  <!-- 消息文本 -->
+  <Sylvie_SeekPetting_Message>{0}主动寻求{1}的关爱，{1}温柔地抚摸了她。</Sylvie_SeekPetting_Message>
+</LanguageData>

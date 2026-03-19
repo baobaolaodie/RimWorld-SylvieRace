@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <Sylvie_WasPetted.stages.0.label>was gently petted</Sylvie_WasPetted.stages.0.label>
+  <Sylvie_WasPetted.stages.0.description>Someone gently petted me. I feel cared for and accepted, and my heart is filled with warmth.</Sylvie_WasPetted.stages.0.description>
+  
+  <Sylvie_PettedSomeone.stages.0.label>petted Sylvie</Sylvie_PettedSomeone.stages.0.label>
+  <Sylvie_PettedSomeone.stages.0.description>Sylvie came to me asking to be petted. She looked like she needed affection so much, and it felt warm to be able to comfort her.</Sylvie_PettedSomeone.stages.0.description>
+  
+  <Sylvie_PettedSomeone.stages.1.label>petted Sylvie (close)</Sylvie_PettedSomeone.stages.1.label>
+  <Sylvie_PettedSomeone.stages.1.description>Sylvie trusted me enough to let me pet her. We have a special bond. Taking care of her makes me feel happy.</Sylvie_PettedSomeone.stages.1.description>
+  
+  <Sylvie_PettedMe_Social.stages.0.label>petted Sylvie</Sylvie_PettedMe_Social.stages.0.label>
+  <Sylvie_WasPetted_Social.stages.0.label>was gently petted</Sylvie_WasPetted_Social.stages.0.label>
+</LanguageData>

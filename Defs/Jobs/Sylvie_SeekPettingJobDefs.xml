@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <JobDef>
+    <defName>Sylvie_SeekPetting</defName>
+    <driverClass>SylvieMod.JobDriver_SeekPetting</driverClass>
+    <reportString>Sylvie_SeekPetting_JobReport</reportString>
+    <casualInterruptible>true</casualInterruptible>
+  </JobDef>
+</Defs>

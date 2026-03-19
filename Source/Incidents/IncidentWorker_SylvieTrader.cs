@@ -34,7 +34,11 @@ public class IncidentWorker_SylvieTrader : IncidentWorker_TraderCaravanArrival
             return false;
 
         if (parms.traderKind == null)
+        {
+            if (parms.faction.def.caravanTraderKinds.NullOrEmpty())
+                return false;
             parms.traderKind = parms.faction.def.caravanTraderKinds.RandomElement();
+        }
 
         if (!base.TryExecuteWorker(parms))
             return false;

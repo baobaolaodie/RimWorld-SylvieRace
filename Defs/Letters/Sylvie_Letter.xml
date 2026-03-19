@@ -2,9 +2,7 @@
 <Defs>
   <LetterDef>
     <defName>Sylvie_OfferLetter</defName>
+    <letterClass>SylvieMod.ChoiceLetter_SylvieOffer</letterClass>
     <color>(163, 106, 201)</color>
-    <label>Trade Offer</label>
-    <description>Trade Offer</description>
-    <flashInterval>20</flashInterval>
   </LetterDef>
 </Defs>

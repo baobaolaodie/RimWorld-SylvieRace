@@ -653,8 +653,8 @@
 	</ThingDef>
 	
 	<ThingDef ParentName="ApparelBase">
-		<defName>steampunk</defName>
-		<label>steampunk</label>
+		<defName>SylvieRace_Steampunk</defName>
+		<label>Steampunk</label>
 		<description>The armor-like clothes that only noble lords could afford were more like a suit of armor than actual garments. The built-in steam system could endow the wearer with a more powerful physique. The high-tech of the nobility enabled the armor to have an auxiliary aiming system, allowing the wearer to aim more precisely. The thick armor could defend against the vast majority of attacks. However, this armor was not fireproof, and due to its huge size, it was almost impossible to do other work. Logically speaking, commoners could not own such things. Perhaps it had been sold on the black market after the bankruptcy of that noble.</description>
 		<recipeMaker Inherit="False" IsNull="True" />
 		<techLevel>Medieval</techLevel>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+
+  <!-- 在 Humanlike ThinkTree 中添加 Sylvie 寻求抚摸行为 -->
+  <!-- 插入位置：在第一个 Idle 行为之前，确保优先级正确 -->
+  <!-- 使用 ThinkNode_ConditionalColonist 限制只有殖民者会执行 -->
+  <!-- 使用 ThinkNode_Tagger 标记为 Idle 行为 -->
+  <!-- JobGiver_SeekPetting 内部会进一步检查是否为 Sylvie 种族和其他条件 -->
+  <Operation Class="PatchOperationInsert">
+    <xpath>/Defs/ThinkTreeDef[defName="Humanlike"]/thinkRoot/subNodes/li[@Class="ThinkNode_ConditionalColonist" and subNodes/li[@Class="ThinkNode_Tagger" and tagToGive="Idle"]]</xpath>
+    <order>Prepend</order>
+    <value>
+      <li Class="ThinkNode_ConditionalColonist">
+        <subNodes>
+          <li Class="ThinkNode_Tagger">
+            <tagToGive>Idle</tagToGive>
+            <subNodes>
+              <li Class="SylvieMod.JobGiver_SeekPetting" />
+            </subNodes>
+          </li>
+        </subNodes>
+      </li>
+    </value>
+  </Operation>
+
+</Patch>

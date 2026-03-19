@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- 希尔薇被抚摸的心情 -->
+  <ThoughtDef>
+    <defName>Sylvie_WasPetted</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>0.67</durationDays> <!-- 16小时 -->
+    <stackLimit>1</stackLimit>
+    <stages>
+      <li>
+        <label>被温柔地抚摸了</label>
+        <description>有人温柔地抚摸了我，感觉被关爱和接纳，内心充满了温暖。</description>
+        <baseMoodEffect>10</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- 目标抚摸希尔薇的心情 -->
+  <ThoughtDef>
+    <defName>Sylvie_PettedSomeone</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>0.5</durationDays> <!-- 12小时 -->
+    <stackLimit>1</stackLimit>
+    <stages>
+      <li>
+        <label>抚摸了希尔薇</label>
+        <description>希尔薇主动来找我，让我抚摸她。她看起来那么需要关爱，能给她带来安慰让我感觉很温暖。</description>
+        <baseMoodEffect>6</baseMoodEffect>
+      </li>
+      <li>
+        <label>抚摸了希尔薇（亲密）</label>
+        <description>希尔薇信任地让我抚摸她，我们之间有着特别的羁绊。能照顾她让我感到很幸福。</description>
+        <baseMoodEffect>8</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- 社交关系：抚摸了希尔薇（殖民者对希尔薇的好感） -->
+  <ThoughtDef>
+    <defName>Sylvie_PettedMe_Social</defName>
+    <thoughtClass>Thought_MemorySocial</thoughtClass>
+    <durationDays>10</durationDays>
+    <stackLimit>3</stackLimit>
+    <stages>
+      <li>
+        <label>抚摸了希尔薇</label>
+        <baseOpinionOffset>10</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- 社交关系：被抚摸了（希尔薇对殖民者的好感） -->
+  <ThoughtDef>
+    <defName>Sylvie_WasPetted_Social</defName>
+    <thoughtClass>Thought_MemorySocial</thoughtClass>
+    <durationDays>10</durationDays>
+    <stackLimit>3</stackLimit>
+    <stages>
+      <li>
+        <label>被温柔地抚摸了</label>
+        <baseOpinionOffset>10</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+</Defs>
