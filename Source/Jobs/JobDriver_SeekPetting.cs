@@ -78,6 +78,9 @@ public class JobDriver_SeekPetting : JobDriver
 
     /// <summary>
     /// Applies mood thoughts to both Sylvie and the target pawn.
+    /// Target's thought stage is determined by their opinion of Sylvie:
+    /// - Stage 0 (+6 mood): Opinion <= 40
+    /// - Stage 1 (+8 mood): Opinion > 40 (intimate)
     /// </summary>
     private void ApplyMoodThoughts()
     {
@@ -92,7 +95,24 @@ public class JobDriver_SeekPetting : JobDriver
         ThoughtDef? pettedSomeoneThought = SylvieDefNames.Thought_PettedSomeoneDef;
         if (pettedSomeoneThought != null)
         {
-            TargetPawn.needs?.mood?.thoughts?.memories?.TryGainMemory(pettedSomeoneThought);
+            Thought_Memory? thought = ThoughtMaker.MakeThought(pettedSomeoneThought) as Thought_Memory;
+            if (thought != null)
+            {
+                // Determine stage based on target's opinion of Sylvie
+                // Stage 1 (+8 mood) requires opinion > 40 (intimate relationship)
+                int targetOpinionOfSylvie = TargetPawn.relations?.OpinionOf(pawn) ?? 0;
+                if (targetOpinionOfSylvie > 40)
+                {
+                    thought.SetForcedStage(1); // +8 mood (intimate)
+                    Log.Message($"[SylvieMod] {TargetPawn.LabelShort} has high opinion ({targetOpinionOfSylvie}) of {pawn.LabelShort}, applying intimate petting thought (+8)");
+                }
+                else
+                {
+                    thought.SetForcedStage(0); // +6 mood (normal)
+                    Log.Message($"[SylvieMod] {TargetPawn.LabelShort} has normal opinion ({targetOpinionOfSylvie}) of {pawn.LabelShort}, applying normal petting thought (+6)");
+                }
+                TargetPawn.needs?.mood?.thoughts?.memories?.TryGainMemory(thought);
+            }
         }
     }
 

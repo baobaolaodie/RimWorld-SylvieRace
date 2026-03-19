@@ -1744,7 +1744,7 @@ warmup.verb         // 当前使用的 Verb
 
 #### 完整常量定义
 
-**JobGiver_SeekPetting.cs 常量** ([L16-L21](file:///d:/LongYinHaHa/VSCode/Rimworld/SylvieRace/Source/Jobs/JobGiver_SeekPetting.cs#L16-L21)):
+**JobGiver_SeekPetting.cs 常量** ([L16-L21](./Jobs/JobGiver_SeekPetting.cs#L16-L21)):
 
 | 常量名 | 值 | 说明 |
 |--------|-----|------|
@@ -1755,13 +1755,13 @@ warmup.verb         // 当前使用的 Verb
 | `HighOpinionThreshold` | `40` | 高好感度阈值，用于评分加成 |
 | `TargetMinMoodThreshold` | `0.50f` | 目标心情阈值，50% |
 
-**SylvieSeekPettingTracker.cs 常量** ([L21](file:///d:/LongYinHaHa/VSCode/Rimworld/SylvieRace/Source/Components/SylvieSeekPettingTracker.cs#L21)):
+**SylvieSeekPettingTracker.cs 常量** ([L21](./Components/SylvieSeekPettingTracker.cs#L21)):
 
 | 常量名 | 值 | 说明 |
 |--------|-----|------|
 | `CooldownTicks` | `15000` | 冷却时间，6游戏小时（6 * 2500） |
 
-**SylvieDefNames.cs 常量** ([L34-L38](file:///d:/LongYinHaHa/VSCode/Rimworld/SylvieRace/Source/Core/SylvieDefNames.cs#L34-L38)):
+**SylvieDefNames.cs 常量** ([L34-L38](./Core/SylvieDefNames.cs#L34-L38)):
 
 | 常量名 | Def名称 |
 |--------|---------|
@@ -1777,19 +1777,19 @@ warmup.verb         // 当前使用的 Verb
 
 **职责**: 继承 `ThinkNode_JobGiver`，定期检查并分配寻求抚摸任务
 
-**7步检查流程详解** ([L32-L134](file:///d:/LongYinHaHa/VSCode/Rimworld/SylvieRace/Source/Jobs/JobGiver_SeekPetting.cs#L32-L134)):
+**7步检查流程详解** ([L32-L134](./Jobs/JobGiver_SeekPetting.cs#L32-L134)):
 
 | 步骤 | 检查内容 | 代码位置 | 失败行为 |
 |------|----------|----------|----------|
-| 1 | **种族检查** | [L35-L38](file:///d:/LongYinHaHa/VSCode/Rimworld/SylvieRace/Source/Jobs/JobGiver_SeekPetting.cs#L35-L38) | 静默返回 `null`（非希尔薇种族不输出日志） |
-| 2 | **间隔检查** | [L43-L50](file:///d:/LongYinHaHa/VSCode/Rimworld/SylvieRace/Source/Jobs/JobGiver_SeekPetting.cs#L43-L50) | 静默返回，距离上次检查不足1小时 |
-| 3 | **概率检查** | [L53-L61](file:///d:/LongYinHaHa/VSCode/Rimworld/SylvieRace/Source/Jobs/JobGiver_SeekPetting.cs#L53-L61) | 20%概率通过，`Rand.Value <= 0.20f` |
-| 4 | **年龄检查** | [L67-L73](file:///d:/LongYinHaHa/VSCode/Rimworld/SylvieRace/Source/Jobs/JobGiver_SeekPetting.cs#L67-L73) | 生物年龄必须 >= 10岁 |
-| 5 | **状态检查** | [L76-L84](file:///d:/LongYinHaHa/VSCode/Rimworld/SylvieRace/Source/Jobs/JobGiver_SeekPetting.cs#L76-L84) | 必须清醒、未倒地、未精神崩溃 |
-| 6 | **冷却检查** | [L87-L95](file:///d:/LongYinHaHa/VSCode/Rimworld/SylvieRace/Source/Jobs/JobGiver_SeekPetting.cs#L87-L95) | 不在6小时冷却期内 |
-| 7 | **空闲检查** | [L99-L104](file:///d:/LongYinHaHa/VSCode/Rimworld/SylvieRace/Source/Jobs/JobGiver_SeekPetting.cs#L99-L104) | 当前任务可中断（非关键任务） |
-| 8 | **目标检查** | [L107-L113](file:///d:/LongYinHaHa/VSCode/Rimworld/SylvieRace/Source/Jobs/JobGiver_SeekPetting.cs#L107-L113) | 40格范围内存在有效目标 |
-| 9 | **JobDef检查** | [L116-L122](file:///d:/LongYinHaHa/VSCode/Rimworld/SylvieRace/Source/Jobs/JobGiver_SeekPetting.cs#L116-L122) | `Sylvie_SeekPetting` JobDef存在 |
+| 1 | **种族检查** | [L35-L38](./Jobs/JobGiver_SeekPetting.cs#L35-L38) | 静默返回 `null`（非希尔薇种族不输出日志） |
+| 2 | **间隔检查** | [L43-L50](./Jobs/JobGiver_SeekPetting.cs#L43-L50) | 静默返回，距离上次检查不足1小时 |
+| 3 | **概率检查** | [L53-L61](./Jobs/JobGiver_SeekPetting.cs#L53-L61) | 20%概率通过，`Rand.Value <= 0.20f` |
+| 4 | **年龄检查** | [L67-L73](./Jobs/JobGiver_SeekPetting.cs#L67-L73) | 生物年龄必须 >= 10岁 |
+| 5 | **状态检查** | [L76-L84](./Jobs/JobGiver_SeekPetting.cs#L76-L84) | 必须清醒、未倒地、未精神崩溃 |
+| 6 | **冷却检查** | [L87-L95](./Jobs/JobGiver_SeekPetting.cs#L87-L95) | 不在6小时冷却期内 |
+| 7 | **空闲检查** | [L99-L104](./Jobs/JobGiver_SeekPetting.cs#L99-L104) | 当前任务可中断（非关键任务） |
+| 8 | **目标检查** | [L107-L113](./Jobs/JobGiver_SeekPetting.cs#L107-L113) | 40格范围内存在有效目标 |
+| 9 | **JobDef检查** | [L116-L122](./Jobs/JobGiver_SeekPetting.cs#L116-L122) | `Sylvie_SeekPetting` JobDef存在 |
 
 **关键方法代码示例**:
 
@@ -1832,7 +1832,7 @@ protected override Job TryGiveJob(Pawn pawn)
 }
 ```
 
-**空闲检查逻辑** ([L141-L153](file:///d:/LongYinHaHa/VSCode/Rimworld/SylvieRace/Source/Jobs/JobGiver_SeekPetting.cs#L141-L153)):
+**空闲检查逻辑** ([L141-L153](./Jobs/JobGiver_SeekPetting.cs#L141-L153)):
 
 ```csharp
 private bool IsIdleForPetting(Pawn pawn)
@@ -1849,7 +1849,7 @@ private bool IsIdleForPetting(Pawn pawn)
 }
 ```
 
-**关键任务列表** ([L160-L179](file:///d:/LongYinHaHa/VSCode/Rimworld/SylvieRace/Source/Jobs/JobGiver_SeekPetting.cs#L160-L179)):
+**关键任务列表** ([L160-L179](./Jobs/JobGiver_SeekPetting.cs#L160-L179)):
 - `JobDefOf.Rescue` - 救援
 - `JobDefOf.TendPatient` - 治疗
 - `JobDefOf.BeatFire` - 灭火
@@ -1858,7 +1858,7 @@ private bool IsIdleForPetting(Pawn pawn)
 - `JobDefOf.Ingest` - 进食
 - `JobDefOf.LayDown` - 躺下
 
-**目标评分算法详解** ([L289-L311](file:///d:/LongYinHaHa/VSCode/Rimworld/SylvieRace/Source/Jobs/JobGiver_SeekPetting.cs#L289-L311)):
+**目标评分算法详解** ([L289-L311](./Jobs/JobGiver_SeekPetting.cs#L289-L311)):
 
 ```csharp
 private float CalculateTargetScore(Pawn target, Pawn sylvie)
@@ -1891,14 +1891,14 @@ private float CalculateTargetScore(Pawn target, Pawn sylvie)
 score = opinion + (opinion > 40 ? 100 : 0) + (targetMood > 0.5 ? 50 : 0)
 ```
 
-**目标选择流程** ([L186-L240](file:///d:/LongYinHaHa/VSCode/Rimworld/SylvieRace/Source/Jobs/JobGiver_SeekPetting.cs#L186-L240)):
+**目标选择流程** ([L186-L240](./Jobs/JobGiver_SeekPetting.cs#L186-L240)):
 1. 获取同派系所有已生成Pawn
 2. 过滤有效目标 (`IsValidTarget`)
 3. 计算每个候选者的评分
 4. 按评分降序、距离升序排序
 5. 返回最佳目标
 
-**有效目标条件** ([L248-L280](file:///d:/LongYinHaHa/VSCode/Rimworld/SylvieRace/Source/Jobs/JobGiver_SeekPetting.cs#L248-L280)):
+**有效目标条件** ([L248-L280](./Jobs/JobGiver_SeekPetting.cs#L248-L280)):
 - 不能是希尔薇自己
 - 必须是类人生物 (`RaceProps.Humanlike`)
 - 必须同派系
@@ -1943,7 +1943,7 @@ score = opinion + (opinion > 40 ? 100 : 0) + (targetMood > 0.5 ? 50 : 0)
 
 **职责**: 继承 `JobDriver`，执行寻求抚摸任务，应用效果
 
-**Toil序列** ([L36-L48](file:///d:/LongYinHaHa/VSCode/Rimworld/SylvieRace/Source/Jobs/JobDriver_SeekPetting.cs#L36-L48)):
+**Toil序列** ([L36-L48](./Jobs/JobDriver_SeekPetting.cs#L36-L48)):
 
 ```csharp
 protected override IEnumerable<Toil> MakeNewToils()
@@ -1961,7 +1961,7 @@ protected override IEnumerable<Toil> MakeNewToils()
 }
 ```
 
-**效果应用流程** ([L54-L77](file:///d:/LongYinHaHa/VSCode/Rimworld/SylvieRace/Source/Jobs/JobDriver_SeekPetting.cs#L54-L77)):
+**效果应用流程** ([L54-L77](./Jobs/JobDriver_SeekPetting.cs#L54-L77)):
 
 ```csharp
 private void ApplyPettingEffects()
@@ -1983,7 +1983,7 @@ private void ApplyPettingEffects()
 }
 ```
 
-**心情效果应用** ([L82-L97](file:///d:/LongYinHaHa/VSCode/Rimworld/SylvieRace/Source/Jobs/JobDriver_SeekPetting.cs#L82-L97)):
+**心情效果应用** ([L82-L115](./Jobs/JobDriver_SeekPetting.cs#L82-L115)):
 
 ```csharp
 private void ApplyMoodThoughts()
@@ -1999,12 +1999,33 @@ private void ApplyMoodThoughts()
     ThoughtDef? pettedSomeoneThought = SylvieDefNames.Thought_PettedSomeoneDef;
     if (pettedSomeoneThought != null)
     {
-        TargetPawn.needs?.mood?.thoughts?.memories?.TryGainMemory(pettedSomeoneThought);
+        Thought_Memory? thought = ThoughtMaker.MakeThought(pettedSomeoneThought) as Thought_Memory;
+        if (thought != null)
+        {
+            // 根据目标对希尔薇的好感度设置阶段
+            // Stage 1 (+8 mood) 需要好感度 > 40（亲密关系）
+            int targetOpinionOfSylvie = TargetPawn.relations?.OpinionOf(pawn) ?? 0;
+            if (targetOpinionOfSylvie > 40)
+            {
+                thought.SetForcedStage(1); // +8 mood (intimate)
+            }
+            else
+            {
+                thought.SetForcedStage(0); // +6 mood (normal)
+            }
+            TargetPawn.needs?.mood?.thoughts?.memories?.TryGainMemory(thought);
+        }
     }
 }
 ```
 
-**社交关系更新（双向机制）** ([L103-L120](file:///d:/LongYinHaHa/VSCode/Rimworld/SylvieRace/Source/Jobs/JobDriver_SeekPetting.cs#L103-L120)):
+**阶段切换机制说明**：
+- `Sylvie_PettedSomeone` ThoughtDef 定义了2个stage（[L28-L43](../Defs/Thoughts/Sylvie_SeekPettingThoughts.xml#L28-L43)）
+- Stage 0: +6心情（普通关系，目标对希尔薇好感度 ≤ 40）
+- Stage 1: +8心情（亲密关系，目标对希尔薇好感度 > 40）
+- 使用 `Thought_Memory.SetForcedStage(int)` 方法切换stage
+
+**社交关系更新（双向机制）** ([L121-L138](./Jobs/JobDriver_SeekPetting.cs#L121-L138)):
 
 ```csharp
 private void UpdateRelationship()
@@ -2027,7 +2048,7 @@ private void UpdateRelationship()
 }
 ```
 
-**社交想法应用方法** ([L125-L141](file:///d:/LongYinHaHa/VSCode/Rimworld/SylvieRace/Source/Jobs/JobDriver_SeekPetting.cs#L125-L141)):
+**社交想法应用方法** ([L143-L159](./Jobs/JobDriver_SeekPetting.cs#L143-L159)):
 
 ```csharp
 private void ApplySocialThought(Pawn recipient, Pawn targetPawn, string thoughtDefName, int opinionOffset)
@@ -2051,7 +2072,7 @@ private void ApplySocialThought(Pawn recipient, Pawn targetPawn, string thoughtD
 
 **职责**: 继承 `GameComponent`，管理每个希尔薇的冷却状态
 
-**核心数据结构** ([L14-L16](file:///d:/LongYinHaHa/VSCode/Rimworld/SylvieRace/Source/Components/SylvieSeekPettingTracker.cs#L14-L16)):
+**核心数据结构** ([L14-L16](./Components/SylvieSeekPettingTracker.cs#L14-L16)):
 
 ```csharp
 public class SylvieSeekPettingTracker : GameComponent
@@ -2065,11 +2086,11 @@ public class SylvieSeekPettingTracker : GameComponent
 
 | 方法 | 位置 | 功能 |
 |------|------|------|
-| `GetLastPettingTick(Pawn)` | [L29-L32](file:///d:/LongYinHaHa/VSCode/Rimworld/SylvieRace/Source/Components/SylvieSeekPettingTracker.cs#L29-L32) | 获取上次抚摸时间，-1表示从未抚摸 |
-| `SetLastPettingTick(Pawn, int)` | [L37-L40](file:///d:/LongYinHaHa/VSCode/Rimworld/SylvieRace/Source/Components/SylvieSeekPettingTracker.cs#L37-L40) | 记录抚摸时间 |
-| `IsInCooldown(Pawn)` | [L45-L50](file:///d:/LongYinHaHa/VSCode/Rimworld/SylvieRace/Source/Components/SylvieSeekPettingTracker.cs#L45-L50) | 检查是否在冷却期 |
-| `GetCooldownRemaining(Pawn)` | [L56-L64](file:///d:/LongYinHaHa/VSCode/Rimworld/SylvieRace/Source/Components/SylvieSeekPettingTracker.cs#L56-L64) | 获取剩余冷却时间 |
-| `ExposeData()` | [L66-L70](file:///d:/LongYinHaHa/VSCode/Rimworld/SylvieRace/Source/Components/SylvieSeekPettingTracker.cs#L66-L70) | 存档/读档支持 |
+| `GetLastPettingTick(Pawn)` | [L29-L32](./Components/SylvieSeekPettingTracker.cs#L29-L32) | 获取上次抚摸时间，-1表示从未抚摸 |
+| `SetLastPettingTick(Pawn, int)` | [L37-L40](./Components/SylvieSeekPettingTracker.cs#L37-L40) | 记录抚摸时间 |
+| `IsInCooldown(Pawn)` | [L45-L50](./Components/SylvieSeekPettingTracker.cs#L45-L50) | 检查是否在冷却期 |
+| `GetCooldownRemaining(Pawn)` | [L56-L64](./Components/SylvieSeekPettingTracker.cs#L56-L64) | 获取剩余冷却时间 |
+| `ExposeData()` | [L66-L70](./Components/SylvieSeekPettingTracker.cs#L66-L70) | 存档/读档支持 |
 
 **冷却检查实现**:
 
@@ -2082,7 +2103,7 @@ public bool IsInCooldown(Pawn pawn)
 }
 ```
 
-**存档机制技术细节** ([L66-L70](file:///d:/LongYinHaHa/VSCode/Rimworld/SylvieRace/Source/Components/SylvieSeekPettingTracker.cs#L66-L70)):
+**存档机制技术细节** ([L66-L70](./Components/SylvieSeekPettingTracker.cs#L66-L70)):
 
 ```csharp
 public override void ExposeData()
@@ -2136,13 +2157,14 @@ public override void ExposeData()
 
 #### 关键技术点
 
-1. **种族安全**: 多处检查确保只有希尔薇种族能触发和执行（[JobGiver L35](file:///d:/LongYinHaHa/VSCode/Rimworld/SylvieRace/Source/Jobs/JobGiver_SeekPetting.cs#L35), [JobDriver L60](file:///d:/LongYinHaHa/VSCode/Rimworld/SylvieRace/Source/Jobs/JobDriver_SeekPetting.cs#L60)）
+1. **种族安全**: 多处检查确保只有希尔薇种族能触发和执行（[JobGiver L35](./Jobs/JobGiver_SeekPetting.cs#L35), [JobDriver L60](./Jobs/JobDriver_SeekPetting.cs#L60)）
 2. **可空性处理**: 使用 C# 8.0 可空引用类型 (`#nullable enable`)
 3. **常量管理**: 使用 `SylvieDefNames` 集中管理 Def 名称
 4. **存档兼容性**: 使用 `Scribe_Collections.Look` 实现字典的存档/读档
-5. **社交关系双向更新**: 同时更新双方对彼此的好感度（[L116-L119](file:///d:/LongYinHaHa/VSCode/Rimworld/SylvieRace/Source/Jobs/JobDriver_SeekPetting.cs#L116-L119)）
+5. **社交关系双向更新**: 同时更新双方对彼此的好感度（[L116-L119](./Jobs/JobDriver_SeekPetting.cs#L116-L119)）
 6. **概率检查机制**: 每小时20%概率，避免过于频繁的检查
 7. **目标评分算法**: 综合考虑好感度、心情因素
+8. **Thought阶段切换**: 使用 `Thought_Memory.SetForcedStage(int)` 根据目标对希尔薇的好感度动态切换心情效果（+6/+8）
 
 ## 代码架构原则
 
