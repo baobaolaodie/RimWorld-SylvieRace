@@ -12,10 +12,40 @@ namespace SylvieMod;
 /// </summary>
 public class JobDriver_SeekPetting : JobDriver
 {
+    #region Constants
+
+    /// <summary>
+    /// Base opinion offset for social relationship gain.
+    /// </summary>
+    private const int BaseOpinionOffset = 10;
+
+    /// <summary>
+    /// Additional opinion offset when Sylvie's mood is low.
+    /// </summary>
+    private const int LowMoodBonusOpinion = 5;
+
+    /// <summary>
+    /// Mood threshold for low mood bonus (30%).
+    /// </summary>
+    private const float LowMoodThreshold = 0.30f;
+
+    /// <summary>
+    /// Opinion threshold for intimate relationship stage (40).
+    /// </summary>
+    private const int IntimateOpinionThreshold = 40;
+
+    #endregion
+
+    #region Properties
+
     /// <summary>
     /// The target pawn to seek petting from.
     /// </summary>
     protected Pawn TargetPawn => job.targetA.Pawn;
+
+    #endregion
+
+    #region Job Driver Implementation
 
     /// <summary>
     /// Attempts to reserve the target pawn before starting the job.
@@ -47,19 +77,18 @@ public class JobDriver_SeekPetting : JobDriver
         yield return pettingToil;
     }
 
+    #endregion
+
+    #region Effect Application
+
     /// <summary>
     /// Applies all petting effects including mood thoughts, relationship changes,
     /// notification messages, and cooldown tracking.
     /// </summary>
     private void ApplyPettingEffects()
     {
-        if (TargetPawn == null || pawn == null)
-            return;
-
-        // Safety check: only Sylvie race can apply petting effects
-        if (!SylvieDefNames.IsSylvieRace(pawn))
+        if (!ValidatePettingConditions())
         {
-            Log.Warning($"[SylvieMod] Non-Sylvie pawn {pawn.LabelShort} attempted to apply petting effects. Aborting.");
             return;
         }
 
@@ -77,6 +106,27 @@ public class JobDriver_SeekPetting : JobDriver
     }
 
     /// <summary>
+    /// Validates that all conditions are met for applying petting effects.
+    /// </summary>
+    /// <returns>True if conditions are valid, false otherwise</returns>
+    private bool ValidatePettingConditions()
+    {
+        if (TargetPawn == null || pawn == null)
+        {
+            return false;
+        }
+
+        // Safety check: only Sylvie race can apply petting effects
+        if (!SylvieDefNames.IsSylvieRace(pawn))
+        {
+            Log.Warning($"[SylvieMod] Non-Sylvie pawn {pawn.LabelShort} attempted to apply petting effects. Aborting.");
+            return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
     /// Applies mood thoughts to both Sylvie and the target pawn.
     /// Target's thought stage is determined by their opinion of Sylvie:
     /// - Stage 0 (+6 mood): Opinion <= 40
@@ -84,37 +134,75 @@ public class JobDriver_SeekPetting : JobDriver
     /// </summary>
     private void ApplyMoodThoughts()
     {
-        // Add "was petted" thought to Sylvie (the actor)
+        ApplySylvieMoodThought();
+        ApplyTargetMoodThought();
+    }
+
+    /// <summary>
+    /// Applies the "was petted" mood thought to Sylvie.
+    /// </summary>
+    private void ApplySylvieMoodThought()
+    {
         ThoughtDef? wasPettedThought = SylvieDefNames.Thought_WasPettedDef;
         if (wasPettedThought != null)
         {
             pawn.needs?.mood?.thoughts?.memories?.TryGainMemory(wasPettedThought);
         }
-
-        // Add "petted someone" thought to target
-        ThoughtDef? pettedSomeoneThought = SylvieDefNames.Thought_PettedSomeoneDef;
-        if (pettedSomeoneThought != null)
-        {
-            Thought_Memory? thought = ThoughtMaker.MakeThought(pettedSomeoneThought) as Thought_Memory;
-            if (thought != null)
-            {
-                // Determine stage based on target's opinion of Sylvie
-                // Stage 1 (+8 mood) requires opinion > 40 (intimate relationship)
-                int targetOpinionOfSylvie = TargetPawn.relations?.OpinionOf(pawn) ?? 0;
-                if (targetOpinionOfSylvie > 40)
-                {
-                    thought.SetForcedStage(1); // +8 mood (intimate)
-                    Log.Message($"[SylvieMod] {TargetPawn.LabelShort} has high opinion ({targetOpinionOfSylvie}) of {pawn.LabelShort}, applying intimate petting thought (+8)");
-                }
-                else
-                {
-                    thought.SetForcedStage(0); // +6 mood (normal)
-                    Log.Message($"[SylvieMod] {TargetPawn.LabelShort} has normal opinion ({targetOpinionOfSylvie}) of {pawn.LabelShort}, applying normal petting thought (+6)");
-                }
-                TargetPawn.needs?.mood?.thoughts?.memories?.TryGainMemory(thought);
-            }
-        }
     }
+
+    /// <summary>
+    /// Applies the "petted someone" mood thought to the target pawn.
+    /// The thought stage depends on the target's opinion of Sylvie.
+    /// </summary>
+    private void ApplyTargetMoodThought()
+    {
+        ThoughtDef? pettedSomeoneThought = SylvieDefNames.Thought_PettedSomeoneDef;
+        if (pettedSomeoneThought == null)
+        {
+            return;
+        }
+
+        Thought_Memory? thought = ThoughtMaker.MakeThought(pettedSomeoneThought) as Thought_Memory;
+        if (thought == null)
+        {
+            return;
+        }
+
+        // Determine stage based on target's opinion of Sylvie
+        // Stage 1 (+8 mood) requires opinion > 40 (intimate relationship)
+        int targetOpinionOfSylvie = TargetPawn.relations?.OpinionOf(pawn) ?? 0;
+        int thoughtStage = DetermineThoughtStage(targetOpinionOfSylvie);
+        
+        thought.SetForcedStage(thoughtStage);
+        LogThoughtStage(targetOpinionOfSylvie, thoughtStage);
+        
+        TargetPawn.needs?.mood?.thoughts?.memories?.TryGainMemory(thought);
+    }
+
+    /// <summary>
+    /// Determines the thought stage based on opinion value.
+    /// </summary>
+    /// <param name="opinion">The opinion value</param>
+    /// <returns>0 for normal relationship, 1 for intimate relationship</returns>
+    private int DetermineThoughtStage(int opinion)
+    {
+        return opinion > IntimateOpinionThreshold ? 1 : 0;
+    }
+
+    /// <summary>
+    /// Logs the thought stage assignment for debugging.
+    /// </summary>
+    private void LogThoughtStage(int opinion, int stage)
+    {
+        string relationshipType = stage == 1 ? "intimate" : "normal";
+        int moodValue = stage == 1 ? 8 : 6;
+        
+        Log.Message($"[SylvieMod] {TargetPawn.LabelShort} has {relationshipType} opinion ({opinion}) of {pawn.LabelShort}, applying {relationshipType} petting thought (+{moodValue})");
+    }
+
+    #endregion
+
+    #region Relationship Updates
 
     /// <summary>
     /// Updates the relationship between Sylvie and the target pawn using social thoughts.
@@ -122,15 +210,7 @@ public class JobDriver_SeekPetting : JobDriver
     /// </summary>
     private void UpdateRelationship()
     {
-        // Base relationship increase
-        int opinionOffset = 10;
-
-        // Extra bonus when Sylvie's mood is low (< 30%)
-        float? moodLevel = pawn.needs?.mood?.CurLevelPercentage;
-        if (moodLevel.HasValue && moodLevel.Value < 0.30f)
-        {
-            opinionOffset += 5;
-        }
+        int opinionOffset = CalculateOpinionOffset();
 
         // Apply social thought to target about Sylvie (target gains opinion of Sylvie)
         ApplySocialThought(TargetPawn, pawn, SylvieDefNames.Thought_PettedMe_Social, opinionOffset);
@@ -140,8 +220,30 @@ public class JobDriver_SeekPetting : JobDriver
     }
 
     /// <summary>
+    /// Calculates the total opinion offset based on base value and mood bonus.
+    /// </summary>
+    /// <returns>The total opinion offset</returns>
+    private int CalculateOpinionOffset()
+    {
+        int opinionOffset = BaseOpinionOffset;
+
+        // Extra bonus when Sylvie's mood is low (< 30%)
+        float? moodLevel = pawn.needs?.mood?.CurLevelPercentage;
+        if (moodLevel.HasValue && moodLevel.Value < LowMoodThreshold)
+        {
+            opinionOffset += LowMoodBonusOpinion;
+        }
+
+        return opinionOffset;
+    }
+
+    /// <summary>
     /// Applies a social thought from one pawn to another with the specified opinion offset.
     /// </summary>
+    /// <param name="recipient">The pawn receiving the thought</param>
+    /// <param name="targetPawn">The pawn the thought is about</param>
+    /// <param name="thoughtDefName">The name of the thought definition</param>
+    /// <param name="opinionOffset">The opinion offset to apply</param>
     private void ApplySocialThought(Pawn recipient, Pawn targetPawn, string thoughtDefName, int opinionOffset)
     {
         ThoughtDef? thoughtDef = DefDatabase<ThoughtDef>.GetNamed(thoughtDefName, false);
@@ -160,13 +262,16 @@ public class JobDriver_SeekPetting : JobDriver
         }
     }
 
+    #endregion
+
+    #region Notification and Cooldown
+
     /// <summary>
     /// Sends a notification message about the petting interaction.
     /// </summary>
     private void SendNotification()
     {
         string message = "Sylvie_SeekPetting_Message".Translate(pawn.LabelShort, TargetPawn.LabelShort);
-
         Messages.Message(message, pawn, MessageTypeDefOf.PositiveEvent);
     }
 
@@ -181,4 +286,6 @@ public class JobDriver_SeekPetting : JobDriver
             tracker.SetLastPettingTick(pawn, Find.TickManager.TicksGame);
         }
     }
+
+    #endregion
 }

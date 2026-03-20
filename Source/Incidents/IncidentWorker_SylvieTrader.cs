@@ -12,6 +12,11 @@ namespace SylvieMod;
 /// </summary>
 public class IncidentWorker_SylvieTrader : IncidentWorker_TraderCaravanArrival
 {
+    #region Incident Worker Implementation
+
+    /// <summary>
+    /// Checks if the incident can fire now.
+    /// </summary>
     protected override bool CanFireNowSub(IncidentParms parms)
     {
         if (Current.Game.GetComponent<SylvieGameComponent>().hasSylvieSpawned)
@@ -21,8 +26,12 @@ public class IncidentWorker_SylvieTrader : IncidentWorker_TraderCaravanArrival
         return base.CanFireNowSub(parms) && target.IsPlayerHome;
     }
 
+    /// <summary>
+    /// Executes the incident worker.
+    /// </summary>
     protected override bool TryExecuteWorker(IncidentParms parms)
     {
+        // Set faction if not provided
         if (parms.faction == null)
         {
             parms.faction = Find.FactionManager.AllFactions
@@ -33,6 +42,7 @@ public class IncidentWorker_SylvieTrader : IncidentWorker_TraderCaravanArrival
         if (parms.faction == null)
             return false;
 
+        // Set trader kind if not provided
         if (parms.traderKind == null)
         {
             if (parms.faction.def.caravanTraderKinds.NullOrEmpty())
@@ -40,6 +50,7 @@ public class IncidentWorker_SylvieTrader : IncidentWorker_TraderCaravanArrival
             parms.traderKind = parms.faction.def.caravanTraderKinds.RandomElement();
         }
 
+        // Execute base worker
         if (!base.TryExecuteWorker(parms))
             return false;
 
@@ -55,9 +66,16 @@ public class IncidentWorker_SylvieTrader : IncidentWorker_TraderCaravanArrival
         return true;
     }
 
+    #endregion
+
+    #region Private Methods
+
+    /// <summary>
+    /// Spawns Sylvie and sends the offer letter.
+    /// </summary>
     private void SpawnSylvieAndSendOffer(Pawn traderLeader, Map map)
     {
-        Pawn sylvie = SylviePawnGenerator.GenerateSylvie(traderLeader.Faction);
+        Pawn? sylvie = SylviePawnGenerator.GenerateSylvie(traderLeader.Faction);
         if (sylvie == null)
         {
             Log.Error("[SylvieMod] Failed to generate Sylvie pawn");
@@ -74,6 +92,9 @@ public class IncidentWorker_SylvieTrader : IncidentWorker_TraderCaravanArrival
         SendOfferLetter(traderLeader, sylvie, map);
     }
 
+    /// <summary>
+    /// Sends the offer letter to the player.
+    /// </summary>
     private void SendOfferLetter(Pawn trader, Pawn sylvie, Map map)
     {
         LetterDef? letterDef = SylvieDefNames.Letter_OfferLetterDef;
@@ -88,4 +109,6 @@ public class IncidentWorker_SylvieTrader : IncidentWorker_TraderCaravanArrival
         letter.Configure(trader, sylvie, map);
         Find.LetterStack.ReceiveLetter(letter);
     }
+
+    #endregion
 }

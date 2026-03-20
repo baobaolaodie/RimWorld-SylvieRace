@@ -7,183 +7,223 @@ using System.Collections.Generic;
 
 namespace SylvieMod;
 
-public class SylvieAimingTracker : ThingComp
-{
-    private Pawn? cachedPawn;
-    
-    public Pawn Pawn => cachedPawn ??= (parent as Pawn)!;
-    
-    private static Dictionary<Pawn, SylvieAimingTracker> trackers = new Dictionary<Pawn, SylvieAimingTracker>();
-    
-    public static SylvieAimingTracker? GetTracker(Pawn pawn)
-    {
-        if (trackers.TryGetValue(pawn, out var tracker))
-            return tracker;
-        tracker = pawn.GetComp<SylvieAimingTracker>();
-        if (tracker != null)
-            trackers[pawn] = tracker;
-        return tracker;
-    }
-}
+#region Component Registration
 
+/// <summary>
+/// Registers Sylvie-specific components when a pawn spawns.
+/// </summary>
 [HarmonyPatch(typeof(Pawn), nameof(Pawn.SpawnSetup))]
 public static class Patch_Pawn_SpawnSetup
 {
+    /// <summary>
+    /// Postfix to register Sylvie components after pawn spawn.
+    /// </summary>
     public static void Postfix(Pawn __instance)
     {
-        if (SylvieDefNames.IsSylvieRace(__instance.def))
-        {
-            if (__instance.GetComp<SylvieAimingTracker>() == null)
-            {
-                __instance.AllComps.Add(new SylvieAimingTracker
-                {
-                    parent = __instance
-                });
-            }
-            if (__instance.GetComp<SylvieCooldownTracker>() == null)
-            {
-                __instance.AllComps.Add(new SylvieCooldownTracker
-                {
-                    parent = __instance
-                });
-            }
-            if (__instance.GetComp<SylvieCooldownOverlayComp>() == null)
-            {
-                __instance.AllComps.Add(new SylvieCooldownOverlayComp
-                {
-                    parent = __instance
-                });
-            }
-            if (__instance.GetComp<SylvieCatEarComp>() == null)
-            {
-                __instance.AllComps.Add(new SylvieCatEarComp
-                {
-                    parent = __instance
-                });
-            }
-        }
+        SylvieComponentRegistry.RegisterAllComponents(__instance);
     }
 }
 
+#endregion
+
+#region Aiming Animation Patch
+
+/// <summary>
+/// Patches FaceAnimation.GetCurrentFrame to provide custom aiming animation frames.
+/// Synchronizes animation with weapon warmup and cooldown states.
+/// </summary>
 [HarmonyPatch(typeof(FaceAnimation), nameof(FaceAnimation.GetCurrentFrame))]
 public static class Patch_FaceAnimation_GetCurrentFrame
 {
-    private static Dictionary<FaceAnimation, Pawn> animationToPawn = new Dictionary<FaceAnimation, Pawn>();
-    private static FaceAnimationDef.AnimationFrame? cachedCooldownFrame;
-    private static BrowShapeDef? confusedBrowDef;
-    
-    public static void RegisterAnimation(FaceAnimation animation, Pawn pawn)
-    {
-        animationToPawn[animation] = pawn;
-    }
-    
+    #region Cached Defs
+
+    private static FaceAnimationDef.AnimationFrame? CachedCooldownFrame;
+    private static BrowShapeDef? CachedConfusedBrowDef;
+    private static EyeballShapeDef? CachedLookdownEyeballDef;
+
+    #endregion
+
+    #region Cached Def Properties
+
     private static BrowShapeDef ConfusedBrowDef
     {
         get
         {
-            if (confusedBrowDef == null)
-                confusedBrowDef = DefDatabase<BrowShapeDef>.GetNamedSilentFail("confused");
-            return confusedBrowDef!;
+            if (CachedConfusedBrowDef == null)
+                CachedConfusedBrowDef = DefDatabase<BrowShapeDef>.GetNamedSilentFail("confused");
+            return CachedConfusedBrowDef!;
         }
     }
-    
-    private static EyeballShapeDef? lookdownEyeballDef;
-    
+
     private static EyeballShapeDef LookdownEyeballDef
     {
         get
         {
-            if (lookdownEyeballDef == null)
-                lookdownEyeballDef = DefDatabase<EyeballShapeDef>.GetNamedSilentFail("lookdown");
-            return lookdownEyeballDef!;
+            if (CachedLookdownEyeballDef == null)
+                CachedLookdownEyeballDef = DefDatabase<EyeballShapeDef>.GetNamedSilentFail("lookdown");
+            return CachedLookdownEyeballDef!;
         }
     }
-    
+
+    #endregion
+
+    #region Frame Generation
+
+    /// <summary>
+    /// Gets or creates the cached cooldown frame.
+    /// </summary>
     private static FaceAnimationDef.AnimationFrame GetCooldownFrame()
     {
-        if (cachedCooldownFrame == null)
+        if (CachedCooldownFrame == null)
         {
-            cachedCooldownFrame = new FaceAnimationDef.AnimationFrame
+            CachedCooldownFrame = new FaceAnimationDef.AnimationFrame
             {
                 duration = SylvieConstants.DefaultAnimationDuration,
                 browShapeDef = ConfusedBrowDef,
                 eyeballShapeDef = LookdownEyeballDef
             };
         }
-        return cachedCooldownFrame;
+        return CachedCooldownFrame;
     }
-    
+
+    #endregion
+
+    #region Patch Implementation
+
+    /// <summary>
+    /// Prefix patch to override animation frame calculation for aiming animations.
+    /// </summary>
     public static bool Prefix(FaceAnimation __instance, int tickGame, ref FaceAnimationDef.AnimationFrame? __result)
     {
-        if (__instance.animationDef.defName != "Sylvie_AimingAnimation") return true;
-        
-        if (!animationToPawn.TryGetValue(__instance, out var pawn))
+        // Early exit if not aiming animation
+        if (__instance.animationDef.defName != SylvieDefNames.Animation_Aiming)
             return true;
-        
+
+        // Get associated pawn
+        Pawn? pawn = SylvieAnimationRegistry.GetAssociatedPawn(__instance);
+        if (pawn == null)
+            return true;
+
+        // Get animation frames
         var frames = __instance.animationDef.GetSequentialAnimationFrames();
-        if (frames == null || frames.Count == 0) return true;
-        
+        if (frames == null || frames.Count == 0)
+            return true;
+
+        // Get current stance
         Stance? curStance = pawn.stances?.curStance;
-        
+
+        // Handle warmup phase
         if (curStance is Stance_Warmup warmup)
         {
-            Verb? verb = warmup.verb;
-            if (verb == null) return true;
-            
-            float warmupTime = verb.verbProps.warmupTime;
-            float aimingDelayFactor = pawn.GetStatValue(StatDefOf.AimingDelayFactor);
-            int totalWarmupTicks = (warmupTime * aimingDelayFactor).SecondsToTicks();
-            
-            if (totalWarmupTicks <= 0) return true;
-            
-            int ticksLeft = warmup.ticksLeft;
-            int elapsedTicks = totalWarmupTicks - ticksLeft;
-            
-            int totalFrames = frames.Count;
-            float progress = (float)elapsedTicks / totalWarmupTicks;
-            int frameIndex = (int)(progress * totalFrames);
-            
-            if (frameIndex >= totalFrames)
-                frameIndex = totalFrames - 1;
-            if (frameIndex < 0)
-                frameIndex = 0;
-            
-            __result = frames[frameIndex];
+            __result = CalculateWarmupFrame(warmup, frames, pawn);
             return false;
         }
-        else if (curStance is Stance_Cooldown cooldown)
+
+        // Handle cooldown phase
+        if (curStance is Stance_Cooldown cooldown)
         {
-            Verb? verb = cooldown.verb;
-            if (verb != null && verb.state == VerbState.Bursting)
-            {
-                __result = frames[frames.Count - 1];
-                return false;
-            }
-            
-            __result = GetCooldownFrame();
+            __result = CalculateCooldownFrame(cooldown, frames);
             return false;
         }
-        
+
+        // Default: use original method
         return true;
     }
+
+    /// <summary>
+    /// Calculates the animation frame during weapon warmup.
+    /// </summary>
+    private static FaceAnimationDef.AnimationFrame? CalculateWarmupFrame(
+        Stance_Warmup warmup,
+        List<FaceAnimationDef.AnimationFrame> frames,
+        Pawn pawn)
+    {
+        Verb? verb = warmup.verb;
+        if (verb == null)
+            return null;
+
+        float warmupTime = verb.verbProps.warmupTime;
+        float aimingDelayFactor = pawn.GetStatValue(StatDefOf.AimingDelayFactor);
+        int totalWarmupTicks = (warmupTime * aimingDelayFactor).SecondsToTicks();
+
+        if (totalWarmupTicks <= 0)
+            return null;
+
+        int frameIndex = CalculateFrameIndexFromProgress(
+            warmup.ticksLeft,
+            totalWarmupTicks,
+            frames.Count
+        );
+
+        return frames[frameIndex];
+    }
+
+    /// <summary>
+    /// Calculates the animation frame during weapon cooldown.
+    /// </summary>
+    private static FaceAnimationDef.AnimationFrame? CalculateCooldownFrame(
+        Stance_Cooldown cooldown,
+        List<FaceAnimationDef.AnimationFrame> frames)
+    {
+        Verb? verb = cooldown.verb;
+
+        // During burst firing, show last frame
+        if (verb != null && verb.state == VerbState.Bursting)
+        {
+            return frames[frames.Count - 1];
+        }
+
+        // During cooldown, show confused expression
+        return GetCooldownFrame();
+    }
+
+    /// <summary>
+    /// Calculates frame index based on progress through the animation.
+    /// </summary>
+    private static int CalculateFrameIndexFromProgress(int ticksLeft, int totalTicks, int frameCount)
+    {
+        int elapsedTicks = totalTicks - ticksLeft;
+        float progress = (float)elapsedTicks / totalTicks;
+        int frameIndex = (int)(progress * frameCount);
+
+        // Clamp to valid range
+        if (frameIndex < 0) frameIndex = 0;
+        if (frameIndex >= frameCount) frameIndex = frameCount - 1;
+        return frameIndex;
+    }
+
+    #endregion
 }
 
+#endregion
+
+#region Animation Registration
+
+/// <summary>
+/// Registers Sylvie aiming animations when the facial animation controller initializes.
+/// </summary>
 [HarmonyPatch(typeof(FacialAnimationControllerComp), "InitializeIfNeed")]
 public static class Patch_FacialAnimationControllerComp_InitializeIfNeed
 {
-    public static void Postfix(FacialAnimationControllerComp __instance, Pawn ___pawn, Dictionary<string, List<FaceAnimation>> ___animationDict)
+    /// <summary>
+    /// Postfix to register animations after initialization.
+    /// </summary>
+    public static void Postfix(
+        FacialAnimationControllerComp __instance,
+        Pawn ___pawn,
+        Dictionary<string, List<FaceAnimation>> ___animationDict)
     {
-        if (!SylvieDefNames.IsSylvieRace(___pawn)) return;
-        
-        foreach (var kvp in ___animationDict)
-        {
-            foreach (var animation in kvp.Value)
-            {
-                if (animation.animationDef.defName == "Sylvie_AimingAnimation")
-                {
-                    Patch_FaceAnimation_GetCurrentFrame.RegisterAnimation(animation, ___pawn);
-                }
-            }
-        }
+        // Only process Sylvie race
+        if (!SylvieDefNames.IsSylvieRace(___pawn))
+            return;
+
+        // Register aiming animations
+        SylvieAnimationRegistry.RegisterAnimationsByType(
+            ___animationDict,
+            ___pawn,
+            SylvieDefNames.Animation_Aiming
+        );
     }
 }
+
+#endregion

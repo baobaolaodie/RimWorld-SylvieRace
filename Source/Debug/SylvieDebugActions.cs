@@ -13,6 +13,42 @@ namespace SylvieMod;
 /// </summary>
 public static class SylvieDebugActions
 {
+    #region Constants
+
+    /// <summary>
+    /// Error message displayed when target is not Sylvie race.
+    /// </summary>
+    private const string ErrorNotSylvieRace = "目标不是希尔薇种族。";
+
+    /// <summary>
+    /// Error message displayed when no valid target is found.
+    /// </summary>
+    private const string ErrorNoValidTarget = "找不到可用的目标殖民者（需要：非睡眠、非倒地、非精神崩溃、同派系、好感度>0）。";
+
+    /// <summary>
+    /// Error message displayed when JobDef is not found.
+    /// </summary>
+    private const string ErrorJobDefNotFound = "找不到 Sylvie_SeekPetting JobDef。";
+
+    /// <summary>
+    /// Error message displayed when tracker component is not found.
+    /// </summary>
+    private const string ErrorTrackerNotFound = "找不到 SylvieSeekPettingTracker 组件。";
+
+    /// <summary>
+    /// Success message format for cooldown reset.
+    /// </summary>
+    private const string SuccessCooldownReset = "{0} 的抚摸冷却已重置。";
+
+    /// <summary>
+    /// Success message format for petting trigger.
+    /// </summary>
+    private const string SuccessPettingTriggered = "{0} 开始寻求 {1} 的抚摸。";
+
+    #endregion
+
+    #region Debug Actions
+
     /// <summary>
     /// Forces a Sylvie pawn to seek petting from an available colonist.
     /// Ignores cooldown, mood, and random chance checks.
@@ -21,10 +57,10 @@ public static class SylvieDebugActions
     [DebugAction("Sylvie", "强制触发抚摸", actionType = DebugActionType.ToolMapForPawns, allowedGameStates = AllowedGameStates.PlayingOnMap)]
     private static void ForceTriggerPetting(Pawn pawn)
     {
-        // Check if pawn is Sylvie race
-        if (!SylvieDefNames.IsSylvieRace(pawn))
+        // Validate Sylvie race
+        if (!ValidateSylvieRace(pawn, out string errorMessage))
         {
-            Messages.Message("目标不是希尔薇种族。", MessageTypeDefOf.RejectInput);
+            Messages.Message(errorMessage, MessageTypeDefOf.RejectInput);
             return;
         }
 
@@ -32,7 +68,7 @@ public static class SylvieDebugActions
         Pawn? target = FindAvailableTarget(pawn);
         if (target == null)
         {
-            Messages.Message("找不到可用的目标殖民者（需要：非睡眠、非倒地、非精神崩溃、同派系、好感度>0）。", MessageTypeDefOf.RejectInput);
+            Messages.Message(ErrorNoValidTarget, MessageTypeDefOf.RejectInput);
             return;
         }
 
@@ -40,7 +76,7 @@ public static class SylvieDebugActions
         JobDef? seekPettingJobDef = SylvieDefNames.Job_SeekPettingDef;
         if (seekPettingJobDef == null)
         {
-            Messages.Message("找不到 Sylvie_SeekPetting JobDef。", MessageTypeDefOf.RejectInput);
+            Messages.Message(ErrorJobDefNotFound, MessageTypeDefOf.RejectInput);
             return;
         }
 
@@ -52,7 +88,7 @@ public static class SylvieDebugActions
         // Force assign the job
         pawn.jobs?.StartJob(job, JobCondition.InterruptForced);
 
-        Messages.Message($"{pawn.LabelShort} 开始寻求 {target.LabelShort} 的抚摸。", MessageTypeDefOf.PositiveEvent);
+        Messages.Message(string.Format(SuccessPettingTriggered, pawn.LabelShort, target.LabelShort), MessageTypeDefOf.PositiveEvent);
     }
 
     /// <summary>
@@ -62,10 +98,10 @@ public static class SylvieDebugActions
     [DebugAction("Sylvie", "重置抚摸冷却", actionType = DebugActionType.ToolMapForPawns, allowedGameStates = AllowedGameStates.PlayingOnMap)]
     private static void ResetPettingCooldown(Pawn pawn)
     {
-        // Check if pawn is Sylvie race
-        if (!SylvieDefNames.IsSylvieRace(pawn))
+        // Validate Sylvie race
+        if (!ValidateSylvieRace(pawn, out string errorMessage))
         {
-            Messages.Message("目标不是希尔薇种族。", MessageTypeDefOf.RejectInput);
+            Messages.Message(errorMessage, MessageTypeDefOf.RejectInput);
             return;
         }
 
@@ -73,15 +109,41 @@ public static class SylvieDebugActions
         SylvieSeekPettingTracker? tracker = Current.Game?.GetComponent<SylvieSeekPettingTracker>();
         if (tracker == null)
         {
-            Messages.Message("找不到 SylvieSeekPettingTracker 组件。", MessageTypeDefOf.RejectInput);
+            Messages.Message(ErrorTrackerNotFound, MessageTypeDefOf.RejectInput);
             return;
         }
 
         // Reset cooldown by setting last tick to -1
         tracker.SetLastPettingTick(pawn, -1);
 
-        Messages.Message($"{pawn.LabelShort} 的抚摸冷却已重置。", MessageTypeDefOf.PositiveEvent);
+        Messages.Message(string.Format(SuccessCooldownReset, pawn.LabelShort), MessageTypeDefOf.PositiveEvent);
     }
+
+    #endregion
+
+    #region Validation Methods
+
+    /// <summary>
+    /// Validates that the pawn is of Sylvie race.
+    /// </summary>
+    /// <param name="pawn">The pawn to validate</param>
+    /// <param name="errorMessage">Output error message if validation fails</param>
+    /// <returns>True if validation passes, false otherwise</returns>
+    private static bool ValidateSylvieRace(Pawn pawn, out string errorMessage)
+    {
+        if (!SylvieDefNames.IsSylvieRace(pawn))
+        {
+            errorMessage = ErrorNotSylvieRace;
+            return false;
+        }
+
+        errorMessage = string.Empty;
+        return true;
+    }
+
+    #endregion
+
+    #region Target Finding
 
     /// <summary>
     /// Finds an available target colonist for petting.
@@ -96,48 +158,14 @@ public static class SylvieDebugActions
 
         Map map = sylvie.Map;
 
-        // Find valid targets
+        // Find valid targets using utility class
         Pawn? target = map.mapPawns.SpawnedPawnsInFaction(sylvie.Faction)
-            .Where(p => IsValidTarget(p, sylvie))
+            .Where(p => SylvieValidationUtils.IsValidPettingTarget(p, sylvie))
             .OrderBy(p => p.Position.DistanceToSquared(sylvie.Position))
             .FirstOrDefault();
 
         return target;
     }
 
-    /// <summary>
-    /// Checks if a pawn is a valid target for petting.
-    /// </summary>
-    /// <param name="target">The potential target</param>
-    /// <param name="sylvie">The Sylvie pawn</param>
-    /// <returns>True if the target is valid</returns>
-    private static bool IsValidTarget(Pawn target, Pawn sylvie)
-    {
-        // Cannot target self
-        if (target == sylvie)
-            return false;
-
-        // Must be humanlike
-        if (!target.RaceProps.Humanlike)
-            return false;
-
-        // Must be in same faction
-        if (target.Faction != sylvie.Faction)
-            return false;
-
-        // Target must be awake, not downed, not in mental state
-        if (!target.Awake() || target.Downed || target.InMentalState)
-            return false;
-
-        // Must have positive opinion
-        int opinion = sylvie.relations?.OpinionOf(target) ?? 0;
-        if (opinion <= 0)
-            return false;
-
-        // Can reserve target
-        if (!sylvie.CanReserve(target))
-            return false;
-
-        return true;
-    }
+    #endregion
 }

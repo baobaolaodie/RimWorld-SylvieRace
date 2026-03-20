@@ -11,23 +11,44 @@ namespace SylvieMod;
 /// </summary>
 public static class SylviePawnGenerator
 {
+    #region Constants
+
+    /// <summary>
+    /// Default biological age for Sylvie pawns.
+    /// </summary>
     private const float DefaultBiologicalAge = 19f;
+
+    /// <summary>
+    /// Default chronological age for Sylvie pawns.
+    /// </summary>
     private const float DefaultChronologicalAge = 19f;
+
+    #endregion
+
+    #region Public Methods
 
     /// <summary>
     /// Generates a new Sylvie pawn with proper configuration.
     /// </summary>
-    public static Pawn GenerateSylvie(Faction faction)
+    /// <param name="faction">The faction for the new pawn</param>
+    /// <returns>The generated Sylvie pawn, or null if generation failed</returns>
+    /// <exception cref="System.ArgumentNullException">Thrown when faction is null</exception>
+    public static Pawn? GenerateSylvie(Faction faction)
     {
+        if (faction == null)
+        {
+            throw new System.ArgumentNullException(nameof(faction));
+        }
+
         PawnKindDef? pawnKindDef = SylvieDefNames.PawnKind_SylvieDef;
         if (pawnKindDef == null)
         {
             Log.Error("[SylvieMod] Could not find Sylvie PawnKindDef");
-            return null!;
+            return null;
         }
 
         XenotypeDef? xenotypeDef = DefDatabase<XenotypeDef>.GetNamed("Baseliner", false);
-        
+
         Pawn pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(
             kind: pawnKindDef,
             faction: faction,
@@ -39,6 +60,12 @@ public static class SylviePawnGenerator
             forcedXenotype: xenotypeDef
         ));
 
+        if (pawn == null)
+        {
+            Log.Error("[SylvieMod] Pawn generation returned null");
+            return null;
+        }
+
         ConfigureName(pawn);
         ConfigureGenes(pawn);
         ConfigureTraits(pawn);
@@ -47,9 +74,14 @@ public static class SylviePawnGenerator
         return pawn;
     }
 
+    #endregion
+
+    #region Configuration Methods
+
     /// <summary>
     /// Sets Sylvie's name using translated first name.
     /// </summary>
+    /// <param name="pawn">The pawn to configure</param>
     private static void ConfigureName(Pawn pawn)
     {
         if (pawn.Name is NameTriple nameTriple)
@@ -62,6 +94,7 @@ public static class SylviePawnGenerator
     /// <summary>
     /// Configures Sylvie's genes for skin and hair color.
     /// </summary>
+    /// <param name="pawn">The pawn to configure</param>
     private static void ConfigureGenes(Pawn pawn)
     {
         if (pawn.genes == null) return;
@@ -69,7 +102,7 @@ public static class SylviePawnGenerator
         TryAddGene(pawn, SylvieDefNames.Gene_SkinSheerWhiteDef, EndogeneCategory.Melanin);
         TryAddGene(pawn, SylvieDefNames.Gene_HairSnowWhiteDef, EndogeneCategory.HairColor);
 
-        if (pawn.story.hairDef != null)
+        if (pawn.story?.hairDef != null)
         {
             pawn.Drawer.renderer.SetAllGraphicsDirty();
         }
@@ -78,9 +111,13 @@ public static class SylviePawnGenerator
     /// <summary>
     /// Attempts to add a gene after removing conflicting genes.
     /// </summary>
+    /// <param name="pawn">The pawn to add gene to</param>
+    /// <param name="geneDef">The gene definition to add</param>
+    /// <param name="categoryToRemove">The endogene category to remove conflicts from</param>
     private static void TryAddGene(Pawn pawn, GeneDef? geneDef, EndogeneCategory categoryToRemove)
     {
         if (geneDef == null) return;
+        if (pawn.genes == null) return;
 
         List<Gene> genesToRemove = new List<Gene>();
         foreach (Gene gene in pawn.genes.GenesListForReading)
@@ -102,8 +139,11 @@ public static class SylviePawnGenerator
     /// <summary>
     /// Configures Sylvie's traits (clears all and adds Kind trait).
     /// </summary>
+    /// <param name="pawn">The pawn to configure</param>
     private static void ConfigureTraits(Pawn pawn)
     {
+        if (pawn.story?.traits == null) return;
+
         pawn.story.traits.allTraits.Clear();
         pawn.story.traits.GainTrait(new Trait(TraitDefOf.Kind));
     }
@@ -111,6 +151,7 @@ public static class SylviePawnGenerator
     /// <summary>
     /// Configures Sylvie's tattoos (face and body scars).
     /// </summary>
+    /// <param name="pawn">The pawn to configure</param>
     private static void ConfigureTattoos(Pawn pawn)
     {
         if (pawn.style == null) return;
@@ -128,4 +169,6 @@ public static class SylviePawnGenerator
             pawn.style.BodyTattoo = bodyTattoo;
         }
     }
+
+    #endregion
 }
