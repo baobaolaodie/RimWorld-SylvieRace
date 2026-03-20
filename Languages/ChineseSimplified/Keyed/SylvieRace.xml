@@ -2,7 +2,7 @@
 <LanguageData>
   <SylvieRace_FirstName>希尔薇</SylvieRace_FirstName>
   <CallSpecialApparelTrader>呼叫专用服装贸易商 (免费)</CallSpecialApparelTrader>
-  <Sylvie_ClothingSupplyShipName>服装供应船</Sylvie_ClothingSupplyShipName>
+  <Sylvie_ClothingSupplyShipName>奥蕾莉亚的服装店</Sylvie_ClothingSupplyShipName>
   <Sylvie_TraderAlreadyInOrbit>贸易商已经在附近轨道上了。</Sylvie_TraderAlreadyInOrbit>
   <Sylvie_TraderDefNotFound>找不到 TraderKindDef: Sylvie_ClothingTrader，请检查 XML。</Sylvie_TraderDefNotFound>
   <Sylvie_TraderArrived>一艘服装贸易船已进入通讯范围。</Sylvie_TraderArrived>

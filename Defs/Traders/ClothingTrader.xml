@@ -2,7 +2,7 @@
 <Defs>
   <TraderKindDef>
     <defName>Sylvie_ClothingTrader</defName>
-    <label>Sylvie Clothing Supplier</label>
+    <label>Aurelia's Clothing Boutique</label>
     <orbital>true</orbital>
       
 <stockGenerators>
