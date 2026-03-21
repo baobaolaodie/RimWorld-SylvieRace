@@ -4,7 +4,7 @@
 
 **版本**: v0.0.6-pre  
 **游戏版本**: RimWorld 1.6  
-**最后更新**: 2026-03-20
+**最后更新**: 2026-03-21
 
 ---
 
@@ -46,7 +46,7 @@
 SylvieRace 是一个基于 HAR (Human Alien Race) 框架的 RimWorld 种族 Mod，添加了希尔薇种族及其配套内容：
 
 - **22种专属服装** - 含特殊效果的护士服
-- **奴隶商人事件** - 智能防重复生成
+- **希尔薇商人事件** - 智能防重复生成
 - **动态表情系统** - 完整 Facial Animation 框架支持
 - **寻求抚摸机制** - 主动社交互动
 
@@ -250,7 +250,7 @@ public override void GameComponentTick()
 
 **时间常量** ([SylvieConstants.cs](Core/SylvieConstants.cs#L26-L52)):
 - 检查间隔: 2500 ticks (~41.7秒 @60TPS) - `CheckIntervalTicks`
-- 初始延迟: 5000 ticks (~83.3秒 @60TPS) - `InitialEventDelayTicks`
+- 初始延迟: 240000 ticks (4 游戏日) - `InitialEventDelayTicks`
 - Hediff 延迟: 300000 ticks (5 游戏日) - `HediffDelayTicks`
 - 护士服治疗间隔: 600 ticks (10秒 @60TPS) - `NurseHealIntervalTicks`
 
@@ -904,7 +904,6 @@ if (SylvieAnimationHelper.IsValidAnimation(animation))
 
 - [用户文档](../README.md) - 功能介绍与使用指南
 - [工作区文档](../../README.md) - 项目索引
-- [重构说明](REFACTORING.md) - 代码重构详细说明
 - [架构设计](../.trae/docs/architecture.md) - 核心架构文档
 
 ---

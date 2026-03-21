@@ -259,7 +259,13 @@ SylvieRace/
 
 ## 更新日志
 
-### v0.0.6-pre (2026-03-20)
+### v0.0.6-pre (2026-03-21)
+- **贸易商名称更新**：
+  - 轨道贸易商名称从 "希尔薇服装供应商" / "Sylvie Clothing Supplier" 改为 "奥蕾莉亚的服装店" / "Aurelia's Clothing Boutique"
+
+- **翻译修复**：
+  - 修复 steampunk 服装的翻译大小写问题
+
 - **代码架构重构**：
   - 新增 `SylvieComponentRegistry`：集中管理所有 ThingComp 组件注册
   - 新增 `SylvieAnimationRegistry`：统一管理 FaceAnimation 到 Pawn 的映射关系
