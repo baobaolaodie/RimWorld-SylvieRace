@@ -1,11 +1,13 @@
 <ModMetaData>
   <name>Sylvie Race</name>
-  <author>123456</author>
-  <packageId>123567.SylvieRace</packageId>
+  <author>AiFeng</author>
+  <packageId>AiFeng.SylvieRace</packageId>
   <supportedVersions>
     <li>1.6</li>
   </supportedVersions>
-  <description>添加希尔薇种族 - 一名满身伤痕的少女，你和她的故事即将开始。基于 Humanoid Alien Races 框架，支持动态表情。</description>
+  <description>  本种族旨在将经典养成游戏《Teaching Feeling》中的主角希尔薇以独立种族的形式引入到游戏中。
+   希尔薇（Sylvie）是经典养成游戏《Teaching Feeling》中身世坎坷的女主角，曾饱受虐待而全身布满灼伤疤痕，但在温柔关怀下会从畏缩卑微蜕变为深情依恋的少女；她不仅是一个急需救赎的破碎灵魂，更是一个能通过玩家的悉心照料重获笑容、并给予最忠诚回馈的治愈系角色。
+</description>
 
   <modDependencies>
     <li>
