@@ -33,9 +33,9 @@ namespace SylvieMod
 
         /// <summary>
         /// 初始事件延迟（单位：ticks）。
-        /// 5000 ticks ≈ 83.3 秒（@ 60 TPS）
+        /// 240000 ticks = 4 游戏日（RimWorld 标准）
         /// </summary>
-        public const int InitialEventDelayTicks = 5000;
+        public const int InitialEventDelayTicks = 240000;
 
         /// <summary>
         /// Hediff 添加延迟（单位：ticks）。
