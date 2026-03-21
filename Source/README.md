@@ -904,7 +904,6 @@ if (SylvieAnimationHelper.IsValidAnimation(animation))
 
 - [用户文档](../README.md) - 功能介绍与使用指南
 - [工作区文档](../../README.md) - 项目索引
-- [架构设计](../.trae/docs/architecture.md) - 核心架构文档
 
 ---
 
