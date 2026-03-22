@@ -2,7 +2,7 @@
 
 一名满身伤痕的少女，你和她的故事即将开始。
 
-**版本**: v1.0.1-pre
+**版本**: v1.0.2-pre
 **游戏版本**: RimWorld 1.6  
 
 ---
@@ -275,7 +275,13 @@ SylvieRace/
 
 ## 更新日志
 
-### v1.0.1-pre (2026-03-22)
+### v1.0.2-pre (2026-03-22)
+- **Bug 修复**:
+  - 修复 `Patch_Pawn_SpawnSetup` 补丁对所有 Pawn 都触发组件注册的问题
+  - 现在只有 Sylvie 种族的 Pawn 才会执行组件注册，消除非 Sylvie 种族 Pawn 生成时的警告日志
+  - 优化性能，避免不必要的组件检查
+
+### v1.0.1 (2026-03-22)
 - **存档兼容性修复**:
   - **存档版本控制机制**: 添加 `SylvieGameComponent` 中的 `saveDataVersion` 字段，支持未来版本数据迁移
   - **ThingComp 状态序列化**: 为 `SylvieCatEarComp` 和 `SylvieCooldownTracker` 添加 `PostExposeData` 方法，确保组件状态正确保存和恢复

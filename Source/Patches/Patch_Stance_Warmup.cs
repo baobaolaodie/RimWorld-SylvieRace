@@ -17,9 +17,14 @@ public static class Patch_Pawn_SpawnSetup
 {
     /// <summary>
     /// Postfix to register Sylvie components after pawn spawn.
+    /// Only processes Sylvie race pawns to avoid unnecessary checks.
     /// </summary>
     public static void Postfix(Pawn __instance)
     {
+        // 只处理 Sylvie 种族的 Pawn，避免对其他种族进行不必要的组件注册检查
+        if (!SylvieDefNames.IsSylvieRace(__instance))
+            return;
+
         SylvieComponentRegistry.RegisterAllComponents(__instance);
     }
 }
