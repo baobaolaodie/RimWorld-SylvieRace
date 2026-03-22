@@ -280,6 +280,9 @@ SylvieRace/
   - 修复 `Patch_Pawn_SpawnSetup` 补丁对所有 Pawn 都触发组件注册的问题
   - 现在只有 Sylvie 种族的 Pawn 才会执行组件注册，消除非 Sylvie 种族 Pawn 生成时的警告日志
   - 优化性能，避免不必要的组件检查
+  - 修复 Sylvie Pawn 手术列表无法显示的问题
+  - 在 `Sylvie_Race.xml` 中添加 `<humanRecipeImport>true</humanRecipeImport>`，正确继承人类手术配方
+  - 解决点击手术按钮时报错 "Created FloatMenu with no options" 的问题
 
 ### v1.0.1 (2026-03-22)
 - **存档兼容性修复**:

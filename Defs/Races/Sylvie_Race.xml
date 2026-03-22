@@ -10,6 +10,7 @@
         <maleGenderProbability>0.0000000000001</maleGenderProbability>
         <immuneToAge>false</immuneToAge>
         <canLayDown>true</canLayDown>
+        <humanRecipeImport>true</humanRecipeImport>
 
         <alienPartGenerator>
           <headTypes Inherit="False">
