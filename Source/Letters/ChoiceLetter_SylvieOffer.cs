@@ -35,6 +35,12 @@ public class ChoiceLetter_SylvieOffer : ChoiceLetter
         Scribe_References.Look(ref sylvie, "sylvie");
         Scribe_References.Look(ref map, "map");
         Scribe_Values.Look(ref price, "price", 100);
+        
+        // 确保 lookTargets 正确序列化
+        if (Scribe.mode == LoadSaveMode.LoadingVars && sylvie != null)
+        {
+            lookTargets = new LookTargets(sylvie);
+        }
     }
 
     public override IEnumerable<DiaOption> Choices

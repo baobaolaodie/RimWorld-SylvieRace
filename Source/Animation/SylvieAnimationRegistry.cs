@@ -89,6 +89,7 @@ public static class SylvieAnimationRegistry
     public static void ClearRegistrations()
     {
         AnimationToPawnMap.Clear();
+        AnimationRegistrations.Clear();
     }
 
     #endregion

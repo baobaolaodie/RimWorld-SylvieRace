@@ -104,8 +104,8 @@ public class IncidentWorker_SylvieTrader : IncidentWorker_TraderCaravanArrival
             return;
         }
 
-        ChoiceLetter_SylvieOffer letter = new ChoiceLetter_SylvieOffer();
-        letter.def = letterDef;
+        // 使用 LetterMaker 创建 Letter，确保正确分配 Load ID
+        ChoiceLetter_SylvieOffer letter = (ChoiceLetter_SylvieOffer)LetterMaker.MakeLetter(letterDef);
         letter.Configure(trader, sylvie, map);
         Find.LetterStack.ReceiveLetter(letter);
     }

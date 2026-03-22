@@ -101,20 +101,25 @@ public class SylvieCooldownTracker : ThingComp
                 return 0f;
 
             Verb verb = stance.verb;
+            int ticksLeft = stance.ticksLeft;
 
+            // 检测新的冷却周期
+            // 当 lastVerb 为 null（存档加载后）或 verb 改变时，重新初始化
             if (lastVerb != verb)
             {
                 lastVerb = verb;
-                cooldownStartTick = Find.TickManager.TicksGame;
-                totalCooldownTicks = stance.ticksLeft;
+                // 只有在 totalCooldownTicks 未设置或需要重置时才更新
+                // 使用当前的 ticksLeft 作为总冷却时间的估计
+                if (totalCooldownTicks <= 0 || ticksLeft > totalCooldownTicks)
+                {
+                    totalCooldownTicks = ticksLeft;
+                }
             }
 
             if (totalCooldownTicks <= 0)
                 return 1f;
 
-            int ticksLeft = stance.ticksLeft;
             int elapsedTicks = totalCooldownTicks - ticksLeft;
-
             return (float)elapsedTicks / totalCooldownTicks;
         }
     }
@@ -138,6 +143,15 @@ public class SylvieCooldownTracker : ThingComp
             Trackers[pawn] = tracker;
 
         return tracker;
+    }
+
+    /// <summary>
+    /// 清理追踪器缓存。
+    /// 应在游戏重置时调用。
+    /// </summary>
+    public static void ClearTrackers()
+    {
+        Trackers.Clear();
     }
 
     #endregion
@@ -212,6 +226,21 @@ public class SylvieCooldownTracker : ThingComp
             cooldownStartTick = -1;
             lastVerb = null;
         }
+    }
+
+    #endregion
+
+    #region Save Compatibility
+
+    /// <summary>
+    /// 序列化/反序列化组件数据。
+    /// </summary>
+    public override void PostExposeData()
+    {
+        base.PostExposeData();
+        Scribe_Values.Look(ref cooldownStartTick, "cooldownStartTick", -1);
+        Scribe_Values.Look(ref totalCooldownTicks, "totalCooldownTicks", 0);
+        // lastVerb 是运行时缓存，不需要序列化
     }
 
     #endregion

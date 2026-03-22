@@ -187,4 +187,18 @@ public class SylvieCatEarComp : ThingComp
     }
 
     #endregion
+
+    #region Save Compatibility
+
+    /// <summary>
+    /// 序列化/反序列化组件数据。
+    /// </summary>
+    public override void PostExposeData()
+    {
+        base.PostExposeData();
+        Scribe_Values.Look(ref currentEarFrame, "currentEarFrame", 0);
+        Scribe_Values.Look(ref shouldRender, "shouldRender", false);
+    }
+
+    #endregion
 }

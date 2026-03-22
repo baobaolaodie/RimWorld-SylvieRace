@@ -2,7 +2,7 @@
 
 一名满身伤痕的少女，你和她的故事即将开始。
 
-**版本**: v0.0.6-pre 
+**版本**: v1.0.1-pre
 **游戏版本**: RimWorld 1.6  
 
 ---
@@ -214,6 +214,12 @@
 - ✅ Biotech（支持儿童体型）
 - ✅ Anomaly
 
+### 存档兼容性
+- ✅ **可以中途加入**: 可以在已有存档中安全添加此 Mod，已有存档添加 Mod 不会导致问题
+- ✅ **可以安全读档**: 加载存档后所有功能正常工作
+- ✅ **组件状态恢复**: 猫耳动画、武器冷却动画等组件状态正确保存和恢复
+- ✅ **版本控制**: 内置存档版本控制机制，支持未来版本的数据迁移
+
 ### 已知兼容
 - Humanoid Alien Races
 - Facial Animation 系列
@@ -222,6 +228,16 @@
 ### 可能冲突
 - 修改同类型服装的模组
 - 强制修改所有种族服装穿着规则的模组
+
+---
+
+## 已知问题
+
+### 冷却动画帧同步
+- **现象**: 加载存档后，冷却动画会从第一帧重新开始
+- **原因**: 动画进度依赖于实时的 `Stance_Cooldown.ticksLeft`，无法持久化保存
+- **影响**: 不影响功能，仅影响视觉效果
+- **状态**: 已尝试多种方案，最终选择确保存档安全优先
 
 ---
 
@@ -259,7 +275,22 @@ SylvieRace/
 
 ## 更新日志
 
-### v0.0.6-pre (2026-03-21)
+### v1.0.1-pre (2026-03-22)
+- **存档兼容性修复**:
+  - **存档版本控制机制**: 添加 `SylvieGameComponent` 中的 `saveDataVersion` 字段，支持未来版本数据迁移
+  - **ThingComp 状态序列化**: 为 `SylvieCatEarComp` 和 `SylvieCooldownTracker` 添加 `PostExposeData` 方法，确保组件状态正确保存和恢复
+  - **Letter LoadID 冲突修复**: 使用 `LetterMaker.MakeLetter` 替代直接实例化，解决 `ChoiceLetter_SylvieOffer` 的 Load ID 冲突
+  - **组件注册改进**: 在 `LoadedGame` 中使用 `LongEventHandler.ExecuteWhenFinished` 延迟注册组件，修复存档加载后组件无法显示的问题
+  - **静态数据清理**: 创建 `SylvieStaticDataManager` 处理静态字典的内存泄漏问题
+  - **Pawn 引用安全**: 添加死亡检查和 null 检查，防止死亡后引用失效
+  - **类型匹配改进**: `SylvieComponentRegistry.HasComponent` 改为使用类型名称匹配而非直接类型比较，提高跨版本兼容性
+  - **支持中途加入**: Mod 可以在已有存档中安全添加，为已有 Sylvie 自动注册组件
+
+### v1.0.0 (2026-03-22)
+- **正式版发布**: 
+  - 正式发布到创意工坊
+
+### v0.0.6 (2026-03-21)
 - **贸易商名称更新**：
   - 轨道贸易商名称从 "希尔薇服装供应商" / "Sylvie Clothing Supplier" 改为 "奥蕾莉亚的服装店" / "Aurelia's Clothing Boutique"
 

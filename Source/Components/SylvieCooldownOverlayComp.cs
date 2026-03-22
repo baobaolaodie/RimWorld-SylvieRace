@@ -108,9 +108,15 @@ public class SylvieCooldownOverlayComp : ThingComp
         if (!SylvieDefNames.IsSylvieRace(Pawn))
             return;
 
-        // Check if in cooldown
-        var tracker = SylvieCooldownTracker.GetTracker(Pawn);
-        if (tracker == null || !tracker.IsInRangedCooldown)
+        // Check if in cooldown - 直接使用 GetComp 获取追踪器
+        var tracker = Pawn.GetComp<SylvieCooldownTracker>();
+        if (tracker == null)
+        {
+            Log.Warning($"[SylvieMod] SylvieCooldownOverlayComp: No SylvieCooldownTracker found on {Pawn.LabelShort}");
+            return;
+        }
+        
+        if (!tracker.IsInRangedCooldown)
             return;
 
         // Get render parameters
