@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SylvieRace")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+746e3c7f33e5d9fc83b37bdcec13b0e8135abbd0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ecbc0b525a53ed24a80c2ed10f3e292898af74e2")]
 [assembly: System.Reflection.AssemblyProductAttribute("SylvieRace")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SylvieRace")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
