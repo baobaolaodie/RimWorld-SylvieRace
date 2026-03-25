@@ -2,26 +2,22 @@
 using Verse;
 using RimWorld;
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace SylvieMod;
 
 /// <summary>
 /// Component that renders cat ear graphics for Sylvie pawns during research animation.
-/// Synchronizes ear animation frames with facial animation states.
+/// Uses PawnRenderNode system for perfect synchronization with animation mods like Yayo's Animation.
 /// </summary>
 public class SylvieCatEarComp : ThingComp
 {
     #region Constants
 
     /// <summary>
-    /// Size of the cat ear graphic.
-    /// </summary>
-    private static readonly Vector2 EarSize = new Vector2(1.5f, 1.5f);
-
-    /// <summary>
     /// Render layer for cat ears (between hair and helmet).
     /// </summary>
-    private const float EarLayer = 74f;
+    private const float EarLayer = SylvieConstants.CatEarRenderLayer;
 
     /// <summary>
     /// Frame index for cat ear 1.
@@ -38,8 +34,6 @@ public class SylvieCatEarComp : ThingComp
     #region Fields
 
     private Pawn? cachedPawn;
-    private Graphic? catEar1Graphic;
-    private Graphic? catEar2Graphic;
 
     /// <summary>
     /// Current ear frame index (0 = ear 1, 1 = ear 2).
@@ -61,42 +55,14 @@ public class SylvieCatEarComp : ThingComp
     public Pawn Pawn => cachedPawn ??= (parent as Pawn)!;
 
     /// <summary>
-    /// Gets the first cat ear graphic, initializing if necessary.
+    /// Gets the current ear frame index.
     /// </summary>
-    private Graphic CatEar1Graphic
-    {
-        get
-        {
-            if (catEar1Graphic == null)
-            {
-                catEar1Graphic = GraphicDatabase.Get<Graphic_Multi>(
-                    "Things/Pawn/Sylvie/CatEars/Normal/Unisex/catEar1",
-                    ShaderDatabase.Transparent,
-                    EarSize,
-                    Color.white);
-            }
-            return catEar1Graphic;
-        }
-    }
+    public int CurrentEarFrame => currentEarFrame;
 
     /// <summary>
-    /// Gets the second cat ear graphic, initializing if necessary.
+    /// Gets whether the cat ears should be rendered.
     /// </summary>
-    private Graphic CatEar2Graphic
-    {
-        get
-        {
-            if (catEar2Graphic == null)
-            {
-                catEar2Graphic = GraphicDatabase.Get<Graphic_Multi>(
-                    "Things/Pawn/Sylvie/CatEars/Normal/Unisex/catEar2",
-                    ShaderDatabase.Transparent,
-                    EarSize,
-                    Color.white);
-            }
-            return catEar2Graphic;
-        }
-    }
+    public bool ShouldRender => shouldRender;
 
     #endregion
 
@@ -120,70 +86,38 @@ public class SylvieCatEarComp : ThingComp
         shouldRender = render;
     }
 
-    #endregion
-
-    #region Private Methods
-
     /// <summary>
-    /// Gets the current ear graphic based on frame index.
+    /// Returns render nodes for the cat ears.
+    /// This integrates with RimWorld's PawnRenderNode system, ensuring perfect
+    /// synchronization with animation mods like Yayo's Animation.
     /// </summary>
-    /// <returns>The graphic for the current frame</returns>
-    private Graphic GetCurrentEarGraphic()
+    /// <returns>List of render nodes, or null if not applicable</returns>
+    public override List<PawnRenderNode>? CompRenderNodes()
     {
-        return currentEarFrame == EarFrame1 ? CatEar1Graphic : CatEar2Graphic;
-    }
-
-    /// <summary>
-    /// Calculates the head size factor from the pawn's life stage.
-    /// </summary>
-    /// <returns>Head size factor (1.0 if not available)</returns>
-    private float GetHeadSizeFactor()
-    {
-        if (ModsConfig.BiotechActive && Pawn.ageTracker.CurLifeStage.headSizeFactor.HasValue)
-        {
-            return Pawn.ageTracker.CurLifeStage.headSizeFactor.Value;
-        }
-        return 1f;
-    }
-
-    #endregion
-
-    #region Rendering
-
-    /// <summary>
-    /// Called after the pawn is drawn. Renders cat ears if enabled.
-    /// </summary>
-    public override void PostDraw()
-    {
-        base.PostDraw();
-
-        // Skip if rendering is disabled
-        if (!shouldRender)
-            return;
-
-        // Only render for Sylvie race
+        // Only create nodes for Sylvie race
         if (!SylvieDefNames.IsSylvieRace(Pawn))
-            return;
-
-        Rot4 rot = Pawn.Rotation;
-
-        float headSizeFactor = GetHeadSizeFactor();
-
-        Vector3 headOffset = Pawn.Drawer.renderer.BaseHeadOffsetAt(rot);
-        Vector3 drawPos = Pawn.DrawPos + headOffset;
-        drawPos.y = Pawn.DrawPos.y + PawnRenderUtility.AltitudeForLayer((int)EarLayer);
-
-        Vector3 drawScale = Vector3.one * headSizeFactor;
-
-        Graphic earGraphic = GetCurrentEarGraphic();
-        Material mat = earGraphic.MatAt(rot);
-        Mesh mesh = earGraphic.MeshAt(rot);
-
-        if (mat != null)
         {
-            Matrix4x4 matrix = Matrix4x4.TRS(drawPos, Quaternion.identity, drawScale);
-            Graphics.DrawMesh(mesh, matrix, mat, 0);
+            return null;
         }
+
+        // Check if render tree is available
+        if (Pawn.Drawer?.renderer?.renderTree == null)
+        {
+            return null;
+        }
+
+        // Create the render node with properties
+        var props = new PawnRenderNodeProperties
+        {
+            debugLabel = "SylvieCatEar",
+            workerClass = typeof(SylvieCatEarNodeWorker),
+            baseLayer = EarLayer,
+            parentTagDef = PawnRenderNodeTagDefOf.Head
+        };
+
+        var node = new SylvieCatEarRenderNode(Pawn, props, Pawn.Drawer.renderer.renderTree, this);
+
+        return new List<PawnRenderNode> { node };
     }
 
     #endregion

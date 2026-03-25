@@ -2,9 +2,9 @@
 
 本文档面向 Mod 开发者，介绍 SylvieRace 项目结构和技术实现细节。
 
-**版本**: v1.0.2-pre  
+**版本**: v1.0.3-pre  
 **游戏版本**: RimWorld 1.6  
-**最后更新**: 2026-03-22
+**最后更新**: 2026-03-26
 
 ---
 
@@ -26,6 +26,7 @@
     - [动态表情系统](#动态表情系统)
       - [核心补丁](#核心补丁)
       - [冷却动画渲染](#冷却动画渲染)
+      - [猫耳渲染系统](#猫耳渲染系统)
     - [寻求抚摸系统](#寻求抚摸系统)
   - [存档兼容性](#存档兼容性)
     - [版本控制系统](#版本控制系统)
@@ -83,7 +84,9 @@ SylvieRace/
 │   │   ├── SylvieAimingTracker.cs        # 瞄准状态追踪器
 │   │   ├── SylvieCooldownTracker.cs      # 冷却状态跟踪
 │   │   ├── SylvieCooldownOverlayComp.cs  # 冷却动画渲染
-│   │   ├── SylvieCatEarComp.cs           # 猫耳渲染
+│   │   ├── SylvieCatEarComp.cs           # 猫耳渲染组件（管理状态和帧切换）
+│   │   ├── SylvieCatEarRenderNode.cs     # 猫耳渲染节点（继承 PawnRenderNode）
+│   │   ├── SylvieCatEarNodeWorker.cs     # 猫耳渲染工作器（处理偏移和开关）
 │   │   ├── SylvieGameComponent.cs        # 状态管理与事件触发
 │   │   └── SylvieSeekPettingTracker.cs   # 抚摸冷却跟踪
 │   ├── Core/                    # 核心基础设施
@@ -163,10 +166,14 @@ SylvieRace/
 │  │  │SylvieAiming  │ │SylvieCooldown│ │SylvieCooldown│ │SylvieCatEar │ │   │
 │  │  │   Tracker    │ │   Tracker    │ │ OverlayComp  │ │    Comp     │ │   │
 │  │  └──────────────┘ └──────────────┘ └──────────────┘ └─────────────┘ │   │
-│  │  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐                  │   │
-│  │  │SylvieSeek    │ │SylvieGame    │ │SylvieHediff  │                  │   │
-│  │  │PettingTracker│ │  Component   │ │   Manager   │                  │   │
-│  │  └──────────────┘ └──────────────┘ └──────────────┘                  │   │
+│  │  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐ ┌─────────────┐ │   │
+│  │  │SylvieCatEar  │ │SylvieCatEar  │ │SylvieSeek    │ │SylvieGame   │ │   │
+│  │  │  RenderNode  │ │  NodeWorker  │ │PettingTracker│ │ Component  │ │   │
+│  │  └──────────────┘ └──────────────┘ └──────────────┘ └─────────────┘ │   │
+│  │  ┌──────────────┐ ┌──────────────┐                                  │   │
+│  │  │SylvieHediff  │ │SylvieHediff  │                                  │   │
+│  │  │   Manager   │ │  CompNurse   │                                  │   │
+│  │  └──────────────┘ └──────────────┘                                  │   │
 │  └─────────────────────────────────────────────────────────────────────┘   │
 │                                                                              │
 │  ┌─────────────────────────────────────────────────────────────────────┐   │
@@ -195,11 +202,18 @@ SylvieRace/
 | `SylvieAnimationRegistry` | [Animation/SylvieAnimationRegistry.cs](Animation/SylvieAnimationRegistry.cs) | 统一管理 FaceAnimation 到 Pawn 的映射关系 |
 | `SylvieAnimationHelper` | [Animation/SylvieAnimationHelper.cs](Animation/SylvieAnimationHelper.cs) | 提供动画帧计算、反射访问等通用功能 |
 | `SylvieAimingTracker` | [Components/SylvieAimingTracker.cs](Components/SylvieAimingTracker.cs) | 追踪 Sylvie Pawn 的瞄准状态，与面部动画同步 |
+| `SylvieCooldownTracker` | [Components/SylvieCooldownTracker.cs](Components/SylvieCooldownTracker.cs) | 冷却状态跟踪器，管理所有 Sylvie 的冷却计时 |
+| `SylvieCooldownOverlayComp` | [Components/SylvieCooldownOverlayComp.cs](Components/SylvieCooldownOverlayComp.cs) | 冷却动画渲染组件，处理瞄准冷却期间的视觉效果 |
+| `SylvieCatEarComp` | [Components/SylvieCatEarComp.cs](Components/SylvieCatEarComp.cs) | 猫耳渲染组件，管理渲染状态和帧切换 |
+| `SylvieCatEarRenderNode` | [Components/SylvieCatEarRenderNode.cs](Components/SylvieCatEarRenderNode.cs) | 猫耳渲染节点，继承 PawnRenderNode 实现与动画 Mod 的完美同步 |
+| `SylvieCatEarNodeWorker` | [Components/SylvieCatEarNodeWorker.cs](Components/SylvieCatEarNodeWorker.cs) | 猫耳渲染工作器，处理偏移计算和渲染开关 |
+| `SylvieSeekPettingTracker` | [Components/SylvieSeekPettingTracker.cs](Components/SylvieSeekPettingTracker.cs) | 抚摸冷却跟踪器，管理寻求抚摸的冷却时间 |
 | `SylvieGameComponent` | [Components/SylvieGameComponent.cs](Components/SylvieGameComponent.cs) | 游戏状态管理、存档版本控制、事件触发调度 |
 | `SylviePawnGenerator` | [Pawns/SylviePawnGenerator.cs](Pawns/SylviePawnGenerator.cs) | 希尔薇 Pawn 生成与配置 |
 | `JobGiver_SeekPetting` | [Jobs/JobGiver_SeekPetting.cs](Jobs/JobGiver_SeekPetting.cs) | AI 决策，7步条件检查，寻找最佳抚摸目标 |
 | `JobDriver_SeekPetting` | [Jobs/JobDriver_SeekPetting.cs](Jobs/JobDriver_SeekPetting.cs) | 执行抚摸交互，应用心情、社交关系效果 |
 | `SylvieSeekPettingTracker` | [Components/SylvieSeekPettingTracker.cs](Components/SylvieSeekPettingTracker.cs) | 抚摸冷却时间管理（6小时=15000ticks），存档支持 |
+| `CompNurseHeal` | [Hediffs/CompNurseHeal.cs](Hediffs/CompNurseHeal.cs) | 护士服主动治疗技能，包扎伤口并添加麻痹效果 |
 
 ---
 
@@ -509,6 +523,145 @@ if (ModsConfig.BiotechActive && Pawn.ageTracker.CurLifeStage.headSizeFactor.HasV
 Vector3 drawScale = DrawScale * headSizeFactor;
 ```
 
+#### 猫耳渲染系统
+
+基于 PawnRenderNode 机制，实现与 Yayo's Animation 等动画 Mod 的完美同步。
+
+**核心组件**:
+
+| 组件 | 文件 | 职责 |
+|------|------|------|
+| `SylvieCatEarComp` | [Components/SylvieCatEarComp.cs](Components/SylvieCatEarComp.cs) | 管理渲染状态（`ShouldRender`、`CurrentEarFrame`），重写 `CompRenderNodes()` |
+| `SylvieCatEarRenderNode` | [Components/SylvieCatEarRenderNode.cs](Components/SylvieCatEarRenderNode.cs) | 继承 PawnRenderNode，作为 Head 节点的子节点，自动继承变换矩阵 |
+| `SylvieCatEarNodeWorker` | [Components/SylvieCatEarNodeWorker.cs](Components/SylvieCatEarNodeWorker.cs) | 继承 PawnRenderNodeWorker，处理渲染开关和偏移计算 |
+
+**PawnRenderNode 机制** ([SylvieCatEarComp.cs](Components/SylvieCatEarComp.cs#L95-L121)):
+
+```csharp
+public override List<PawnRenderNode>? CompRenderNodes()
+{
+    // 创建 PawnRenderNodeProperties
+    var props = new PawnRenderNodeProperties
+    {
+        debugLabel = "SylvieCatEar",
+        workerClass = typeof(SylvieCatEarNodeWorker),
+        baseLayer = EarLayer,  // 74f
+        parentTagDef = PawnRenderNodeTagDefOf.Head  // 作为 Head 子节点
+    };
+    
+    // 创建并返回渲染节点
+    var node = new SylvieCatEarRenderNode(Pawn, props, Pawn.Drawer.renderer.renderTree, this);
+    return new List<PawnRenderNode> { node };
+}
+```
+
+**与 Yayo's Animation 的兼容性原理**:
+
+Yayo's Animation 在研究动画中添加了让 Pawn 左右摇晃的效果。原来的 `PostDraw` 方案使用 `Pawn.DrawPos` 计算猫耳位置，导致猫耳固定在地面相对位置不动。
+
+**解决方案**:
+
+1. **渲染树结构**: RimWorld 1.6 使用 `PawnRenderTree` 管理所有渲染节点
+2. **父子关系**: 猫耳节点设置为 Head 节点的子节点（`parentTagDef = PawnRenderNodeTagDefOf.Head`）
+3. **变换继承**: 子节点自动继承父节点的变换矩阵（位置、旋转、缩放）
+4. **动画同步**: Yayo's Animation 在 `ParallelGetPreRenderResults` 阶段修改 Head 节点的位置，猫耳节点自动跟随
+
+**该方案的普适性原理**:
+
+该方案不仅兼容 Yayo's Animation，还兼容任何修改 Pawn 渲染位置的动画 Mod：
+- **矩阵级变换传递**: 所有变换通过渲染树的矩阵计算传递，而非直接操作位置坐标
+- **相对位置保持**: 猫耳始终保持相对于 Head 的正确位置，不受父节点绝对位置变化影响
+- **框架级兼容性**: 基于 RimWorld 原生 PawnRenderNode 系统，无需针对特定 Mod 做特殊处理
+- **可扩展性**: 任何遵循 RimWorld 渲染规范的动画 Mod 都能自动兼容
+
+**渲染开关控制** ([SylvieCatEarNodeWorker.cs](Components/SylvieCatEarNodeWorker.cs#L22-L43)):
+
+```csharp
+public override bool CanDrawNow(PawnRenderNode node, PawnDrawParms parms)
+{
+    // 检查基础条件
+    if (!base.CanDrawNow(node, parms))
+    {
+        return false;
+    }
+
+    // 检查是否应该渲染猫耳
+    if (node is SylvieCatEarRenderNode catEarNode)
+    {
+        var comp = parms.pawn.GetComp<SylvieCatEarComp>();
+        if (comp == null || !comp.ShouldRender)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+```
+
+**反射调用与错误处理** ([SylvieCatEarRenderNode.cs](Components/SylvieCatEarRenderNode.cs#L95-L110)):
+
+猫耳渲染需要在帧切换时触发渲染树重缓存。由于 `requestRecache` 是私有字段，需要使用反射访问。生产级代码必须包含完善的错误处理：
+
+```csharp
+/// <summary>
+/// 请求重新缓存此节点。
+/// 这会确保渲染树重新评估使用哪个图形。
+/// </summary>
+private void RequestRecache()
+{
+    try
+    {
+        // 将 requestRecache 字段设为 true 以触发重新初始化
+        // 此字段在 EnsureInitialized 中通过 RecacheRequested 属性检查
+        var field = typeof(PawnRenderNode).GetField("requestRecache", 
+            System.Reflection.BindingFlags.NonPublic | 
+            System.Reflection.BindingFlags.Instance);
+        field?.SetValue(this, true);
+    }
+    catch (Exception ex)
+    {
+        Log.Warning($"[SylvieMod] Failed to request recache for cat ear node: {ex.Message}");
+    }
+}
+```
+
+**关键设计要点**:
+- **防御性编程**: 反射操作包裹在 try-catch 中，防止字段不存在或访问权限问题导致崩溃
+- **优雅降级**: 即使反射失败，也只是无法触发动画帧切换，不会破坏整体渲染
+- **日志记录**: 使用 `Log.Warning` 记录错误，便于调试但不会影响用户体验
+- **空值检查**: 使用 `field?.SetValue` 确保即使获取字段失败也不会抛出 NullReferenceException
+
+**类关系图**:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     PawnRenderTree                               │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │                    Head Node                             │   │
+│  │  ┌─────────────────────────────────────────────────┐   │   │
+│  │  │           SylvieCatEarRenderNode                 │   │   │
+│  │  │  ┌─────────────────────────────────────────┐   │   │   │
+│  │  │  │      SylvieCatEarNodeWorker            │   │   │   │
+│  │  │  │  - CanDrawNow()                        │   │   │   │
+│  │  │  │  - OffsetFor()                         │   │   │   │
+│  │  │  │  - GetFinalizedMaterial()              │   │   │   │
+│  │  │  └─────────────────────────────────────────┘   │   │   │
+│  │  │  - GraphicFor()                                │   │   │
+│  │  │  - RequestRecache() (带错误处理)               │   │   │
+│  │  └─────────────────────────────────────────────────┘   │   │
+│  │  (继承变换矩阵，包括 Yayo's Animation 偏移)              │   │
+│  └─────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+                    ┌─────────────────┐
+                    │ SylvieCatEarComp │
+                    │ - ShouldRender   │
+                    │ - CurrentEarFrame│
+                    │ - CompRenderNodes│
+                    └─────────────────┘
+```
+
 ---
 
 ### 寻求抚摸系统
@@ -753,15 +906,13 @@ private void PerformDataMigration()
 
 所有 ThingComp 组件必须正确实现 `PostExposeData` 方法以确保存档兼容性。
 
-**SylvieCatEarComp.PostExposeData**:
+**SylvieCatEarComp.PostExposeData** ([Components/SylvieCatEarComp.cs](Components/SylvieCatEarComp.cs#L130-L136)):
 ```csharp
 public override void PostExposeData()
 {
     base.PostExposeData();
-    Scribe_Values.Look(ref currentOffset, "currentOffset", Vector3.zero);
-    Scribe_Values.Look(ref targetOffset, "targetOffset", Vector3.zero);
-    Scribe_Values.Look(ref isMoving, "isMoving", false);
-    Scribe_Values.Look(ref moveStartTick, "moveStartTick", 0);
+    Scribe_Values.Look(ref currentEarFrame, "currentEarFrame", 0);
+    Scribe_Values.Look(ref shouldRender, "shouldRender", false);
 }
 ```
 
