@@ -114,8 +114,9 @@ SylvieRace/
 │   │   └── ChoiceLetter_SylvieOffer.cs
 │   ├── Debug/                   # 调试功能 (1个文件)
 │   │   └── SylvieDebugActions.cs
-│   └── Utils/                   # 工具类 (1个文件)
-│       └── SylvieValidationUtils.cs
+│   └── Utils/                   # 工具类 (2个文件)
+│       ├── SylvieValidationUtils.cs      # 通用验证工具
+│       └── SylvieFactionValidator.cs     # 派系验证工具
 ├── Defs/                        # XML 定义
 │   ├── Races/                   # 种族定义
 │   ├── PawnKinds/               # PawnKind 定义
@@ -218,6 +219,7 @@ SylvieRace/
 | `SylvieHediffManager` | [Hediffs/SylvieHediffManager.cs](Hediffs/SylvieHediffManager.cs) | Hediff 管理，处理初始创伤机制的触发 |
 | `CompNurseHeal` | [Hediffs/CompNurseHeal.cs](Hediffs/CompNurseHeal.cs) | 护士服主动治疗技能，包扎伤口并添加麻痹效果 |
 | `SylvieValidationUtils` | [Utils/SylvieValidationUtils.cs](Utils/SylvieValidationUtils.cs) | 验证工具类，提供通用验证方法 |
+| `SylvieFactionValidator` | [Utils/SylvieFactionValidator.cs](Utils/SylvieFactionValidator.cs) | 派系验证工具，提供有效派系筛选与验证（排除玩家/隐藏/已击败/临时派系，需有 Trader） |
 | `SylvieDebugActions` | [Debug/SylvieDebugActions.cs](Debug/SylvieDebugActions.cs) | 调试功能，提供开发调试命令 |
 
 ---
@@ -253,7 +255,40 @@ Hair: Hair_SnowWhite (雪白)
 
 ### 事件系统
 
-**关键文件**: [Components/SylvieGameComponent.cs](Components/SylvieGameComponent.cs)
+**关键文件**:
+- [Components/SylvieGameComponent.cs](Components/SylvieGameComponent.cs) - 事件调度与状态管理
+- [Incidents/IncidentWorker_SylvieTrader.cs](Incidents/IncidentWorker_SylvieTrader.cs) - 商人事件触发
+- [Utils/SylvieFactionValidator.cs](Utils/SylvieFactionValidator.cs) - 派系验证器
+
+**系统架构**:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                      事件系统架构                                │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  ┌──────────────────┐    ┌──────────────────┐                  │
+│  │ SylvieGame       │    │ SylvieFaction    │                  │
+│  │ Component        │───▶│ Validator        │                  │
+│  │ (事件调度)        │    │ (派系筛选)        │                  │
+│  └──────────────────┘    └────────┬─────────┘                  │
+│           │                       │                             │
+│           ▼                       ▼                             │
+│  ┌──────────────────┐    ┌──────────────────┐                  │
+│  │ IncidentWorker   │◀───│  有效派系列表     │                  │
+│  │ SylvieTrader     │    │                  │                  │
+│  │ (事件触发)        │    └──────────────────┘                  │
+│  └────────┬─────────┘                                           │
+│           │                                                      │
+│           ▼                                                      │
+│  ┌──────────────────┐    ┌──────────────────┐                  │
+│  │ SylviePawn       │───▶│ 种族验证 + 重试  │                  │
+│  │ Generator        │    │ (Max 5次)        │                  │
+│  │ (Pawn生成)        │    └──────────────────┘                  │
+│  └──────────────────┘                                           │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
 
 **防重复机制** ([SylvieGameComponent.cs](Components/SylvieGameComponent.cs#L23-L47)):
 ```csharp
@@ -285,11 +320,62 @@ public override void GameComponentTick()
 }
 ```
 
+**派系选择机制** ([SylvieFactionValidator.cs](Utils/SylvieFactionValidator.cs)):
+
+事件系统不再绑定特定派系（如温和部落），而是通过 `SylvieFactionValidator` 动态筛选有效派系：
+
+```csharp
+// 验证派系是否适合触发事件
+public static bool IsValidFaction(Faction? faction)
+{
+    if (faction == null) return false;
+    if (faction.IsPlayer) return false;           // 排除玩家派系
+    if (faction.Hidden) return false;             // 排除隐藏派系
+    if (faction.defeated) return false;           // 排除已击败派系
+    if (faction.temporary) return false;          // 排除临时派系
+    if (faction.HostileTo(Faction.OfPlayer)) return false;  // 排除敌对派系
+    if (faction.def.caravanTraderKinds.NullOrEmpty()) return false;  // 必须有商队
+    // 必须有 Trader PawnGroupMaker
+    if (!faction.def.pawnGroupMakers.Any(pgm => 
+        pgm.kindDef == PawnGroupKindDefOf.Trader)) return false;
+    return true;
+}
+```
+
+**种族正确性保证机制** ([SylviePawnGenerator.cs](Pawns/SylviePawnGenerator.cs#L64-L98)):
+
+Pawn 生成包含种族验证和重生成机制，确保生成的始终是希尔薇种族：
+
+```csharp
+// 尝试生成，带重试机制
+for (int attempt = 0; attempt < MaxGenerationAttempts; attempt++)
+{
+    Pawn? pawn = TryGeneratePawnInternal(faction, pawnKindDef);
+    if (pawn == null) continue;
+
+    // 验证种族是否正确
+    if (pawn.def.defName != SylvieDefNames.Race_Sylvie)
+    {
+        Log.Warning($"[SylvieMod] Generated pawn has wrong race: {pawn.def.defName}");
+        pawn.Destroy();  // 销毁错误种族的 Pawn
+        continue;        // 继续下一次尝试
+    }
+
+    // 种族正确，配置属性
+    ConfigureName(pawn);
+    ConfigureGenes(pawn);
+    ConfigureTraits(pawn);
+    ConfigureTattoos(pawn);
+    return pawn;
+}
+```
+
 **时间常量** ([SylvieConstants.cs](Core/SylvieConstants.cs#L26-L52)):
 - 检查间隔: 2500 ticks (~41.7秒 @60TPS) - `CheckIntervalTicks`
 - 初始延迟: 240000 ticks (4 游戏日) - `InitialEventDelayTicks`
 - Hediff 延迟: 300000 ticks (5 游戏日) - `HediffDelayTicks`
 - 护士服治疗间隔: 600 ticks (10秒 @60TPS) - `NurseHealIntervalTicks`
+- Pawn 生成重试次数: 5 次 - `MaxGenerationAttempts`
 
 ---
 
@@ -1547,6 +1633,69 @@ var myDef = SylvieDefNames.GetDef<MyDefType>("MyNewDefName");
 
 ---
 
+### 使用派系验证工具
+
+**SylvieFactionValidator** 提供集中式的派系验证逻辑，确保生成的 Pawn 属于有效派系。
+
+**检查是否存在有效派系**:
+
+```csharp
+// 在生成 Pawn 前检查
+if (!SylvieFactionValidator.HasAnyValidFaction())
+{
+    Log.Warning("[SylvieMod] 没有可用的有效派系，跳过生成");
+    return false;
+}
+```
+
+**获取随机有效派系**:
+
+```csharp
+// 获取一个随机的有效派系用于 Pawn 生成
+Faction? validFaction = SylvieFactionValidator.GetValidFaction();
+if (validFaction == null)
+{
+    Log.Error("[SylvieMod] 无法获取有效派系");
+    return null;
+}
+
+// 使用派系生成 Pawn
+PawnGenerationRequest request = new(
+    kind: PawnKindDef.Named(SylvieDefNames.PawnKind_Sylvie),
+    faction: validFaction,  // 使用验证后的派系
+    context: PawnGenerationContext.NonPlayer,
+    tile: tile,
+    forceGenerateNewPawn: true
+);
+```
+
+**有效派系判定标准**:
+
+```csharp
+// SylvieFactionValidator 内部逻辑
+private static bool IsValidFaction(Faction faction)
+{
+    // 排除已销毁的派系
+    if (faction == null || faction.IsPlayer || faction.defeated)
+        return false;
+    
+    // 排除隐藏派系
+    if (faction.def.hidden)
+        return false;
+    
+    // 可以添加其他自定义规则
+    return true;
+}
+```
+
+**使用场景示例**:
+
+- **事件生成**: 确保随机事件生成的 Sylvie 属于有效派系
+- **地图生成**: 在地图初始化时验证派系可用性
+- **救援/俘虏**: 确保救援的 Sylvie 来自合法派系
+
+---
+
 ### 调试技巧
 
 **日志输出**:
@@ -1900,6 +2049,116 @@ private bool HasNorthTexture(Graphic graphic)
 - 使用 `Graphic.MeshAt(rot)` 获取正确的 mesh（自动处理翻转）
 - 使用 `Graphic.MatAt(rot)` 获取对应朝向的材质
 - 通过比较 `MatNorth` 和 `MatSouth` 判断是否有独立的 north 贴图
+
+### 派系验证：使用工具类集中管理派系选择逻辑
+
+**问题**: 在多个地方分散处理派系验证逻辑，导致代码重复且容易遗漏边界情况（如玩家派系、已击败派系）。
+
+**错误做法**:
+```csharp
+// 分散的派系选择逻辑，容易出错
+Faction faction = Find.FactionManager.RandomEnemyFaction();
+if (faction != null && !faction.defeated)
+{
+    // 生成 Pawn
+}
+// 遗漏了隐藏派系、玩家派系等检查
+```
+
+**解决方案** ([SylvieFactionValidator.cs](Core/SylvieFactionValidator.cs)):
+```csharp
+// 集中式派系验证工具类
+public static class SylvieFactionValidator
+{
+    public static bool HasAnyValidFaction()
+    {
+        return Find.FactionManager.GetFactions()
+            .Any(IsValidFaction);
+    }
+    
+    public static Faction? GetValidFaction()
+    {
+        var validFactions = Find.FactionManager.GetFactions()
+            .Where(IsValidFaction)
+            .ToList();
+        
+        return validFactions.Count > 0 
+            ? validFactions.RandomElement() 
+            : null;
+    }
+    
+    private static bool IsValidFaction(Faction faction)
+    {
+        if (faction == null || faction.IsPlayer || faction.defeated)
+            return false;
+        if (faction.def.hidden)
+            return false;
+        return true;
+    }
+}
+```
+
+**使用示例**:
+```csharp
+// 检查是否存在有效派系
+if (!SylvieFactionValidator.HasAnyValidFaction())
+    return false;
+
+// 获取随机有效派系
+Faction? validFaction = SylvieFactionValidator.GetValidFaction();
+```
+
+**经验总结**:
+- 将派系验证逻辑集中到单一工具类，避免代码重复
+- 统一处理边界情况（玩家派系、已击败、隐藏派系等）
+- 提供清晰的 API 接口：`HasAnyValidFaction()` 和 `GetValidFaction()`
+- 便于后续扩展新的验证规则
+
+### 种族正确性：生成后验证，不正确则销毁重生成
+
+**问题**: RimWorld 的 Pawn 生成系统在某些情况下（如与其他 Mod 冲突）可能生成错误种族的 Pawn。
+
+**错误做法**:
+```csharp
+// 直接返回生成的 Pawn，不验证种族
+Pawn pawn = PawnGenerator.GeneratePawn(request);
+return pawn; // 可能返回了错误种族的 Pawn
+```
+
+**解决方案**:
+```csharp
+// 生成后验证种族，不正确则重生成
+private const int MaxGenerationAttempts = 5;
+private const string ExpectedRaceDefName = "Sylvie_Race";
+
+public Pawn? GenerateSylviePawn()
+{
+    for (int attempt = 0; attempt < MaxGenerationAttempts; attempt++)
+    {
+        Pawn? pawn = PawnGenerator.GeneratePawn(request);
+        
+        // 验证种族是否正确
+        if (pawn?.def?.defName != ExpectedRaceDefName)
+        {
+            Log.Warning($"[SylvieMod] 生成的 Pawn 种族不匹配: {pawn?.def?.defName}，第 {attempt + 1} 次重试");
+            pawn?.Destroy(); // 销毁错误的 Pawn
+            continue;
+        }
+        
+        return pawn; // 种族正确，返回
+    }
+    
+    Log.Error("[SylvieMod] 无法生成正确种族的 Sylvie");
+    return null;
+}
+```
+
+**经验总结**:
+- 生成 Pawn 后必须验证 `pawn.def.defName` 是否符合预期
+- 设置最大重试次数防止无限循环
+- 销毁错误种族的 Pawn 时使用 `pawn.Destroy()` 清理资源
+- 记录警告日志便于排查生成失败的原因
+- 这是处理 Mod 兼容性问题的有效防御性编程手段
 
 ---
 

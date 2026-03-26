@@ -24,9 +24,8 @@ public class IncidentWorker_SylvieTrader : IncidentWorker_TraderCaravanArrival
 
         Map target = (Map)parms.target;
 
-        // 检查温和部落派系存不存在
-        Faction? tribeCivil = Find.FactionManager.FirstFactionOfDef(FactionDefOf.TribeCivil);
-        if (tribeCivil == null || tribeCivil.HostileTo(Faction.OfPlayer))
+        // 使用 SylvieFactionValidator 检查是否存在有效派系
+        if (!SylvieFactionValidator.HasAnyValidFaction())
             return false;
 
         return base.CanFireNowSub(parms) && target.IsPlayerHome;
@@ -37,12 +36,12 @@ public class IncidentWorker_SylvieTrader : IncidentWorker_TraderCaravanArrival
     /// </summary>
     protected override bool TryExecuteWorker(IncidentParms parms)
     {
-        // 强制锁定派系温和部落
-        Faction? tribeCivil = Find.FactionManager.FirstFactionOfDef(FactionDefOf.TribeCivil);
-        if (tribeCivil == null || tribeCivil.HostileTo(Faction.OfPlayer))
+        // 使用 SylvieFactionValidator 获取有效派系
+        Faction? validFaction = SylvieFactionValidator.GetValidFaction();
+        if (validFaction == null)
             return false;
 
-        parms.faction = tribeCivil;
+        parms.faction = validFaction;
 
         // Set trader kind if not provided
         if (parms.traderKind == null)
