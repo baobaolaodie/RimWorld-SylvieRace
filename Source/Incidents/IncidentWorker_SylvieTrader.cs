@@ -33,6 +33,7 @@ public class IncidentWorker_SylvieTrader : IncidentWorker_TraderCaravanArrival
 
     /// <summary>
     /// Executes the incident worker.
+    /// 修复：先生成希尔薇，成功后再生成商队，避免商队疯狂触发但希尔薇不生成的问题。
     /// </summary>
     protected override bool TryExecuteWorker(IncidentParms parms)
     {
@@ -51,19 +52,40 @@ public class IncidentWorker_SylvieTrader : IncidentWorker_TraderCaravanArrival
             parms.traderKind = parms.faction.def.caravanTraderKinds.RandomElement();
         }
 
-        // Execute base worker
-        if (!base.TryExecuteWorker(parms))
+        // 步骤1：先尝试生成希尔薇
+        // 这样可以确保希尔薇能成功生成后再生成商队，避免商队来了但希尔薇没生成的问题
+        Pawn? sylvie = SylviePawnGenerator.GenerateSylvie(parms.faction);
+        if (sylvie == null)
+        {
+            Log.Warning("[SylvieMod] Failed to generate Sylvie pawn, aborting incident");
             return false;
+        }
 
+        // 步骤2：希尔薇生成成功，现在生成商队
+        if (!base.TryExecuteWorker(parms))
+        {
+            // 商队生成失败，销毁已生成的希尔薇
+            Log.Warning("[SylvieMod] Failed to spawn trader caravan, destroying generated Sylvie");
+            sylvie.Destroy();
+            return false;
+        }
+
+        // 步骤3：商队生成成功，找到 trader 并将希尔薇放到其旁边
         Map target = (Map)parms.target;
         List<Pawn> traders = target.mapPawns.AllPawnsSpawned
             .Where(p => p.trader != null && p.Faction == parms.faction)
             .ToList();
 
         if (traders.NullOrEmpty())
+        {
+            // 没有找到 trader，销毁希尔薇
+            Log.Warning("[SylvieMod] No trader found in caravan, destroying generated Sylvie");
+            sylvie.Destroy();
             return false;
+        }
 
-        SpawnSylvieAndSendOffer(traders.RandomElement(), target);
+        // 步骤4：将希尔薇放置到 trader 旁边并发送信件
+        SpawnSylvieAndSendOffer(traders.RandomElement(), sylvie, target);
         return true;
     }
 
@@ -74,15 +96,8 @@ public class IncidentWorker_SylvieTrader : IncidentWorker_TraderCaravanArrival
     /// <summary>
     /// Spawns Sylvie and sends the offer letter.
     /// </summary>
-    private void SpawnSylvieAndSendOffer(Pawn traderLeader, Map map)
+    private void SpawnSylvieAndSendOffer(Pawn traderLeader, Pawn sylvie, Map map)
     {
-        Pawn? sylvie = SylviePawnGenerator.GenerateSylvie(traderLeader.Faction);
-        if (sylvie == null)
-        {
-            Log.Error("[SylvieMod] Failed to generate Sylvie pawn");
-            return;
-        }
-
         GenSpawn.Spawn(sylvie, traderLeader.Position, map);
         sylvie.guest.SetGuestStatus(traderLeader.Faction, GuestStatus.Prisoner);
         traderLeader.lord?.AddPawn(sylvie);

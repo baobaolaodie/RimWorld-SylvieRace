@@ -2,9 +2,9 @@
 
 本文档面向 Mod 开发者，介绍 SylvieRace 项目结构和技术实现细节。
 
-**版本**: v1.0.3-pre  
+**版本**: v1.0.4-pre  
 **游戏版本**: RimWorld 1.6  
-**最后更新**: 2026-03-26
+**最后更新**: 2026-03-28
 
 ---
 
@@ -42,6 +42,7 @@
     - [使用动画注册系统](#使用动画注册系统)
     - [使用动画辅助工具](#使用动画辅助工具)
     - [添加 Def 名称](#添加-def-名称)
+    - [使用派系验证工具](#使用派系验证工具)
     - [调试技巧](#调试技巧)
   - [技术经验教训](#技术经验教训)
     - [Letter 创建：必须使用 LetterMaker.MakeLetter](#letter-创建必须使用-lettermakermakeletter)
@@ -50,6 +51,10 @@
     - [静态数据：考虑存档加载时的清理问题](#静态数据考虑存档加载时的清理问题)
     - [ExposeData：所有 ThingComp 必须正确实现](#exposedata所有-thingcomp-必须正确实现)
     - [Pawn 引用安全：添加死亡检查](#pawn-引用安全添加死亡检查)
+    - [反射访问：必须包含错误处理](#反射访问必须包含错误处理)
+    - [动画朝向处理：使用 Graphic.MeshAt](#动画朝向处理使用-graphicmeshat)
+    - [派系验证：使用工具类集中管理派系选择逻辑](#派系验证使用工具类集中管理派系选择逻辑)
+    - [种族正确性：生成后验证，不正确则销毁重生成](#种族正确性生成后验证不正确则销毁重生成)
   - [相关文档](#相关文档)
 
 ---
@@ -319,6 +324,40 @@ public override void GameComponentTick()
     }
 }
 ```
+
+**事件执行顺序机制** ([Incidents/IncidentWorker_SylvieTrader.cs](Incidents/IncidentWorker_SylvieTrader.cs#L38-L90)):
+
+修复商队疯狂触发问题的核心机制：先验证并生成希尔薇，成功后再生成商队：
+
+```csharp
+// 步骤1：先尝试生成希尔薇
+Pawn? sylvie = SylviePawnGenerator.GenerateSylvie(parms.faction);
+if (sylvie == null)
+{
+    Log.Warning("[SylvieMod] Failed to generate Sylvie pawn, aborting incident");
+    return false;  // 希尔薇生成失败，直接返回，不生成商队
+}
+
+// 步骤2：希尔薇生成成功，现在生成商队
+if (!base.TryExecuteWorker(parms))
+{
+    // 商队生成失败，销毁已生成的希尔薇
+    Log.Warning("[SylvieMod] Failed to spawn trader caravan, destroying generated Sylvie");
+    sylvie.Destroy();
+    return false;
+}
+
+// 步骤3：商队生成成功，找到 trader 并将希尔薇放到其旁边
+// ... 放置希尔薇并发送信件
+}
+```
+
+**关键设计决策**：
+- 先调用 `SylviePawnGenerator.GenerateSylvie()` 确保希尔薇能成功生成
+- 只有希尔薇生成成功后，才调用 `base.TryExecuteWorker()` 生成商队
+- 如果希尔薇生成失败，事件直接返回 false，不会触发商队到达
+- 如果商队生成失败，销毁已生成的希尔薇，避免内存泄漏
+- 彻底解决商队疯狂触发但希尔薇不出现的问题
 
 **派系选择机制** ([SylvieFactionValidator.cs](Utils/SylvieFactionValidator.cs)):
 
