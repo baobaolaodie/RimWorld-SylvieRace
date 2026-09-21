@@ -1,0 +1,22 @@
+# ---- 构建产物 ----
+[Oo]bj/
+[Bb]in/
+*.suo
+*.user
+*.userprefs
+
+# ---- IDE / 编辑器 ----
+.vs/
+.idea/
+*.swp
+*~
+
+# ---- 操作系统 ----
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# ---- AI 工具配置（不入公开仓库）----
+.claude/
+
+# ---- 注意：1.6/Assemblies/ 是工坊发布产物，必须保留，勿加忽略规则 ----
