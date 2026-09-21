@@ -2,6 +2,7 @@
 using RimWorld;
 using RimWorld.Planet;
 using System.Collections.Generic;
+using System.Linq;
 using Verse;
 
 namespace SylvieMod;
@@ -27,6 +28,13 @@ public static class SylviePawnGenerator
     /// 最大重试生成次数，防止无限循环。
     /// </summary>
     private const int MaxGenerationAttempts = 5;
+
+    /// <summary>
+    /// 希尔薇专属发型的 styleTags 标签。
+    /// 必须与 Defs/Hair/Sylvie_Hair.xml 以及 Defs/Races/Sylvie_Race.xml 的
+    /// styleSettings 中声明的标签保持一致。
+    /// </summary>
+    private const string SylvieHairStyleTag = "Sylvie_Hair";
 
     #endregion
 
@@ -89,6 +97,7 @@ public static class SylviePawnGenerator
             ConfigureGenes(pawn);
             ConfigureTraits(pawn);
             ConfigureTattoos(pawn);
+            ConfigureHair(pawn);
 
             return pawn;
         }
@@ -159,6 +168,49 @@ public static class SylviePawnGenerator
         {
             pawn.Drawer.renderer.SetAllGraphicsDirty();
         }
+    }
+
+    /// <summary>
+    /// 确保希尔薇一定拿到一个专属发型。
+    ///
+    /// 原版 PawnStyleItemChooser 对「自定义标签发型」存在系统性缺陷：
+    /// 种族专属发型只带 Sylvie_Hair 这一个标签，而原版的可用性检查
+    /// （AgeAppropriateHairStyle 的生命周期过滤、Ideology 的 style frequency 等）
+    /// 都基于文化/生命周期里预先存在的标签表，Sylvie_Hair 不在其中，于是三个专属发型
+    /// 全部被否决；同时 HAR 的 styleSettings 又只放行带 Sylvie_Hair 标签的发型，
+    /// 把原版与其它模组（如 AFU）的发型全部挡掉。
+    /// 两者交集为空 → 候选池为空 → PawnStyleItemChooser.RandomHairFor 静默回退到
+    /// HairDefOf.Bald（光头），且不打任何日志。
+    ///
+    /// 因此在生成完成后显式指定发型，绕开该选择器。
+    /// </summary>
+    /// <param name="pawn">The Sylvie pawn to fix up</param>
+    private static void ConfigureHair(Pawn pawn)
+    {
+        if (pawn.story == null)
+        {
+            return;
+        }
+
+        // 选择器已经给出有效发型时不干预
+        if (pawn.story.hairDef != null && pawn.story.hairDef != HairDefOf.Bald)
+        {
+            return;
+        }
+
+        HairDef? hair = DefDatabase<HairDef>.AllDefs
+            .Where(h => h.styleTags != null && h.styleTags.Contains(SylvieHairStyleTag))
+            .RandomElementWithFallback();
+
+        if (hair == null)
+        {
+            Log.Warning($"[SylvieMod] No HairDef carries the '{SylvieHairStyleTag}' style tag; cannot fix bald Sylvie");
+            return;
+        }
+
+        pawn.story.hairDef = hair;
+        pawn.Drawer?.renderer?.SetAllGraphicsDirty();
+        Log.Message($"[SylvieMod] Assigned exclusive hairstyle '{hair.defName}' to {pawn.LabelShort}");
     }
 
     /// <summary>
