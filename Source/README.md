@@ -2,9 +2,9 @@
 
 本文档面向 Mod 开发者，介绍 SylvieRace 项目结构和技术实现细节。
 
-**版本**: v1.0.4-pre  
+**版本**: v1.0.5  
 **游戏版本**: RimWorld 1.6  
-**最后更新**: 2026-03-28
+**最后更新**: 2026-09-21
 
 ---
 
@@ -55,6 +55,7 @@
     - [动画朝向处理：使用 Graphic.MeshAt](#动画朝向处理使用-graphicmeshat)
     - [派系验证：使用工具类集中管理派系选择逻辑](#派系验证使用工具类集中管理派系选择逻辑)
     - [种族正确性：生成后验证，不正确则销毁重生成](#种族正确性生成后验证不正确则销毁重生成)
+    - [种族专属发型：生成后显式指定，不依赖原版样式选择器](#种族专属发型生成后显式指定不依赖原版样式选择器)
   - [相关文档](#相关文档)
 
 ---
@@ -2198,6 +2199,65 @@ public Pawn? GenerateSylviePawn()
 - 销毁错误种族的 Pawn 时使用 `pawn.Destroy()` 清理资源
 - 记录警告日志便于排查生成失败的原因
 - 这是处理 Mod 兼容性问题的有效防御性编程手段
+
+### 种族专属发型：生成后显式指定，不依赖原版样式选择器
+
+**问题**: 新生成的希尔薇是光头。种族专属发型无法被原版样式选择器选中，而选择器找不到候选时会回退到 `HairDefOf.Bald`（光头）且不打任何日志，排查时没有任何线索可循。
+
+**错误做法**:
+```csharp
+// 只在 Def 里声明 styleTags，就假设原版样式选择器会自动选中专属发型
+// ⚠️ 下面两条过滤器机制的描述出自本模组代码注释自述，未经独立反编译验证
+Pawn pawn = PawnGenerator.GeneratePawn(request); // 内部经由 PawnStyleItemChooser.RandomHairFor
+
+//   过滤器一（HAR styleSettings）：只放行带 Sylvie_Hair 标签的发型
+//   过滤器二（原版可用性检查）：生命周期过滤 / Ideology style frequency 基于预存的标签表，否决自定义标签发型
+// 两者交集为空 → 候选池为空 → 静默回退 HairDefOf.Bald，且不打任何日志
+return pawn; // 不做任何检查，直接把光头 Pawn 交出去
+```
+
+**解决方案** ([SylviePawnGenerator.cs](Pawns/SylviePawnGenerator.cs#L188-L214)):
+```csharp
+private const string SylvieHairStyleTag = "Sylvie_Hair";
+
+// GenerateSylvie 的配置链末位调用（种族校验通过之后、return pawn 之前）
+ConfigureHair(pawn);
+
+private static void ConfigureHair(Pawn pawn)
+{
+    if (pawn.story == null)
+    {
+        return;
+    }
+
+    // 选择器已经给出有效发型时不干预
+    if (pawn.story.hairDef != null && pawn.story.hairDef != HairDefOf.Bald)
+    {
+        return;
+    }
+
+    // 运行时全库扫描带专属标签的发型，不硬编码 defName 列表
+    HairDef? hair = DefDatabase<HairDef>.AllDefs
+        .Where(h => h.styleTags != null && h.styleTags.Contains(SylvieHairStyleTag))
+        .RandomElementWithFallback();
+
+    if (hair == null)
+    {
+        Log.Warning($"[SylvieMod] No HairDef carries the '{SylvieHairStyleTag}' style tag; cannot fix bald Sylvie");
+        return;
+    }
+
+    pawn.story.hairDef = hair;
+    pawn.Drawer?.renderer?.SetAllGraphicsDirty();
+}
+```
+
+**经验总结**:
+- 带自定义 styleTag 的发型不会自动进入原版样式选择器的候选池 —— **不能依赖原版样式选择器**，必须在生成完成后显式赋值 `pawn.story.hairDef`
+- 候选池用 `DefDatabase<HairDef>.AllDefs` 加标签过滤在运行时扫描，新增专属发型时无需改动 C# 代码；标签常量必须与 Defs 中的声明保持一致
+- 修复采取保守短路（已有非光头发型时不干预），避免覆盖玩家或其它 Mod 已经选定的发型
+- 赋值后调用 `pawn.Drawer.renderer.SetAllGraphicsDirty()` 刷新渲染，否则新发型不会立即生效
+- ⚠️ 上述关于原版 `PawnStyleItemChooser` 与 HAR `styleSettings` 的行为描述**出自代码注释自述，未经独立反编译验证**；本模组侧可确认的事实是 3 个专属发型确实只带 `Sylvie_Hair` 单一标签
 
 ---
 
