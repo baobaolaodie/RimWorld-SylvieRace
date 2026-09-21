@@ -1,0 +1,28 @@
+# ════════════════════════════════════════════════════════════
+#  Git 属性配置
+#
+#  文本文件统一以 LF 存入仓库、检出时也不转换（eol=lf），
+#  使 Windows / macOS / Linux 三平台行为一致，
+#  并消除提交时反复出现的 "LF will be replaced by CRLF" 警告。
+# ════════════════════════════════════════════════════════════
+
+# ---- 文本文件：统一 LF ----
+* text=auto eol=lf
+
+# ---- 二进制：禁止任何换行符转换 ----
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.dds   binary
+*.psd   binary
+*.ai    binary
+*.dll   binary
+*.pdb   binary
+*.exe   binary
+*.ttf   binary
+*.wav   binary
+*.ogg   binary
+
+# ---- 归档导出时排除 ----
+.gitattributes  export-ignore
+.gitignore      export-ignore
