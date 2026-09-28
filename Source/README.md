@@ -2,9 +2,9 @@
 
 本文档面向 Mod 开发者，介绍 SylvieRace 项目结构和技术实现细节。
 
-**版本**: v1.0.5  
+**版本**: v1.0.6-pre  
 **游戏版本**: RimWorld 1.6  
-**最后更新**: 2026-09-21
+**最后更新**: 2026-09-28
 
 ---
 
@@ -56,6 +56,7 @@
     - [派系验证：使用工具类集中管理派系选择逻辑](#派系验证使用工具类集中管理派系选择逻辑)
     - [种族正确性：生成后验证，不正确则销毁重生成](#种族正确性生成后验证不正确则销毁重生成)
     - [种族专属发型：生成后显式指定，不依赖原版样式选择器](#种族专属发型生成后显式指定不依赖原版样式选择器)
+    - [屠宰产物：useMeatFrom 的三个副作用](#屠宰产物usemeatfrom-的三个副作用)
   - [相关文档](#相关文档)
 
 ---
@@ -2258,6 +2259,50 @@ private static void ConfigureHair(Pawn pawn)
 - 修复采取保守短路（已有非光头发型时不干预），避免覆盖玩家或其它 Mod 已经选定的发型
 - 赋值后调用 `pawn.Drawer.renderer.SetAllGraphicsDirty()` 刷新渲染，否则新发型不会立即生效
 - ⚠️ 上述关于原版 `PawnStyleItemChooser` 与 HAR `styleSettings` 的行为描述**出自代码注释自述，未经独立反编译验证**；本模组侧可确认的事实是 3 个专属发型确实只带 `Sylvie_Hair` 单一标签
+
+---
+
+### 屠宰产物：useMeatFrom 的三个副作用
+
+**背景**: 为响应社区反馈（商队交易等场合出现具名的"希尔薇肉"令人出戏），`Defs/Races/Sylvie_Race.xml` 的 `<race>` 节点加入了 `<useMeatFrom>Human</useMeatFrom>`，让屠宰产物直接复用原版人类肉 `Meat_Human`。
+
+**机制**（RimWorld 1.6 `Assembly-CSharp`，已逐行核对反编译源码）:
+
+```csharp
+// ThingDefGenerator_Meat.ImpliedMeatDefs
+// 仅当两个字段均为空时，才为该种族自动生成专属的 Meat_<defName>
+if (thingDef1.category == ThingCategory.Pawn && thingDef1.race.hasMeat && thingDef1.race.hasCorpse
+    && thingDef1.race.useMeatFrom == null && thingDef1.race.specificMeatDef == null)
+{
+    // 下面三个字段只在"自动生成专属肉 def"这条路径上被读取
+    thingDef2.label = thingDef1.race.meatLabel.NullOrEmpty()
+        ? "MeatLabel".Translate(thingDef1.label) : thingDef1.race.meatLabel;
+    thingDef2.BaseMarketValue = thingDef1.race.meatMarketValue;
+    thingDef2.graphicData.color = thingDef1.race.meatColor;
+    thingDef1.race.meatDef = thingDef2;
+}
+
+// RaceProperties.ResolveReferencesSpecial —— 解析期直接借用目标种族的肉 def
+if (this.specificMeatDef != null) this.meatDef = this.specificMeatDef;
+else if (this.useMeatFrom != null) this.meatDef = this.useMeatFrom.race.meatDef;
+```
+
+**三个副作用**:
+1. **`meatLabel` / `meatMarketValue` / `meatColor` 全部失效** —— 改用 `useMeatFrom` 后不再生成专属肉 def，肉名、单价、颜色一律跟随目标种族（Human 的 `meatMarketValue` 为 0.8），**无法在 race 内覆盖**
+2. **`Meat_Sylvie_Race` 不再生成** —— 旧存档中已存在的该物品会因缺 Def 而丢失（本次权衡后选择不做迁移）
+3. **尸体市场价值少算肉的贡献** —— 尸体价值在 ImpliedDefs 生成期计算（`ThingDefGenerator_Corpses.CalculateMarketValue`），而 `useMeatFrom` 要到 `ResolveReferences` 阶段才解析出 `meatDef`，生成期读到的是 null
+
+**易被误判为会变、实际不受影响的**:
+- **食人判定 / `AteHumanMeat` 史实**: 判定依据是 `sourceDef.race.Humanlike`（`FoodUtility.GetMeatSourceCategory`），希尔薇改前改后都属 Humanlike 类别
+- **物品贴图与描述文本**: 生成器对 Humanlike 种族本来就固定使用人肉贴图与 `MeatHumanDesc`
+- **HAR 的默认食材排除**: `humanRecipeImport` 会把本族肉从食谱默认材料中移除，两种写法等效
+- **商队是否携带**: 肉 def 的 `tradeability` 由生成器统一取默认值 `All`，改后仍会被商队携带，只是标签变为"人肉"——**若诉求是"商队不再出现"，此改动无法达成，需要另行处理 `tradeability`**
+
+**经验总结**:
+- 只想改显示名、保留定义与价格 → 用 `<meatLabel>`，不要用 `useMeatFrom`
+- 想完全自定义肉（名称/价格/颜色/描述）→ 用 `<specificMeatDef>` 指向自建的 ThingDef
+- 只要改动肉的定义来源，就必须评估旧存档兼容性：自动生成的 `Meat_<defName>` 一旦消失，存档内的存量物品即丢失
+- 本项目未设置 `leatherDef`，1.6 也没有皮革自动生成器，因此屠宰不产皮革，不存在与肉对称的"希尔薇皮革"问题
 
 ---
 

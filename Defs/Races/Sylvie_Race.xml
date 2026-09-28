@@ -133,6 +133,8 @@
       <baseBodySize>1.0</baseBodySize>
       <baseHealthScale>1.0</baseHealthScale>
       <foodType>OmnivoreHuman</foodType>
+      <!-- 屠宰产物沿用人类肉（Meat_Human），不再生成具名的"希尔薇肉"物品 -->
+      <useMeatFrom>Human</useMeatFrom>
       <lifeStageAges>
         <li><def>HumanlikeBaby</def><minAge>0</minAge></li>
         <li><def>HumanlikeChild</def><minAge>3</minAge></li>
