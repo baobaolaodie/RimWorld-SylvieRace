@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 baobaolaodie
+// SPDX-License-Identifier: GPL-3.0-only
+
 #nullable enable
 using RimWorld;
 using System.Linq;

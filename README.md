@@ -4,6 +4,7 @@
 
 **版本**: v1.0.6-pre
 **游戏版本**: RimWorld 1.6  
+**许可证**: [GPL-3.0-only](./LICENSE)（代码）；美术资源保留权利  
 
 ---
 
@@ -632,6 +633,35 @@ SylvieRace/
 ## 开发信息
 
 - 开发者文档：`Source/README.md`
+
+---
+
+## 许可证
+
+**代码以 GNU General Public License v3.0（仅此版本，SPDX 标识 `GPL-3.0-only`）发布**，许可证全文见 [LICENSE](./LICENSE)。
+
+Copyright (C) 2026 baobaolaodie
+
+### 授权范围
+
+"程序"指本仓库中除 `Textures/` 以外的全部内容——C# 源码（`Source/`）、XML 定义与补丁（`Defs/`、`Patches/`）、翻译文本（`Languages/`）以及构建脚本，按 GPL-3.0 授权。
+
+`Textures/` 下的贴图等非代码资源**不在** GPL-3.0 授权范围内，版权归作者所有：未经作者许可，不得复制、修改、再分发，也不得用于其他项目。因此分发本模组必须同时满足代码与美术资源两套条件——**原样重传整包并不被允许**。
+
+### 分发时的义务
+
+- 保留版权声明与许可证声明；
+- 以 GPL-3.0 公开完整对应源码（`Source/`、`Defs/`、`Patches/`、`Languages/` 与构建脚本）；
+- 随分发内容附上 `LICENSE` 全文；
+- 修改版必须以 GPL-3.0 发布（衍生作品整体适用本协议）。
+
+本模组按"现状"提供，不附带任何明示或默示的担保。
+
+### 不覆盖的内容
+
+- **前置模组**：Harmony、Humanoid Alien Races、[NL] Facial Animation 均不属于本项目，按各自许可证分发，本仓库不包含它们的代码或资源。
+- **第三方角色与作品**：《Teaching Feeling》（同人社团 FreakilyCharming / Ray-Kbys）及其角色"希尔薇"的相关权利归原作者所有。本项目为粉丝向二次创作，本许可证仅覆盖本项目作者的原创部分，不构成对上述第三方权利的授权。
+- **RimWorld 本体**：使用本模组仍须遵守 RimWorld 的 EULA，例如模组必须免费分发。
 
 ---
 
