@@ -29,6 +29,8 @@
 
 **描述**：动词开头，说明"做了什么"，句末不加句号。
 
+**PR 标题同样适用本格式**——squash 合并后，PR 标题就是 `master` 上的提交标题。
+
 ### 示例
 
 ```
@@ -45,10 +47,33 @@ chore: 更新 Sylvie 角色女性头像的东向和南向纹理贴图
 
 ---
 
-## 分支与发布
+## 分支与 PR
 
-- **主分支**：`master`，日常直接提交
-- **发布标记**：每次上传创意工坊后，在对应提交上打 annotated tag
+- **主分支**：`master`，已开启分支保护——所有改动必须经 PR 合入，不能直接推送
+- **分支命名**：`<type>/<短 slug>`，`type` 取上面的提交类型（如 `feat/seek-petting`、`fix/hair-generation`、`docs/pr-workflow`）
+- **PR 标题**：与提交信息同格式 `<type>(<scope>): <中文描述>`；合并方式是 **squash**，PR 标题会成为 `master` 上唯一的提交标题，PR 正文成为提交正文
+- **PR 正文**：按 `.github/pull_request_template.md` 填写（改动 / 根因与方案 / 验证 / 影响）
+- **合并**：仅 squash，合并后自动删除分支
+- **评审**：单人仓库不要求他人 approve，合并前自己过一遍模板里的自查项；有外部贡献者时再开启「至少 1 人 review」
+
+### 一次改动的流程
+
+```bash
+git switch master && git pull --ff-only
+git switch -c fix/hair-generation
+# 改动、本地构建、自测
+
+git add -A
+git commit -m "fix(生成): 修复新生成的希尔薇无头发问题"
+git push -u origin fix/hair-generation
+
+gh pr create    # 网页创建时 PR 模板会自动填充；CLI 需补 --title/--body
+gh pr merge --squash --delete-branch
+```
+
+### 发布
+
+- **发布标记**：每次上传创意工坊后，在**已合入 `master` 的提交**上打 annotated tag（tag 不受分支保护限制）
 
 ```bash
 git tag -a v1.0.5 <commit> -m "工坊发布 v1.0.5：修复新生成的希尔薇无头发问题"
